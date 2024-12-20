@@ -7,7 +7,8 @@ import CoreMotion
 //
 import SwiftUI
 
-struct CreateGestureView: View {
+struct CreateGestureView: View, DataChangeListener {
+  
     private var store: RealtimeMultiGestureStore
     private var eventsHandler: AccelerometerEventHandler2
     private var dataRenderer: CreateGestureDataRenderer
@@ -45,14 +46,15 @@ struct CreateGestureView: View {
         dataRenderer = CreateGestureDataRenderer()
         dataRenderer.setDataProvider(store)
 
-        //pview.setStateProvider(eventsHandler);
-        self.store.setChangeListener(dataRenderer)
-        Globals.logToScreen("Gesture analyser created and wired...")
-
         //Create & link accelerometer events handler
         eventsHandler = AccelerometerEventHandler2(store)
         Globals.logToScreen("Event handler created...")
 
+        //pview.setStateProvider(eventsHandler);
+        self.store.addChangeListener(dataRenderer)
+        self.store.addChangeListener(self)
+        Globals.logToScreen("Gesture analyser created and wired...")
+        
         // Create a CMMotionManager instance
         Globals.logToScreen("Initializing Sensor Manager...")
         SensorMgr.registerListener(eventsHandler)
@@ -62,5 +64,11 @@ struct CreateGestureView: View {
         MockGenerator.start()
         Globals.logToScreen("Mock generator connected...")
 
+    }
+    
+    func onDataChange(_ type: Int) {
+        if(type == 1){
+            eventsHandler.stopStreaming()
+        }
     }
 }

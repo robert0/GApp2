@@ -18,7 +18,7 @@ public class RealtimeMultiGestureStore {
     public static let MeanGestureKey:String = "MeanGK"
     //-----------------------------------
     
-    private var mDataChangeListener: DataChangeListener?
+    private var mDataChangeListeners: [DataChangeListener] = []
     private var recordingData: Multi4DGestureData
     
     
@@ -37,8 +37,8 @@ public class RealtimeMultiGestureStore {
     /**
      * @param dataChangeListener
      */
-    public func setChangeListener(_ dataChangeListener: DataChangeListener?) {
-        mDataChangeListener = dataChangeListener
+    public func addChangeListener(_ dataChangeListener: DataChangeListener) {
+        mDataChangeListeners.append(dataChangeListener)
     }
   
     
@@ -83,9 +83,10 @@ public class RealtimeMultiGestureStore {
      *
      */
     func notifyRecordingDataChanged() {
-        mDataChangeListener?.onDataChange(RealtimeMultiGestureStore.DATA_UPDATE)
+        //TODO ... break the execstacktrace loop
+        mDataChangeListeners.forEach { $0.onDataChange(RealtimeMultiGestureStore.DATA_UPDATE) }
         if(getPointer() >= getCapacity() - 1){
-            mDataChangeListener?.onDataChange(RealtimeMultiGestureStore.DATA_COMPLETE_UPDATE)
+            mDataChangeListeners.forEach { $0.onDataChange(RealtimeMultiGestureStore.DATA_COMPLETE_UPDATE) }
         }
     }
 
