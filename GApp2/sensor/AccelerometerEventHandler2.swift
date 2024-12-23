@@ -12,7 +12,7 @@ public class AccelerometerEventHandler2 : SensorListener {
     /**
      * Local vars
      */
-    private var store:RealtimeMultiGestureStore
+    private var store:RealtimeSingleGestureStore
     private var isStreaming:Bool = false
 
     private var samplingPeriod = 0.0;
@@ -24,7 +24,7 @@ public class AccelerometerEventHandler2 : SensorListener {
     /**
      * @constructor  dataAnalyser
      */
-    init(_ store: RealtimeMultiGestureStore) {
+    init(_ store: RealtimeSingleGestureStore) {
         //Log.("AccelerometerListener created...");
         self.store = store;
         sR_next = Double(Utils.getCurrentMillis())
@@ -87,7 +87,7 @@ public class AccelerometerEventHandler2 : SensorListener {
     /**
      * @return
      */
-    public func getDataAnalyser()-> RealtimeMultiGestureStore {
+    public func getDataAnalyser()-> RealtimeSingleGestureStore {
         return store;
     }
 }

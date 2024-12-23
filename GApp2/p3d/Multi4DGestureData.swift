@@ -68,6 +68,16 @@ public class Multi4DGestureData {
         return capacity
     }
     
+    
+    /**
+     *
+     * @return
+     */
+    public func setData(_ key:String, _ data: [Sample4D] ){
+        dataMap[key] = data
+        baseMap[key] = nil
+    }
+    
     /**
      *
      * @return
