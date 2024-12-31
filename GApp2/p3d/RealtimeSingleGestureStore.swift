@@ -1,6 +1,6 @@
 //
-//  RealtimeMultiGestureAnalyser.swift
-//  GApp
+//  RealtimeSingleGestureStore.swift
+//  GApp2
 //
 //  Created by Robert Talianu
 //
@@ -19,11 +19,11 @@ public class RealtimeSingleGestureStore {
     //-----------------------------------
     
     private var mDataChangeListeners: [DataChangeListener] = []
-    private var recordingData: Multi4DGestureData
+    private var recordingData: MultiGesture4DData
     
     
     init() {
-        recordingData = Multi4DGestureData(Device.Acc_Recording_Buffer_Size, Device.Acc_Threshold_Level, [RealtimeSingleGestureStore.MeanGestureKey, RealtimeSingleGestureStore.GestureKey])  //2 gestures
+        recordingData = MultiGesture4DData(Device.Acc_Recording_Buffer_Size, Device.Acc_Threshold_Level, [RealtimeSingleGestureStore.MeanGestureKey, RealtimeSingleGestureStore.GestureKey])  //2 gestures
     }
 
     /**
@@ -40,8 +40,7 @@ public class RealtimeSingleGestureStore {
     public func addChangeListener(_ dataChangeListener: DataChangeListener) {
         mDataChangeListeners.append(dataChangeListener)
     }
-  
-    
+      
     /**
      *
      *
@@ -52,7 +51,9 @@ public class RealtimeSingleGestureStore {
      * @param time
      */
     public func addForRecording( _ x: Double, _ y: Double, _ z: Double, _ time: Int64) {
+        Globals.log("add for recording: " + String(x))
         recordingData.add(RealtimeSingleGestureStore.GestureKey, x, y, z, time)
+        Globals.log("inserted: " + (recordingData.getGesture(RealtimeSingleGestureStore.GestureKey)?.size().description ?? "-"))
         notifyRecordingDataChanged()
     }
 
@@ -63,7 +64,22 @@ public class RealtimeSingleGestureStore {
         recordingData.clear(RealtimeSingleGestureStore.GestureKey)
         //gestureCorrelationData.invalidate();
     }
+    
+    /**
+     *
+     */
+    public func clearGestureMean() {
+        recordingData.clear(RealtimeSingleGestureStore.MeanGestureKey)
+        //gestureCorrelationData.invalidate();
+    }
 
+    /**
+     * @return
+     */
+    public func getRecordingGesture() -> Gesture4D? {
+        return recordingData.getGesture(RealtimeSingleGestureStore.GestureKey)
+    }
+    
     /**
      * @return
      */
@@ -74,8 +90,7 @@ public class RealtimeSingleGestureStore {
     /**
      * @return
      */
-    public func getRecordingDataMean() -> [Sample4D] {
-        //TODO ... extract & insert mean data
+    public func getRecordingDataMean() -> [Sample4D]? {
         return recordingData.getData(RealtimeSingleGestureStore.MeanGestureKey)
     }
 
@@ -132,17 +147,16 @@ public class RealtimeSingleGestureStore {
      *
      * @return
      */
-    public func recomputeMean() {
-        let meanArr = recordingData.getData(RealtimeSingleGestureStore.MeanGestureKey)
-        if(meanArr.isEmpty){
-            let dta =  getRecordingData();
+    public func recomputeMeanFromRecordingSignal() {
+        let meanArr = getRecordingDataMean()
+        let dta =  getRecordingData()
+        if(meanArr == nil || meanArr!.isEmpty){
             if(dta != nil && !dta!.isEmpty){
-                recordingData.setData(RealtimeSingleGestureStore.MeanGestureKey,
-                                      getRecordingData()!)
+                recordingData.setData(RealtimeSingleGestureStore.MeanGestureKey, dta!)
             }
+            
         } else {
-            let dta =  getRecordingData()
-            var dmean = getRecordingDataMean()
+            var dmean = meanArr!
             //they should have the same length
             if(dta != nil && !dta!.isEmpty){
                 for index in 0..<dta!.count {
@@ -151,8 +165,7 @@ public class RealtimeSingleGestureStore {
                     let npt = Sample4D(0.5 * (ptm.x + pt.x), 0.5 * (ptm.y + pt.y), 0.5 * (ptm.z + pt.z), pt.time)//use the new time values
                     dmean[index] = npt
                 }
-                recordingData.setData(RealtimeSingleGestureStore.MeanGestureKey,
-                                      dmean)
+                recordingData.setData(RealtimeSingleGestureStore.MeanGestureKey, dmean)
             }
         }
     }

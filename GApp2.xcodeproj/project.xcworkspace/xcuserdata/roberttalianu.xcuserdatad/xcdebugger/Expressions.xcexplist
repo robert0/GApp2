@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "MultiGesture4DData.clear(_:):MultiGesture4DData.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "dataMap[key]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "RealtimeSingleGestureStore.clearRecording():RealtimeSingleGestureStore.swift">
+      </ContextState>
+      <ContextState
+         contextName = "RealtimeSingleGestureStore.addForRecording(_:_:_:_:):RealtimeSingleGestureStore.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "recordingData">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

@@ -8,10 +8,9 @@ import CoreMotion
 import SwiftUI
 
 struct TestGesturesView: View {
-    private var analyser: RealtimeMultiGestureAnalyser
-    private var eventsHandler: AccelerometerEventHandler
+    private var analyser: RealtimeMultiGestureStoreAnalyser
+    //private var eventsHandler: AccelerometerEventHandler
     private var dataView: DataView
-    private var keys: [String]
 
     // The app panel
     var body: some View {
@@ -21,14 +20,14 @@ struct TestGesturesView: View {
                 Spacer()
                 Button("Test") {
                     Globals.logToScreen("Testing Clicked !!!...")
-                    eventsHandler.clearTestingData()
-                    eventsHandler.setToRealtimeTesting()
+                    //eventsHandler.clearTestingData()
+                    //eventsHandler.setToRealtimeTesting()
                     //TODO... update keys iterator
                 }
                 Button("Mock") {
                     //MockGenerator.toggleListener()
                     Globals.logToScreen("Mock Button Pressed")
-                    MockGenerator.toggleListener(eventsHandler)
+                    //MockGenerator.toggleListener(eventsHandler)
                 }
                 Spacer()
             }
@@ -39,16 +38,14 @@ struct TestGesturesView: View {
     }
 
     // constructor
-    init(_ keys: [String], _ analyser: RealtimeMultiGestureAnalyser) {
-        //initilize app vars
-        self.keys = keys
+    init(_ analyser: RealtimeMultiGestureStoreAnalyser) {
 
         //Create & link Gesture Analyser
         self.analyser = analyser
 
         //Create the view  and wire it
         dataView = DataView()
-        dataView.setDataProvider(analyser)
+        //dataView.setDataProvider(analyser)
 
         //pview.setStateProvider(eventsHandler);
         self.analyser.setChangeListener(dataView)
@@ -56,7 +53,7 @@ struct TestGesturesView: View {
         Globals.logToScreen("Gesture analyser created and wired...")
 
         //Create & link accelerometer events handler
-        eventsHandler = AccelerometerEventHandler(analyser)
+        //eventsHandler = AccelerometerEventHandler(analyser)
         Globals.logToScreen("Event handler created...")
 
         // Create a CMMotionManager instance

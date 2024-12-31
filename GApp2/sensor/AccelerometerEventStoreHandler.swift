@@ -1,6 +1,6 @@
 //
-//  AccelerometerEventHandler.swift
-//  GApp
+//  AccelerometerEventStoreHandler.swift
+//  GApp2
 //
 //  Created by Robert Talianu
 //
@@ -8,11 +8,11 @@
 /**
  *
  */
-public class AccelerometerEventHandler2 : SensorListener {
+public class AccelerometerEventStoreHandler : SensorListener {
     /**
      * Local vars
      */
-    private var store:RealtimeSingleGestureStore
+    private var store:RealtimeSingleGestureStore?
     private var isStreaming:Bool = false
 
     private var samplingPeriod = 0.0;
@@ -24,13 +24,27 @@ public class AccelerometerEventHandler2 : SensorListener {
     /**
      * @constructor  dataAnalyser
      */
-    init(_ store: RealtimeSingleGestureStore) {
+    init() {
         //Log.("AccelerometerListener created...");
-        self.store = store;
+
         sR_next = Double(Utils.getCurrentMillis())
         sR_start = Double(Utils.getCurrentMillis())
     }
 
+    /**
+     * @return
+     */
+    public func getSamplingPeriod()-> Double {
+        return samplingPeriod;
+    }
+    
+    /**
+     * @param
+     */
+    public func setStore(_ store:RealtimeSingleGestureStore){
+        self.store = store
+    }
+    
     /**
      * @param
      */
@@ -44,8 +58,7 @@ public class AccelerometerEventHandler2 : SensorListener {
     public func stopStreaming(){
         self.isStreaming = false
     }
-    
-    
+        
     /**
      * @param timeStamp
      * @param x
@@ -59,8 +72,8 @@ public class AccelerometerEventHandler2 : SensorListener {
             //GestureApp.logOnScreen("sensor moved..." + x + ", " + y + ", " + z);
         }
         
-        if( self.isStreaming){
-            self.store.addForRecording(x, y, z, Utils.getCurrentMillis());
+        if( self.isStreaming ){
+            self.store?.addForRecording(x, y, z, Utils.getCurrentMillis());
         }
 
         //Log.d("Acceleration", "onSensorChanged() event: " + Arrays.toString(event.values));
@@ -69,25 +82,11 @@ public class AccelerometerEventHandler2 : SensorListener {
         sR_start = sR_next;
     }
 
-    /**
-     * @return
-     */
-    public func getSamplingPeriod()-> Double {
-        return samplingPeriod;
-    }
-
-    /**
+     /**
      *
      */
     public func clearRecordingData() {
-        self.store.clearRecording();
+        self.store?.clearRecording();
     }
 
-
-    /**
-     * @return
-     */
-    public func getDataAnalyser()-> RealtimeSingleGestureStore {
-        return store;
-    }
 }

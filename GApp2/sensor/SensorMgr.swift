@@ -14,7 +14,7 @@ import Foundation
  */
 public class SensorMgr {
     private static let motion: CMMotionManager = CMMotionManager()
-    private static var listener: SensorListener?
+    private static var listeners: [SensorListener] = []
     private static var timer: Timer?
 
     /*
@@ -38,7 +38,7 @@ public class SensorMgr {
 //                )
        
                 // Use the accelerometer data
-                SensorMgr.listener?.onSensorChanged(Utils.getCurrentMillis(), x, y, z)
+                SensorMgr.listeners.forEach { $0.onSensorChanged(Utils.getCurrentMillis(), x, y, z) }
             }
 
         } else {
@@ -57,8 +57,9 @@ public class SensorMgr {
     /*
      * @param listener
      */
-    public static func registerListener(_ listener: SensorListener) {
+    public static func addListener(_ listener: SensorListener) {
         //TODO... only one listener for now; expand it later if needed
-        SensorMgr.listener = listener
+        Globals.log("SensorMgr.addListener() called ...")
+        SensorMgr.listeners.append(listener)
     }
 }

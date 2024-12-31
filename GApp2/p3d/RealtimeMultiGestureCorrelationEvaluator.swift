@@ -10,7 +10,7 @@
  */
 public class RealtimeMultiGestureCorrelationEvaluator: RealtimeGestureScanner, GestureScanListener {
 
-    private var referenceData: Multi4DGestureData?
+    private var referenceData: MultiGesture4DData?
     private var listener: GestureScanListener?
     private var evalListeners:[GestureEvaluationListener] = []
 
@@ -19,7 +19,7 @@ public class RealtimeMultiGestureCorrelationEvaluator: RealtimeGestureScanner, G
      * @param multiGestureData
      * @param zeroesThresholdLevel
      */
-    init(_ multiGestureData: Multi4DGestureData, _ zeroesThresholdLevel: Double) {
+    init(_ multiGestureData: MultiGesture4DData, _ zeroesThresholdLevel: Double) {
         super.init(zeroesThresholdLevel)
         self.referenceData = multiGestureData
         registerListener(self)
@@ -53,7 +53,7 @@ public class RealtimeMultiGestureCorrelationEvaluator: RealtimeGestureScanner, G
      *
      * @return
      */
-    public func getReferenceGesturesData() -> Multi4DGestureData? {
+    public func getReferenceGesturesData() -> MultiGesture4DData? {
         return referenceData
     }
 
@@ -61,7 +61,7 @@ public class RealtimeMultiGestureCorrelationEvaluator: RealtimeGestureScanner, G
      *
      * @param referenceGestures
      */
-    public func setReferenceGestures(_ referenceGestures: Multi4DGestureData) {
+    public func setReferenceGestures(_ referenceGestures: MultiGesture4DData) {
         self.referenceData = referenceGestures
     }
 

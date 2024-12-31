@@ -10,17 +10,14 @@ import SwiftUI
 struct MainView: View {
     //logger view wg
     private var logView: LogView
-    //initilize app vars
-    private var analyser: RealtimeMultiGestureAnalyser
-    private var keys = ["A", "B", "C"]
-  
+    var gesturesStoreAnalyser:RealtimeMultiGestureStoreAnalyser
+    @State var viewCount:Int = 0
+    
     init () {
         //initilize local vars
+        self.gesturesStoreAnalyser = RealtimeMultiGestureStoreAnalyser()
         self.logView = LogView()
         Globals.setChangeCallback(self.logView.logCallbackFunction)
-        
-        //Create & link Gesture Analyser
-        analyser = RealtimeMultiGestureAnalyser(keys)
     }
     
     var body: some View {
@@ -28,24 +25,27 @@ struct MainView: View {
             NavigationView {
                 VStack {
                     Spacer()
-                    NavigationLink(destination: CreateGestureView()) {
+                    NavigationLink(destination: CreateGestureView(gesturesStoreAnalyser)) {
                         Image(systemName: "plus.circle")
                             .imageScale(.large)
                         Text("Create Gesture")
                     }
                     Spacer().frame(height:30)
-                    NavigationLink(destination: ManageGesturesView(keys, analyser)) {
+                    NavigationLink(destination: ManageGesturesView(gesturesStoreAnalyser)) {
                         Image(systemName: "pencil")
                             .imageScale(.large)
-                        Text("Manage Gestures")
+                        Text("Manage Gestures ( \(viewCount) )")
                     }
                     Spacer().frame(height:30)
-                    NavigationLink(destination: TestGesturesView(keys, analyser)) {
+                    NavigationLink(destination: TestGesturesView(gesturesStoreAnalyser)) {
                         Image(systemName: "play")
                             .imageScale(.large)
                         Text("Test")
                     }
                     Spacer()
+                    
+                }.onAppear {
+                    viewCount = gesturesStoreAnalyser.getKeys()?.count ?? 0
                 }
             }
             Spacer()

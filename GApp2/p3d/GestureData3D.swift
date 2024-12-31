@@ -8,7 +8,8 @@
 public class GestureData3D {
     private var data: [Sample3D] = []
     private var capacity: Int
-
+    private var command:String  = ""
+    
     /**
      *
      * @param capacity
@@ -58,5 +59,22 @@ public class GestureData3D {
      */
     public func getPointer() -> Int {
         return data.count
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public func getCommand() -> String {
+        return command
+    }
+    
+    
+    /**
+     *
+     * @return
+     */
+    public func setCommand(_ cmd:String) {
+        self.command = cmd
     }
 }
