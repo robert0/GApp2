@@ -58,7 +58,7 @@ public class MultiGesture4DData {
     /**
      * Removes gesture and clears all its data
      */
-    public func clear(_ key:String){
+    public func delete(_ key:String){
         dataMap[key]?.removeAll()
         dataMap[key] = nil
         baseMap[key] = nil
@@ -68,9 +68,9 @@ public class MultiGesture4DData {
     /**
      *
      */
-    public func clearAll(){
+    public func deleteAll(){
         for key in dataMap.keys {
-            clear(key)
+            delete(key)
         }
     }
     

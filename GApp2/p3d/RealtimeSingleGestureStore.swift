@@ -50,7 +50,7 @@ public class RealtimeSingleGestureStore {
      * @param z
      * @param time
      */
-    public func addForRecording( _ x: Double, _ y: Double, _ z: Double, _ time: Int64) {
+    public func addSample( _ x: Double, _ y: Double, _ z: Double, _ time: Int64) {
         Globals.log("add for recording: " + String(x))
         recordingData.add(RealtimeSingleGestureStore.GestureKey, x, y, z, time)
         Globals.log("inserted: " + (recordingData.getGesture(RealtimeSingleGestureStore.GestureKey)?.size().description ?? "-"))
@@ -60,8 +60,8 @@ public class RealtimeSingleGestureStore {
     /**
      *
      */
-    public func clearRecording() {
-        recordingData.clear(RealtimeSingleGestureStore.GestureKey)
+    public func clearGesture() {
+        recordingData.delete(RealtimeSingleGestureStore.GestureKey)
         //gestureCorrelationData.invalidate();
     }
     
@@ -69,7 +69,7 @@ public class RealtimeSingleGestureStore {
      *
      */
     public func clearGestureMean() {
-        recordingData.clear(RealtimeSingleGestureStore.MeanGestureKey)
+        recordingData.delete(RealtimeSingleGestureStore.MeanGestureKey)
         //gestureCorrelationData.invalidate();
     }
 

@@ -8,16 +8,43 @@
 /**
  *
  */
-public class RealtimeMultiGestureStoreAnalyser {
+public class RealtimeMultiGestureStoreAnalyser : SensorListener {
     private var mDataChangeListener: DataChangeListener?
     private var recordingData: MultiGesture4DData
     private var realtimeGestureEvaluator: RealtimeMultiGestureCorrelationEvaluator
-
-    init() {
-        recordingData = MultiGesture4DData(Device.Acc_Recording_Buffer_Size, Device.Acc_Threshold_Level, [])// no initial keys
-        realtimeGestureEvaluator = RealtimeMultiGestureCorrelationEvaluator(recordingData, Device.Acc_Threshold_Level)
+    private var isStreaming:Bool = false
+    
+    init(_ dataStore: MultiGestureStore) {
+        recordingData = dataStore.getRecordingData()
+        realtimeGestureEvaluator = RealtimeMultiGestureCorrelationEvaluator(dataStore.getRecordingData(), Device.Acc_Threshold_Level)
     }
 
+    /**
+     * @param
+     */
+    public func startStreaming(){
+        self.isStreaming = true
+    }
+    
+    /**
+     * @param
+     */
+    public func stopStreaming(){
+        self.isStreaming = false
+    }
+    
+    /**
+     * @param timeStamp
+     * @param x
+     * @param y
+     * @param z
+     */
+    public func onSensorChanged(_ timeStamp:Int64, _ x:Double, _ y:Double, _ z:Double) {
+        if( self.isStreaming ){
+            eval(x, y, z, Utils.getCurrentMillis())
+        }
+    }
+    
     /**
      *
      * @return
@@ -37,35 +64,9 @@ public class RealtimeMultiGestureStoreAnalyser {
      *
      * @param evalListener
      */
-    public func addEvaluationListener(_ evalListener: GestureEvaluationListener){
+    public func addEvaluationListener(_ evalListener: GestureEvaluationListener?){
         self.realtimeGestureEvaluator.addEvaluationListener(evalListener)
     }
-    
-
-    /**
-     *
-     *
-     * @param key
-     * @param x
-     * @param y
-     * @param z
-     * @param time
-     */
-//    public func addForRecording(_ key: String?, _ x: Double, _ y: Double, _ z: Double, _ time: Int64) {
-//        if key == nil {
-//            return
-//        }
-//
-//        recordingData.add(key!, x, y, z, time)
-//        notifyRecordingDataChanged()
-//    }
-
-    /**
-     *
-     */
-//    func notifyRecordingDataChanged() {
-//        mDataChangeListener?.onDataChange(0)
-//    }
     
     /**
      *
@@ -75,75 +76,13 @@ public class RealtimeMultiGestureStoreAnalyser {
      */
     public func eval(_ x: Double, _ y: Double, _ z: Double, _ time: Int64) {
         realtimeGestureEvaluator.eval(x, y, z, time)
-        notifyEvalDataChanged()
-    }
-
-    /**
-     * @param key
-     * @param data
-     * @return
-     */
-    public func setData(_ key:String, _ data: [Sample4D]? ){
-        if(data == nil){
-            recordingData.setData(key, [])
-        } else {
-            recordingData.setData(key, data)
-        }
+        notifyDataChanged()
     }
         
     /**
      *
-     * @param key
-     * @param gesture
      */
-    public func setGesture(_ key: String?, _ gesture: Gesture4D?) {
-        if key == nil {
-            return
-        }
-        
-        recordingData.setGesture(key!, gesture!)
-    }
-        
-    /**
-     *
-     * @param key
-     */
-    public func removeGesture(_ key: String?) {
-        if key == nil {
-            return
-        }
-
-        recordingData.remove(key!)
-        //gestureCorrelationData.invalidate();
-    }
-    
-    /**
-     *
-     */
-    public func clearGesture(_ key: String?) {
-        if key == nil {
-            return
-        }
-
-        recordingData.clear(key!)
-        //gestureCorrelationData.invalidate();
-    }
-
-    /**
-     * @return
-     */
-    public func getGesture(_ key: String?) -> Gesture4D? {
-        if key == nil {
-            return nil
-        }
-
-        return recordingData.getGesture(key!)
-    }
-
-    /**
-     *
-     */
-    func notifyEvalDataChanged() {
+    func notifyDataChanged() {
         mDataChangeListener?.onDataChange(0)
     }
 
@@ -198,20 +137,20 @@ public class RealtimeMultiGestureStoreAnalyser {
     public func getLastEvalGestureWindow() -> GestureWindow {
         return realtimeGestureEvaluator.getPreviousGesture()
     }
-
+    
     /**
      *
      * @return
      */
-    //public func getEvalDataBuffer() -> RollingQueue<Sample5D> {
-    //    return realtimeGestureEvaluator.getDataBuffer()
-    //}
-
+    public func getLastTestingGestureWindow() -> GestureWindow {
+        return realtimeGestureEvaluator.getPreviousGesture()
+    }
+    
     /**
      *
      * @return
      */
-    //    public float getWindowsCorrelationFactor(){
-    //        return gestureCorrelationData.getWindowsCorrelationFactor();
-    //    }
+    public func getTestingDataBuffer() -> RollingQueue<Sample5D> {
+        return realtimeGestureEvaluator.getDataBuffer()
+    }
 }

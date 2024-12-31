@@ -8,12 +8,14 @@ import CoreMotion
 import SwiftUI
 
 struct ManageGesturesView: View {
-    var gesturesStoreAnalyser:RealtimeMultiGestureStoreAnalyser
+    var gesturesStore:MultiGestureStore
     @State var counter:Int = 0
+    @State var showConfirmation:Bool = false
+    @State var deletingKey:String = ""
     
     // constructor
-    init( _ gesturesStoreAnalyser: RealtimeMultiGestureStoreAnalyser) {
-        self.gesturesStoreAnalyser = gesturesStoreAnalyser
+    init( _ gesturesStore: MultiGestureStore) {
+        self.gesturesStore = gesturesStore
     }
         
     // The app panel
@@ -32,16 +34,27 @@ struct ManageGesturesView: View {
                         
                         Button {
                             Globals.log("Delete button was tapped")
+                            showConfirmation = true
+                            deletingKey = widget.key
+                            
+                            
                         } label: {
                             Image(systemName: "trash")
                                 .imageScale(.large)
-                        }.buttonStyle(.plain)
+                        }
+                        .buttonStyle(.plain)
+                        
                         Spacer().frame(width:30)
                         
-                        NavigationLink(destination: EditGestureView(gesturesStoreAnalyser, widget.key)) {
+                        NavigationLink(destination: EditGestureView(gesturesStore, widget.key)) {
                             Image(systemName: "pencil")
                                 .imageScale(.large)
                         }.frame(width:50)
+                        
+                    }.confirmationDialog("Delete item \(deletingKey)?", isPresented: $showConfirmation) {
+                        Button("Yes, delete", action: {
+                            deleteGesture(deletingKey)
+                        })
                     }
                 }
                 Spacer()
@@ -54,10 +67,17 @@ struct ManageGesturesView: View {
     }
     
     func listItems() -> [ListWidget] {
-        let widgets:[ListWidget] = gesturesStoreAnalyser.getKeys()!.map {
+        let widgets:[ListWidget] = gesturesStore.getKeys()!.map {
             return ListWidget($0)
         }
         return widgets
+    }
+    
+    
+    func deleteGesture(_ key:String){
+        gesturesStore.deleteGesture(key)
+        //force UI update
+        counter = counter + 1
     }
 }
 

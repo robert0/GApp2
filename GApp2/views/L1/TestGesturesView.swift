@@ -8,10 +8,46 @@ import CoreMotion
 import SwiftUI
 
 struct TestGesturesView: View {
-    private var analyser: RealtimeMultiGestureStoreAnalyser
-    //private var eventsHandler: AccelerometerEventHandler
-    private var dataView: DataView
+    //next vars will be created only once
+    private var analyser:RealtimeMultiGestureStoreAnalyser
+    private static var dataRenderer: TestingViewRenderer?
+    private static var eventsHandler: AccelerometerEventStoreHandler?
 
+    // constructor
+    init(_ analyser:RealtimeMultiGestureStoreAnalyser) {
+        //the init will be called every time the user goes away from this page.(the parent has a reference to it, so it will be recreated)
+        Globals.log("Testing gesture view, init() ...")
+        //Create & link Gesture Analyser
+        self.analyser = analyser
+        
+        if(TestGesturesView.dataRenderer == nil){
+            initializeStatics();
+        } else {
+            cleanUp() //otherview do cleanup of static data
+        }
+    }
+        
+    //
+    func initializeStatics(){
+        //Create the view  and wire it
+        TestGesturesView.dataRenderer = TestingViewRenderer()
+        TestGesturesView.dataRenderer!.setDataProvider(analyser)
+        
+        self.analyser.setChangeListener(TestGesturesView.dataRenderer)
+        self.analyser.addEvaluationListener(TestGesturesView.dataRenderer)
+        
+        //connect to the data supplier
+        Globals.logToScreen("Initializing Sensor Manager...")
+        SensorMgr.addListener(analyser)
+        SensorMgr.startAccelerometers(Device.View_Accelerometer_Interval)
+    }
+    
+    //used to clean view & cached data
+    func cleanUp(){
+        
+    }
+    
+    
     // The app panel
     var body: some View {
         return VStack {
@@ -19,51 +55,21 @@ struct TestGesturesView: View {
             HStack {
                 Spacer()
                 Button("Test") {
-                    Globals.logToScreen("Testing Clicked !!!...")
-                    //eventsHandler.clearTestingData()
-                    //eventsHandler.setToRealtimeTesting()
-                    //TODO... update keys iterator
-                }
-                Button("Mock") {
-                    //MockGenerator.toggleListener()
-                    Globals.logToScreen("Mock Button Pressed")
-                    //MockGenerator.toggleListener(eventsHandler)
-                }
+                    Globals.log("Testing Clicked !!!...")
+                    self.analyser.startStreaming()
+                  
+                }.buttonStyle(.borderedProminent)
+                
+                Button("Stop Testing") {
+                    Globals.log("Stop Testing Clicked !!!...")
+                    self.analyser.stopStreaming()
+
+                }.buttonStyle(.borderedProminent)
                 Spacer()
             }
 
             //add data view panel
-            dataView
+            TestGesturesView.dataRenderer
         }
-    }
-
-    // constructor
-    init(_ analyser: RealtimeMultiGestureStoreAnalyser) {
-
-        //Create & link Gesture Analyser
-        self.analyser = analyser
-
-        //Create the view  and wire it
-        dataView = DataView()
-        //dataView.setDataProvider(analyser)
-
-        //pview.setStateProvider(eventsHandler);
-        self.analyser.setChangeListener(dataView)
-        self.analyser.addEvaluationListener(dataView)
-        Globals.logToScreen("Gesture analyser created and wired...")
-
-        //Create & link accelerometer events handler
-        //eventsHandler = AccelerometerEventHandler(analyser)
-        Globals.logToScreen("Event handler created...")
-
-        // Create a CMMotionManager instance
-        Globals.logToScreen("Initializing Sensor Manager...")
-        //SensorMgr.registerListener(eventsHandler)
-        //SensorMgr.startAccelerometers(Device.View_Accelerometer_Interval)
-
-        Globals.logToScreen("Starting mock generator...")
-        MockGenerator.start()
-        Globals.logToScreen("Mock generator connected...")
-
     }
 }

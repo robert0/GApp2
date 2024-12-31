@@ -69,16 +69,16 @@ public class AccelerometerEventStoreHandler : SensorListener {
         //TODO... can we use the provided timestamp?
         if (logCounter % 10 == 0) { //every 10 events, print one
             logCounter += 1
-            //GestureApp.logOnScreen("sensor moved..." + x + ", " + y + ", " + z);
+            //GestureApp.logOnScreen("sensor moved..." + x + ", " + y + ", " + z)
         }
         
         if( self.isStreaming ){
-            self.store?.addForRecording(x, y, z, Utils.getCurrentMillis());
+            self.store?.addSample(x, y, z, Utils.getCurrentMillis())
         }
 
-        //Log.d("Acceleration", "onSensorChanged() event: " + Arrays.toString(event.values));
+        //Log.d("Acceleration", "onSensorChanged() event: " + Arrays.toString(event.values))
         sR_next = Double(Utils.getCurrentMillis())
-        samplingPeriod = (samplingPeriod * 10.0 + sR_next - sR_start) / 11.0;
+        samplingPeriod = (samplingPeriod * 10.0 + sR_next - sR_start) / 11.0
         sR_start = sR_next;
     }
 
@@ -86,7 +86,7 @@ public class AccelerometerEventStoreHandler : SensorListener {
      *
      */
     public func clearRecordingData() {
-        self.store?.clearRecording();
+        self.store?.clearGesture()
     }
 
 }

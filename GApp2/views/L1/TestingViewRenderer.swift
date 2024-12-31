@@ -9,76 +9,39 @@ import os
 import OrderedCollections
 
 
-struct DataView: View, DataChangeListener, GestureEvaluationListener {
-    @ObservedObject var viewModel = DataViewModel()
+struct TestingViewRenderer: View, DataChangeListener, GestureEvaluationListener {
+    @ObservedObject var viewModel = TestingViewModel()
     private static let x_scale: Double = Device.View_X_Scale
     private static let y_scale: Double = Device.View_Y_Scale
 
-    //  RecordedSignal
-    //  GApp
-    //
-    //  Created by Robert Talianu
-    //
-    struct RecordedSignal: View {
-        @ObservedObject var viewModel: DataViewModel
+    /**
+     *
+     */
+    var body: some View {
+        VStack {
+            Text("This is TestingView rendering panel!")
 
-        init(_ viewModel: DataViewModel) {
-            self.viewModel = viewModel
-        }
+            let dataProvider = viewModel.dataProvider
+            if dataProvider != nil {
+                //Text("Main View Update: \(viewModel.updateCounter)")
 
-        var body: some View {
-            Text("Update rederer: \(viewModel.updateCounter)")
-            Text("Recorded data:")
-            let dataKeys = viewModel.dataProvider?.getKeys()
-            if dataKeys != nil && dataKeys!.count > 0 {
-                VStack {
-                    ForEach(0..<dataKeys!.count) { index in
-                        let key = dataKeys![index]
-                        let samples: [Sample4D]? = viewModel.dataProvider!.getRecordingData(key)
-                        let base: BaseSignalProp4D? = viewModel.dataProvider!.getRecordingSignalBase(key)
-                        if samples != nil {
-                            ZStack {
-                                Path { path in
-                                    path.move(to: CGPoint(x: 0, y: 0))
-                                    for (i, v) in samples!.enumerated() {
-                                        path.addLine(to: CGPoint(x: x_scale * Double(i), y: y_scale * v.x))
-                                    }
-                                }.stroke(Color.blue)
-
-                                Path { path in
-                                    path.move(to: CGPoint(x: 0, y: 0))
-                                    for (i, v) in samples!.enumerated() {
-                                        path.addLine(to: CGPoint(x: x_scale * Double(i), y: y_scale * v.y))
-                                    }
-                                }.stroke(Color.red)
-
-                                //add base start/stop window zone
-                                let start: Int = base?.getStartIndex() ?? 10
-                                let end: Int = base?.getEndIndex() ?? 190
-                                Path { path in
-                                    path.move(to: CGPoint(x: x_scale * Double(start), y: -20))
-                                    path.addLine(to: CGPoint(x: x_scale * Double(start), y: 20))
-                                    path.move(to: CGPoint(x: x_scale * Double(end), y: -20))
-                                    path.addLine(to: CGPoint(x: x_scale * Double(end), y: 20))
-                                }.stroke(Color.green)
-
-                            }
-                        }
-                    }
-                }
+                //draw signals
+                TestingSignal(viewModel)
             }
-        }
+
+        }.border(Color.red)
     }
 
+    
     //  TestingSignal
     //  GApp
     //
     //  Created by Robert Talianu
     //
     struct TestingSignal: View {
-        @ObservedObject var viewModel: DataViewModel
+        @ObservedObject var viewModel: TestingViewModel
 
-        init(_ viewModel: DataViewModel) {
+        init(_ viewModel: TestingViewModel) {
             self.viewModel = viewModel
         }
 
@@ -136,32 +99,11 @@ struct DataView: View, DataChangeListener, GestureEvaluationListener {
         }
     }
 
-    /**
-     *
-     */
-    var body: some View {
-        VStack {
-            //Text("This is Dataview Panel!")
-
-            let dataProvider = viewModel.dataProvider
-            if dataProvider != nil {
-                //Text("Main View Update: \(viewModel.updateCounter)")
-
-                //draw signals
-                RecordedSignal(viewModel)
-
-                //draw signals
-                TestingSignal(viewModel)
-            }
-
-        }.border(Color.red)
-
-    }
 
     /**
      *
      */
-    public func setDataProvider(_ dataProvider: RealtimeMultiGestureAnalyser) {
+    public func setDataProvider(_ dataProvider: RealtimeMultiGestureStoreAnalyser) {
         self.viewModel.dataProvider = dataProvider
     }
 
@@ -190,8 +132,8 @@ struct DataView: View, DataChangeListener, GestureEvaluationListener {
 //
 // Created by Robert Talianu
 //
-final class DataViewModel: ObservableObject {
-    @Published var dataProvider: RealtimeMultiGestureAnalyser?
+final class TestingViewModel: ObservableObject {
+    @Published var dataProvider: RealtimeMultiGestureStoreAnalyser?
     @Published var updateCounter: Int = 1
     @Published var gestureEvaluationStatusMap = OrderedDictionary<String, GestureEvaluationStatus>()
 }

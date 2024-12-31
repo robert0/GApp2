@@ -26,15 +26,15 @@ struct EditGestureView: View {
     }
     
     // constructor
-    init(_ analyser: RealtimeMultiGestureStoreAnalyser, _ gkey: String) {
+    init(_ gesturesStore: MultiGestureStore, _ gkey: String) {
         Globals.log("--- init ---")
-        self.viewModel = EditGestureViewModel(analyser: analyser)
+        self.viewModel = EditGestureViewModel(gesturesStore)
        
         
         //Create & link Gesture Analyser
         self.initialKey = gkey
         self.gkey = gkey
-        let gs = analyser.getGesture(gkey)
+        let gs = gesturesStore.getGesture(gkey)
         if(gs != nil){
             Globals.log("init initial cmd:\(gs!.getCommand())")
             self.selectedCmd = Command.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? Command.openGoogle
@@ -89,7 +89,7 @@ struct EditGestureView: View {
             Button("Save") {
                 Globals.log("Save Edited")
                 
-                var gs = viewModel.analyser.getGesture(initialKey)
+                var gs = viewModel.gesturesStore.getGesture(initialKey)
                 if(gs != nil){
                     //set/change all props
                     gs!.setCommand(selectedCmd.rawValue)
@@ -99,8 +99,8 @@ struct EditGestureView: View {
                     if(self.initialKey != gkey){
                         gs!.setName(gkey)
                         Globals.log("name: \(gs!.getName())")
-                        viewModel.analyser.removeGesture(initialKey)
-                        viewModel.analyser.setGesture(gkey, gs)
+                        viewModel.gesturesStore.removeGesture(initialKey)
+                        viewModel.gesturesStore.setGesture(gkey, gs)
                     }
                 }
                 
@@ -119,10 +119,10 @@ struct EditGestureView: View {
 // Created by Robert Talianu
 //
 final class EditGestureViewModel: ObservableObject {
-    @Published var analyser: RealtimeMultiGestureStoreAnalyser
+    @Published var gesturesStore: MultiGestureStore
     
-    init(analyser: RealtimeMultiGestureStoreAnalyser) {
-        self.analyser = analyser
+    init(_ gesturesStore: MultiGestureStore) {
+        self.gesturesStore = gesturesStore
     }
 }
 

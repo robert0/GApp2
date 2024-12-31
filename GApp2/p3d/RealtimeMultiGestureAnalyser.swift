@@ -86,7 +86,7 @@ public class RealtimeMultiGestureAnalyser {
             return
         }
 
-        recordingData.clear(key!)
+        recordingData.delete(key!)
         //gestureCorrelationData.invalidate();
     }
 
@@ -178,12 +178,4 @@ public class RealtimeMultiGestureAnalyser {
     public func getTestingDataBuffer() -> RollingQueue<Sample5D> {
         return realtimeGestureEvaluator.getDataBuffer()
     }
-
-    /**
-     *
-     * @return
-     */
-    //    public float getWindowsCorrelationFactor(){
-    //        return gestureCorrelationData.getWindowsCorrelationFactor();
-    //    }
 }

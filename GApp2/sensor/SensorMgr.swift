@@ -13,6 +13,7 @@ import Foundation
  *
  */
 public class SensorMgr {
+    private static var isStarted: Bool = false
     private static let motion: CMMotionManager = CMMotionManager()
     private static var listeners: [SensorListener] = []
     private static var timer: Timer?
@@ -21,9 +22,13 @@ public class SensorMgr {
      * @param refreshPeriod in seconds
      */
     public static func startAccelerometers(_ refreshPeriod: Double) {
-        //TODO ... make sure it does not start again
+        if(SensorMgr.isStarted){//do start only once
+            return;
+        }
+               
         // Make sure the accelerometer hardware is available.
         if SensorMgr.motion.isAccelerometerAvailable {
+            SensorMgr.isStarted = true;
             Globals.logToScreen("SensorMgr > Accelerometer is starting ...")
             SensorMgr.motion.accelerometerUpdateInterval = refreshPeriod
             SensorMgr.motion.startAccelerometerUpdates()

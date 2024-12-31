@@ -11,7 +11,7 @@ struct CreateGestureView: View, DataChangeListener {
     @Environment(\.dismiss) var dismiss
     
     //next vars will be created only once
-    private var allGesturesStore:RealtimeMultiGestureStoreAnalyser
+    private var allGesturesStore:MultiGestureStore
     private static var singleGestureStore: RealtimeSingleGestureStore?
     private static var dataRenderer: CreateGestureDataRenderer?
     private static var eventsHandler: AccelerometerEventStoreHandler?
@@ -21,7 +21,7 @@ struct CreateGestureView: View, DataChangeListener {
     @State private var isNameMissing: Bool = true
 
     // constructor
-    init(_ gesturesStore:RealtimeMultiGestureStoreAnalyser) {
+    init(_ gesturesStore:MultiGestureStore) {
         //the init will be called every time the user goes away from this page.(the parent has a reference to it, so it will be recreated)
         Globals.log("Create gesture view, init() ...")
         self.allGesturesStore = gesturesStore
@@ -90,6 +90,7 @@ struct CreateGestureView: View, DataChangeListener {
                 
             
             Button("Save gesture") {
+                //save data to store/analyser
                 allGesturesStore.setData(name, CreateGestureView.singleGestureStore!.getRecordingData())
                                
                 //return to previous view
@@ -103,32 +104,7 @@ struct CreateGestureView: View, DataChangeListener {
         }
     }
     
-//    func presentDialog(){
-//        // create the actual alert controller view that will be the pop-up
-//        let alertController = UIAlertController(title: "New Folder", message: "name this folder", preferredStyle: .alert)
-//
-//        alertController.addTextField { (textField) in
-//            // configure the properties of the text field
-//            textField.placeholder = "Name"
-//        }
-//
-//
-//        // add the buttons/actions to the view controller
-//        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-//        let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
-//
-//            // this code runs when the user hits the "save" button
-//
-//            let inputName = alertController.textFields![0].text
-//            print(inputName)
-//        }
-//
-//        alertController.addAction(cancelAction)
-//        alertController.addAction(saveAction)
-//
-//        self.present(alertController, animated: true, completion: nil)
-//    }
-
+    //
     func onDataChange(_ type: Int) {
         if(type == RealtimeSingleGestureStore.DATA_COMPLETE_UPDATE){
             CreateGestureView.eventsHandler!.stopStreaming()
@@ -136,9 +112,10 @@ struct CreateGestureView: View, DataChangeListener {
         }
     }
     
+    //
     func cleanUp(){
         Globals.log("cleanup...")
-        CreateGestureView.singleGestureStore!.clearRecording()
+        CreateGestureView.singleGestureStore!.clearGesture()
         CreateGestureView.singleGestureStore!.clearGestureMean()
     }
 }
