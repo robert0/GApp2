@@ -86,8 +86,8 @@ struct EditGestureView: View {
             }.padding(20)
             
             Spacer()
-            Button("Save") {
-                Globals.log("Save Edited")
+            Button("Update") {
+                Globals.log("Update Edited")
                 
                 var gs = viewModel.gesturesStore.getGesture(initialKey)
                 if(gs != nil){

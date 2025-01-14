@@ -8,6 +8,8 @@ import CoreMotion
 import SwiftUI
 
 struct ManageGesturesView: View {
+    @Environment(\.dismiss) var dismiss
+    
     var gesturesStore:MultiGestureStore
     @State var counter:Int = 0
     @State var showConfirmation:Bool = false
@@ -61,10 +63,11 @@ struct ManageGesturesView: View {
             }
             Spacer().frame(height: 20)
             
-            Button("Save Gestures") {
+            Button("Save Gestures to Filesystem") {
                 Globals.log("Save Gestures Clicked !!!...")
                 FileSystem.writeLocalGesturesDataFile(self.gesturesStore.getRecordingData().getAllGestures())
-
+                dismiss()
+                
             }.buttonStyle(.borderedProminent)
             Spacer()
             

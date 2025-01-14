@@ -31,20 +31,7 @@ public class MultiGestureStore {
     public func getKeys() -> [String]? {
         return recordingData.getKeys()
     }
-
-    /**
-     * @param key
-     * @param data
-     * @return
-     */
-    public func setData(_ key:String, _ data: [Sample4D]? ){
-        if(data == nil){
-            recordingData.setData(key, [])
-        } else {
-            recordingData.setData(key, data)
-        }
-    }
-        
+       
     /**
      *
      * @param key

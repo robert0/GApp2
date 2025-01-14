@@ -20,6 +20,15 @@ struct MainView: View {
         self.gestureAnalyser = RealtimeMultiGestureStoreAnalyser(gesturesStore)
         self.logView = LogView()
         Globals.setChangeCallback(self.logView.logCallbackFunction)
+        
+        //load saved gestures from filesystem
+        let gestures = FileSystem.readLocalGesturesDataFile()
+        Globals.log("Loaded gestures count: \(gestures.count)")
+        if gestures.count > 0 {
+            gestures.forEach({
+                self.gesturesStore.setGesture($0.getName(), $0)
+            })
+        }
     }
     
     var body: some View {

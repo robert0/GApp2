@@ -21,8 +21,7 @@ struct GApp2App: App {
         //writeData(dbls)
         
         
-        let gestures = FileSystem.readLocalGesturesDataFile()
-        Globals.log("gestures: \(gestures.count)")
+
     }
     
     var body: some Scene {

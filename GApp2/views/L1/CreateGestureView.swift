@@ -90,8 +90,13 @@ struct CreateGestureView: View, DataChangeListener {
                 
             
             Button("Save gesture") {
+                // create gesture with the same name
+                let gs = Gesture4D()
+                gs.setName(name)
+                gs.setData(CreateGestureView.singleGestureStore!.getRecordingData() ?? [])
+                
                 //save data to store/analyser
-                allGesturesStore.setData(name, CreateGestureView.singleGestureStore!.getRecordingData())
+                allGesturesStore.setGesture(name, gs)
                                
                 //return to previous view
                 dismiss()

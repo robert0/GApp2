@@ -46,27 +46,28 @@ struct TestingViewRenderer: View, DataChangeListener, GestureEvaluationListener 
         }
 
         var body: some View {
-            Text("Test data:").offset(x: 0, y: -10)
+            Text("Test data:").offset(x: 0, y: 0)
+            let yoff = 70.0
             let tdata: RollingQueue<Sample5D>? = viewModel.dataProvider?.getTestingDataBuffer()
             if tdata != nil && tdata!.size() > 0 {
                 ZStack {
                     Path { path in
-                        path.move(to: CGPoint(x: 0, y: 0))
+                        path.move(to: CGPoint(x: 0, y: yoff))
                         for (i, v) in tdata!.asList().enumerated() {
-                            path.addLine(to: CGPoint(x: x_scale * Double(i), y: y_scale * v.x))
+                            path.addLine(to: CGPoint(x: x_scale * Double(i), y: yoff + y_scale * v.x))
                         }
                     }.stroke(Color.orange)
 
                     Path { path in
-                        path.move(to: CGPoint(x: 0, y: 0))
+                        path.move(to: CGPoint(x: 0, y: yoff))
                         for (i, v) in tdata!.asList().enumerated() {
-                            path.addLine(to: CGPoint(x: x_scale * Double(i), y: y_scale * v.y))
+                            path.addLine(to: CGPoint(x: x_scale * Double(i), y: yoff + y_scale * v.y))
                         }
                     }.stroke(Color.cyan)
                 }
             }
 
-            Text("Last detected gesture:").offset(x: 0, y: -10)
+            Text("Last detected gesture:").offset(x: 0, y: 0)
 
             //draw base
             let gw: GestureWindow? = viewModel.dataProvider?.getLastTestingGestureWindow()
@@ -75,16 +76,16 @@ struct TestingViewRenderer: View, DataChangeListener, GestureEvaluationListener 
                 if ddata.count > 0 {
                     ZStack {
                         Path { path in
-                            path.move(to: CGPoint(x: 0, y: 0))
+                            path.move(to: CGPoint(x: 0, y: yoff))
                             for (i, v) in ddata.enumerated() {
-                                path.addLine(to: CGPoint(x: x_scale * Double(i), y: y_scale * v.x))
+                                path.addLine(to: CGPoint(x: x_scale * Double(i), y: yoff + y_scale * v.x))
                             }
                         }.stroke(Color.orange)
 
                         Path { path in
-                            path.move(to: CGPoint(x: 0, y: 0))
+                            path.move(to: CGPoint(x: 0, y: yoff))
                             for (i, v) in ddata.enumerated() {
-                                path.addLine(to: CGPoint(x: x_scale * Double(i), y: y_scale * v.y))
+                                path.addLine(to: CGPoint(x: x_scale * Double(i), y: yoff + y_scale * v.y))
                             }
                         }.stroke(Color.cyan)
                     }.offset(x: 20, y: 0)
@@ -92,7 +93,7 @@ struct TestingViewRenderer: View, DataChangeListener, GestureEvaluationListener 
 
             }
 
-            Text("Gesture Detection Status:").offset(x: 0, y: -10)
+            Text("Gesture Detection Status:").offset(x: 0, y: 0)
             ForEach(viewModel.gestureEvaluationStatusMap.elements, id: \.key) { element in
                 Text("\(element.key): \(element.value.getGestureCorrelationFactor())")
             }
