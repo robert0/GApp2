@@ -21,4 +21,8 @@ public class Device {
     public static let Acc_Recording_Buffer_Size = 200//samples
     public static let Acc_Threshold_Level = 0.3
     public static let Acc_Testing_Gesture_Leading_Zeroes_Time_Interval = 0.5//seconds
+    
+    //file used for storing gestures data
+    public static let LocalGesturesDataFileName = "LocalGesturesData.json"
+
 }

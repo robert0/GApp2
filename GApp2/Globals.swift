@@ -54,4 +54,5 @@ class Globals {
             sharedInstance.consoleN = "UI Console Started..."
         }
     }
+
 }

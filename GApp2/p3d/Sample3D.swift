@@ -5,12 +5,17 @@
 //  Created by Robert Talianu
 //
 
-public class Sample3D: JSONAble {
-
+public class Sample3D: JSONAble, Codable {
 
     public var x: Double = 0.0
     public var y: Double = 0.0
     public var z: Double = 0.0
+    
+    public enum ConfigKeys: String, CodingKey {
+        case x
+        case y
+        case z
+    }
     
     /**
      */
@@ -27,6 +32,26 @@ public class Sample3D: JSONAble {
         self.x = x
         self.y = y
         self.z = z
+    }
+    
+    /**
+     * @param decoder
+     */
+    public required init(from decoder: any Decoder) throws {
+        let values = try decoder.container(keyedBy: ConfigKeys.self)
+        self.x = try values.decodeIfPresent(Double.self, forKey: .x)!
+        self.y = try values.decodeIfPresent(Double.self, forKey: .y)!
+        self.z = try values.decodeIfPresent(Double.self, forKey: .z)!
+    }
+    
+    /**
+     * @param encoder
+     */
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: ConfigKeys.self)
+        try container.encode(x, forKey: .x)
+        try container.encode(y, forKey: .y)
+        try container.encode(z, forKey: .z)
     }
     
     public func getX() -> Double {

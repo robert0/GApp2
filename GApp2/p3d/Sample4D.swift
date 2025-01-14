@@ -10,18 +10,39 @@
  */
 public class Sample4D: Sample3D {
     public var time: Int64 = 0
-
+    
+    enum ConfigKeys4: String, CodingKey {
+        case time
+    }
+    
     /**
      *
      * @return
      */
-    init(_ x: Double, _ y: Double, _ z: Double, _ time: Int64) {
+    public init(_ x: Double, _ y: Double, _ z: Double, _ time: Int64) {
         super.init(x, y, z)
         self.time = time
     }
     
-    required init(from decoder: any Decoder) throws {
-        fatalError("init(from:) has not been implemented")
+    /**
+     * JSON decoder
+     * @return
+     */
+    required public init(from decoder: any Decoder) throws {
+        try super.init(from: decoder)
+        let values = try decoder.container(keyedBy: ConfigKeys4.self)
+        self.time = try values.decodeIfPresent(Int64.self, forKey: .time)!
+    }
+    
+    
+    /**
+     * JSON encoder
+     * @param encoder
+     */
+    public override func encode(to encoder: any Encoder) throws {
+        try super.encode(to: encoder)
+        var container = encoder.container(keyedBy: ConfigKeys4.self)
+        try container.encode(time, forKey: .time)
     }
     
     /**

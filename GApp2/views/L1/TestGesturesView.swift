@@ -59,13 +59,23 @@ struct TestGesturesView: View {
                     self.analyser.startStreaming()
                   
                 }.buttonStyle(.borderedProminent)
+                Spacer().frame(width: 10)
                 
                 Button("Stop Testing") {
                     Globals.log("Stop Testing Clicked !!!...")
                     self.analyser.stopStreaming()
 
                 }.buttonStyle(.borderedProminent)
+                Spacer().frame(width: 10)
+                
+                Button("Execute App") {
+                    Globals.log("Execute App Clicked !!!...")
+                    let url = URL(string: "https://www.bing.com")
+                    UIApplication.shared.open(url!)
+
+                }.buttonStyle(.borderedProminent)
                 Spacer()
+               
             }
 
             //add data view panel

@@ -59,7 +59,16 @@ struct ManageGesturesView: View {
                 }
                 Spacer()
             }
+            Spacer().frame(height: 20)
+            
+            Button("Save Gestures") {
+                Globals.log("Save Gestures Clicked !!!...")
+                FileSystem.writeLocalGesturesDataFile(self.gesturesStore.getRecordingData().getAllGestures())
 
+            }.buttonStyle(.borderedProminent)
+            Spacer()
+            
+            
         }.onAppear {
             //used for UI forced updates
             counter = counter + 1

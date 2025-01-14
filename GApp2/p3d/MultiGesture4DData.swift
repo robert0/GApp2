@@ -83,6 +83,15 @@ public class MultiGesture4DData {
     }
         
     /**
+     *
+     * @return
+     */
+    public func getAllGestures()-> [Gesture4D]{
+        return Array(dataMap.values)
+    }
+    
+    
+    /**
      * @param key
      * @return
      */
