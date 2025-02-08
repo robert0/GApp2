@@ -54,8 +54,7 @@ struct CreateGestureView: View, DataChangeListener {
         
         // Create a CMMotionManager instance
         Globals.logToScreen("Initializing Sensor Manager...")
-        SensorMgr.addListener(CreateGestureView.eventsHandler!)
-        SensorMgr.startAccelerometers(Device.View_Accelerometer_Interval)
+        DeviceRouter.addListener(CreateGestureView.eventsHandler!)
     }
     
     // The app panel
@@ -65,16 +64,32 @@ struct CreateGestureView: View, DataChangeListener {
             //add buttons
            
             Spacer()
-            Button("Start Recording") {
-                Globals.logToScreen("Start Recording Pressed")
-                if(CreateGestureView.eventsHandler != nil){
-                    CreateGestureView.eventsHandler!.clearRecordingData()
-                    CreateGestureView.eventsHandler!.startStreaming()
-                }
-
-                //TODO... update keys iterator
-            }.buttonStyle(.borderedProminent)
-        
+            HStack {
+                Button("Start Recording") {
+                    Globals.logToScreen("Start Recording Pressed")
+                    if(DeviceRouter.shared.deviceType == nil){
+                        DeviceRouter.setSourceToThisPhone()
+                    }
+                    if(CreateGestureView.eventsHandler != nil){
+                        CreateGestureView.eventsHandler!.clearRecordingData()
+                        DeviceRouter.startStreaming()
+                        CreateGestureView.eventsHandler!.startRecording()
+                    }
+                    
+                    CreateGestureView.dataRenderer?.setToRecodingMode(true)
+                    
+                    //TODO... update keys iterator
+                }.buttonStyle(.borderedProminent)
+                Spacer().frame(width: 20)
+                
+                Button("Reset Avg") {
+                    Globals.log("Reset Avg Clicked !!!...")
+                    CreateGestureView.singleGestureStore!.clearGestureMean()
+                    CreateGestureView.dataRenderer!.onDataChange(1)
+                    
+                }.buttonStyle(.borderless)
+            }
+            
             //add data renderer view panel
             CreateGestureView.dataRenderer
             Spacer().frame(height: 20)
@@ -82,7 +97,7 @@ struct CreateGestureView: View, DataChangeListener {
             TextField("Enter gesture name", text: $name)
                 .textFieldStyle(.plain)
                 .padding(10)
-                .contentMargins(5)
+                .contentMargins(10)
                 .onChange(of: name) { _ in
                     isNameMissing = name.isEmpty
                 }
@@ -106,13 +121,18 @@ struct CreateGestureView: View, DataChangeListener {
             
             Spacer()
             
+        }.onDisappear {
+            //force stop streaming
+            CreateGestureView.eventsHandler!.stopRecording()
+            DeviceRouter.stopStreaming()
         }
     }
     
     //
     func onDataChange(_ type: Int) {
         if(type == RealtimeSingleGestureStore.DATA_COMPLETE_UPDATE){
-            CreateGestureView.eventsHandler!.stopStreaming()
+            CreateGestureView.eventsHandler!.stopRecording()
+            DeviceRouter.stopStreaming()
             CreateGestureView.singleGestureStore!.recomputeMeanFromRecordingSignal()
         }
     }

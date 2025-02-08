@@ -12,7 +12,7 @@ public class RealtimeMultiGestureStoreAnalyser : SensorListener {
     private var mDataChangeListener: DataChangeListener?
     private var recordingData: MultiGesture4DData
     private var realtimeGestureEvaluator: RealtimeMultiGestureCorrelationEvaluator
-    private var isStreaming:Bool = false
+    private var isAnalysing:Bool = false
     
     init(_ dataStore: MultiGestureStore) {
         recordingData = dataStore.getRecordingData()
@@ -22,15 +22,15 @@ public class RealtimeMultiGestureStoreAnalyser : SensorListener {
     /**
      * @param
      */
-    public func startStreaming(){
-        self.isStreaming = true
+    public func startAnalysing(){
+        self.isAnalysing = true
     }
     
     /**
      * @param
      */
-    public func stopStreaming(){
-        self.isStreaming = false
+    public func stopAnalysing(){
+        self.isAnalysing = false
     }
     
     /**
@@ -40,8 +40,8 @@ public class RealtimeMultiGestureStoreAnalyser : SensorListener {
      * @param z
      */
     public func onSensorChanged(_ timeStamp:Int64, _ x:Double, _ y:Double, _ z:Double) {
-        if( self.isStreaming ){
-            eval(x, y, z, Utils.getCurrentMillis())
+        if( self.isAnalysing ){
+            eval(x, y, z, timeStamp)
         }
     }
     
@@ -153,4 +153,5 @@ public class RealtimeMultiGestureStoreAnalyser : SensorListener {
     public func getTestingDataBuffer() -> RollingQueue<Sample5D> {
         return realtimeGestureEvaluator.getDataBuffer()
     }
+
 }

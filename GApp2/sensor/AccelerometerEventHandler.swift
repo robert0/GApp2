@@ -75,10 +75,10 @@ public class AccelerometerEventHandler : SensorListener {
             //GestureApp.logOnScreen("sensor moved..." + x + ", " + y + ", " + z);
         }
         if (self.listening_mode == AccelerometerEventHandler.RECORDING_MODE) {
-            self.dataAnalyser.addForRecording(currentRecordingKey, x, y, z, Utils.getCurrentMillis());
+            self.dataAnalyser.addForRecording(currentRecordingKey, x, y, z, timeStamp);
 
         } else if (self.listening_mode == AccelerometerEventHandler.REALTIME_TESTING_MODE) {
-            self.dataAnalyser.addForRealtimeTesting(x, y, z, Utils.getCurrentMillis());
+            self.dataAnalyser.addForRealtimeTesting(x, y, z, timeStamp);
         }
 
         //Log.d("Acceleration", "onSensorChanged() event: " + Arrays.toString(event.values));

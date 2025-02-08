@@ -38,8 +38,8 @@ struct TestGesturesView: View {
         
         //connect to the data supplier
         Globals.logToScreen("Initializing Sensor Manager...")
-        SensorMgr.addListener(analyser)
-        SensorMgr.startAccelerometers(Device.View_Accelerometer_Interval)
+        DeviceRouter.addListener(analyser)
+
     }
     
     //used to clean view & cached data
@@ -56,30 +56,42 @@ struct TestGesturesView: View {
                 Spacer()
                 Button("Test") {
                     Globals.log("Testing Clicked !!!...")
-                    self.analyser.startStreaming()
+                    if(DeviceRouter.shared.deviceType == nil){
+                        DeviceRouter.setSourceToThisPhone()
+                    }
+                    
+                    DeviceRouter.startStreaming()
+                    self.analyser.startAnalysing()
                   
                 }.buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)
                 
                 Button("Stop Testing") {
                     Globals.log("Stop Testing Clicked !!!...")
-                    self.analyser.stopStreaming()
+                    self.analyser.stopAnalysing()
+                    DeviceRouter.stopStreaming()
 
                 }.buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)
                 
-                Button("Execute App") {
-                    Globals.log("Execute App Clicked !!!...")
-                    let url = URL(string: "https://www.bing.com")
-                    UIApplication.shared.open(url!)
-
-                }.buttonStyle(.borderedProminent)
+//                Button("Execute App") {
+//                    Globals.log("Execute App Clicked !!!...")
+//                    let url = URL(string: "https://www.bing.com")
+//                    UIApplication.shared.open(url!)
+//
+//                }.buttonStyle(.borderedProminent)
                 Spacer()
                
             }
 
             //add data view panel
             TestGesturesView.dataRenderer
+            
+        }.onDisappear {
+            //force stop streaming
+            self.analyser.stopAnalysing()
+            DeviceRouter.stopStreaming()
+            //self.analyser.clear() - to be implemented
         }
     }
 }

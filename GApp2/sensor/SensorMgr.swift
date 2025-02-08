@@ -15,7 +15,6 @@ import Foundation
 public class SensorMgr {
     private static var isStarted: Bool = false
     private static let motion: CMMotionManager = CMMotionManager()
-    private static var listeners: [SensorListener] = []
     private static var timer: Timer?
 
     /*
@@ -29,7 +28,7 @@ public class SensorMgr {
         // Make sure the accelerometer hardware is available.
         if SensorMgr.motion.isAccelerometerAvailable {
             SensorMgr.isStarted = true;
-            Globals.logToScreen("SensorMgr > Accelerometer is starting ...")
+            print("SensorMgr > Accelerometer is starting ...")
             SensorMgr.motion.accelerometerUpdateInterval = refreshPeriod
             SensorMgr.motion.startAccelerometerUpdates()
 
@@ -38,16 +37,14 @@ public class SensorMgr {
                 let x = data?.acceleration.x ?? 0.0
                 let y = data?.acceleration.y ?? 0.0
                 let z = data?.acceleration.z ?? 0.0
-//                Globals.logToScreen(
-//                    "SensorManager > Accelerometer Data Update: x:\(x), y:\(y), z:\(z)"
-//                )
+                //print("SensorManager > Accelerometer Data Update: x:\(x), y:\(y), z:\(z)")
        
                 // Use the accelerometer data
-                SensorMgr.listeners.forEach { $0.onSensorChanged(Utils.getCurrentMillis(), x, y, z) }
-            }
+                DeviceRouter.routeData(DeviceType.Phone, Sample4D(x, y, z, Utils.getCurrentMillis()))
+             }
 
         } else {
-            Globals.logToScreen("SensorManager > Accelerometer is not available...")
+            print("SensorManager > Accelerometer is not available...")
         }
     }
 
@@ -55,16 +52,9 @@ public class SensorMgr {
      * @param listener
      */
     public static func stopAccelerometers() {
+        print("SensorMgr > Accelerometer is stopping ...")
+        SensorMgr.isStarted = false;
         SensorMgr.motion.stopDeviceMotionUpdates()
         SensorMgr.timer?.invalidate()
-    }
-
-    /*
-     * @param listener
-     */
-    public static func addListener(_ listener: SensorListener) {
-        //TODO... only one listener for now; expand it later if needed
-        Globals.log("SensorMgr.addListener() called ...")
-        SensorMgr.listeners.append(listener)
     }
 }

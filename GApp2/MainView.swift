@@ -34,8 +34,14 @@ struct MainView: View {
     var body: some View {
           
             NavigationView {
-                VStack {
+                VStack (alignment: .leading) {
                     Spacer()
+                    NavigationLink(destination: ChooseSourceView(gesturesStore)) {
+                        Image(systemName: "applewatch.radiowaves.left.and.right")
+                            .imageScale(.large)
+                        Text("Choose Source")
+                    }
+                    Spacer().frame(height:30)
                     NavigationLink(destination: CreateGestureView(gesturesStore)) {
                         Image(systemName: "plus.circle")
                             .imageScale(.large)
@@ -55,7 +61,8 @@ struct MainView: View {
                     }
                     Spacer()
                     
-                }.onAppear {
+                }
+                .onAppear {
                     viewCount = gesturesStore.getKeys()?.count ?? 0
                 }
             }

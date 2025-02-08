@@ -71,7 +71,7 @@ struct ManageGesturesView: View {
             }.buttonStyle(.borderedProminent)
             Spacer()
             
-            
+              
         }.onAppear {
             //used for UI forced updates
             counter = counter + 1

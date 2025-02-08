@@ -12,6 +12,7 @@ public class CircularIterator<T> {
     private var list: [T] = []
     private var maxCount: Int = 100
     private var cindex: Int = 0
+    
 
     /**
      * constructor
@@ -67,4 +68,8 @@ public class CircularIterator<T> {
         list[cindex % list.count] = item
         cindex += 1
     }
+    
+    //delete current item
+    
+    
 }

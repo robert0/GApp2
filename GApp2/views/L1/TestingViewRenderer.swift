@@ -19,7 +19,7 @@ struct TestingViewRenderer: View, DataChangeListener, GestureEvaluationListener 
      */
     var body: some View {
         VStack {
-            Text("This is TestingView rendering panel!")
+            //Text("This is TestingView rendering panel!")
 
             let dataProvider = viewModel.dataProvider
             if dataProvider != nil {
@@ -124,6 +124,11 @@ struct TestingViewRenderer: View, DataChangeListener, GestureEvaluationListener 
         self.viewModel.gestureEvaluationStatusMap[status.getGestureKey()] = status
         //trigger repaint
         onDataChange(0)
+        
+        //maybe use async
+//        DispatchQueue.main.async {
+//            self.bookmarks.append(bookmark)
+//        }
     }
 
 }

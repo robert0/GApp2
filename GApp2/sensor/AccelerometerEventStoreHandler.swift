@@ -13,7 +13,7 @@ public class AccelerometerEventStoreHandler : SensorListener {
      * Local vars
      */
     private var store:RealtimeSingleGestureStore?
-    private var isStreaming:Bool = false
+    private var isRecording:Bool = false
 
     private var samplingPeriod = 0.0;
     private var sR_start = 0.0;
@@ -48,15 +48,15 @@ public class AccelerometerEventStoreHandler : SensorListener {
     /**
      * @param
      */
-    public func startStreaming(){
-        self.isStreaming = true
+    public func startRecording(){
+        self.isRecording = true
     }
     
     /**
      * @param
      */
-    public func stopStreaming(){
-        self.isStreaming = false
+    public func stopRecording(){
+        self.isRecording = false
     }
         
     /**
@@ -72,7 +72,7 @@ public class AccelerometerEventStoreHandler : SensorListener {
             //GestureApp.logOnScreen("sensor moved..." + x + ", " + y + ", " + z)
         }
         
-        if( self.isStreaming ){
+        if( self.isRecording ){
             self.store?.addSample(x, y, z, Utils.getCurrentMillis())
         }
 
