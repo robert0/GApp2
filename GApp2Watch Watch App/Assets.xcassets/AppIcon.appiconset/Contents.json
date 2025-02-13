@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "GAppIcon_v2.jpeg",
       "idiom" : "universal",
       "platform" : "watchos",
       "size" : "1024x1024"

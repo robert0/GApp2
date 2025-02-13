@@ -36,4 +36,11 @@ struct GApp2App: App {
             GApp2App.watchDelegateConnector = WDConnector()
         }
     }
+    
+    
+    public static func sendWatchAMessage(_ msg:String) {
+        if(GApp2App.watchDelegateConnector != nil){
+            GApp2App.watchDelegateConnector?.sendDataToWatch(msg)
+        }
+    }
 }

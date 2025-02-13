@@ -61,8 +61,8 @@ public class WDConnector : NSObject, WCSessionDelegate {
     }
     
     
-    public func sendDataToWatch() {
-        let text = "This message is from phone..."
+    public func sendDataToWatch(_ text:String) {
+        //let text = "This message is from phone..."
         session.sendMessage(["iPhone": text], replyHandler: nil, errorHandler: nil)
     }
 

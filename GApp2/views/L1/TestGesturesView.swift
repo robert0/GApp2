@@ -73,7 +73,7 @@ struct TestGesturesView: View {
 
                 }.buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)
-                
+               
 //                Button("Execute App") {
 //                    Globals.log("Execute App Clicked !!!...")
 //                    let url = URL(string: "https://www.bing.com")
@@ -81,9 +81,33 @@ struct TestGesturesView: View {
 //
 //                }.buttonStyle(.borderedProminent)
                 Spacer()
-               
             }
 
+            HStack {
+                Spacer()
+                Button("Send Click Message") {
+                    Globals.log("Send Watch A .click Message!!!...")
+                    GApp2App.sendWatchAMessage(".click")
+
+                }.buttonStyle(.borderedProminent)
+                Spacer().frame(width: 10)
+                
+                Button("Send 2 Click Message") {
+                    Globals.log("Send Watch A 2.click Message!!!...")
+                    GApp2App.sendWatchAMessage(".click2")
+
+                }.buttonStyle(.borderedProminent)
+                Spacer().frame(width: 10)
+                
+                Button("Send 3 Click Message") {
+                    Globals.log("Send Watch A 3.click Message!!!...")
+                    GApp2App.sendWatchAMessage(".click3")
+
+                }.buttonStyle(.borderedProminent)
+                Spacer().frame(width: 10)
+                Spacer()
+            }
+            
             //add data view panel
             TestGesturesView.dataRenderer
             

@@ -89,6 +89,7 @@ public class WKAppDelegatePhoneConnector : NSObject, WCSessionDelegate, WKApplic
     public func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
       if let value = message["iPhone"] as? String {
           print("Watch: got message:" + value)
+          GApp2Watch_Watch_AppApp.showMessage(value)
       }
     }
     
