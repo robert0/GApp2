@@ -17,7 +17,8 @@ struct EditGestureView: View {
     //local updatable values
     @State private var gkey: String
     @State private var selectedCmd: Command
-
+    
+    
     enum Command: String, CaseIterable, Identifiable {
         case openGoogle = "open www.google.com"
         case openYahoo = "open www.yahoo.com"
@@ -38,12 +39,14 @@ struct EditGestureView: View {
         if(gs != nil){
             Globals.log("init initial cmd:\(gs!.getCommand())")
             self.selectedCmd = Command.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? Command.openGoogle
-            Globals.log("init cmd:\( self.selectedCmd)")
+            //Globals.log("init cmd:\( self.selectedCmd)")
         } else {
             self.selectedCmd = Command.openGoogle
         }
-        Globals.log("init cmd:\( self.selectedCmd)")
+        //Globals.log("init cmd:\( self.selectedCmd)")
+        
     }
+    
     
     // The app panel
     var body: some View {
@@ -62,7 +65,7 @@ struct EditGestureView: View {
                 
                 Spacer().frame(height: 20)
                 
-                Text("Execute Command:")
+                Text("Choose Command to execute:")
                     .font(.title3)
                 //                TextField("Command", text: $command)
                 //                    .padding(5)
@@ -82,7 +85,7 @@ struct EditGestureView: View {
                         .stroke(Color.orange)
                 )
                 
-
+                
             }.padding(20)
             
             Spacer()

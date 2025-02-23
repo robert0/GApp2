@@ -9,7 +9,7 @@ import os
 import OrderedCollections
 
 
-struct CreateGestureDataRenderer: View, DataChangeListener, GestureEvaluationListener {
+struct CreateGestureDataRenderer: View, DataChangeListener {
     
     @ObservedObject var viewModel = CreateGestureDataViewModel()
     private static let x_scale: Double = Device.View_X_Scale
@@ -146,20 +146,6 @@ struct CreateGestureDataRenderer: View, DataChangeListener, GestureEvaluationLis
         self.viewModel.isRecording = isRecording
         animationsRunning = isRecording
     }
-    
-    /**
-     *
-     */
-    public func gestureEvaluationCompleted(_ gw: GestureWindow, _ status: GestureEvaluationStatus) {
-        //TODO ... not working
-        print("DataView gestureEvaluationCompleted...")
-//        self.viewModel.gestureEvaluationStatusMap[status.getGestureKey()] = status
-//        setToRecodingMode(false)
-//        animationsRunning = false
-//        //trigger repaint
-//        onDataChange(0)
-    }
-
 }
 
 //

@@ -14,19 +14,49 @@ struct ManageGesturesView: View {
     @State var counter:Int = 0
     @State var showConfirmation:Bool = false
     @State var deletingKey:String = ""
+    @State private var selectedActionType: ActionType = ActionType.executeCommand
+    
+    enum ActionType: String, CaseIterable, Identifiable {
+        case executeCommand = "Execute Command"
+        case forwardViaBluetooth = "Send via Bluetooth"
+        var id: Self { self }
+    }
     
     // constructor
     init( _ gesturesStore: MultiGestureStore) {
         self.gesturesStore = gesturesStore
+        self.selectedActionType = ActionType.executeCommand
     }
         
     // The app panel
     var body: some View {
         return VStack {
-            //add buttons
+            
+            Text("Select Gestures Action Type:")
+                .font(.title3)
+            Picker("", selection: $selectedActionType) {
+                Text("Execute Command").tag(ActionType.executeCommand)
+                Text("Send via Bluetooth").tag(ActionType.forwardViaBluetooth)
+            }
+            .padding(5)
+            .overlay(
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke(Color.orange)
+            )
+            Spacer().frame(height: 20)
+            
+            if(selectedActionType == ActionType.forwardViaBluetooth){
+                NavigationLink {
+                    BTView()
+                } label: {
+                    Label("Choose BT device...", systemImage: "iphone.gen1.and.arrow.left")
+                }.frame(width:250)
+            }
+            Spacer().frame(height: 20)
+            
+            Text("Available Gestures:")
+                .font(.title3)
             HStack {
-                Spacer()
-                
                 //create reqired data structure to be used by list
                 List(listItems()) {widget in
                     HStack {

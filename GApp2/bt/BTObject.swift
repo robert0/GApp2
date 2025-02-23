@@ -16,7 +16,7 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
     private let CHARACTERISTIC_UUID = CBUUID(string: "e8bd8c82-2506-4fae-b5f2-9bbbf4ab5b0e")
     
     private var peripheralsMap = OrderedDictionary<String, CBPeripheral>()
-    private var mDataChangeListener: BTChangeListener?
+    private var btChangeListener: BTChangeListener?
 
     override init() {
         super.init()
@@ -28,7 +28,7 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
      * @param dataChangeListener
      */
     public func setChangeListener(_ dataChangeListener: BTChangeListener) {
-        mDataChangeListener = dataChangeListener
+        btChangeListener = dataChangeListener
     }
 
     /**
@@ -42,41 +42,50 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         Globals.logToScreen("Central state update:" + String(central.state.rawValue))
 
-        mDataChangeListener?.onManagerDataChange(central)
+        btChangeListener?.onManagerDataChange(central)
 
-        //        switch central.state {
-        //        case CBManagerState.poweredOn:
-        //            // Notify user Bluetooth in ON
-        //            //startScan()
-        //            fallthrough
-        //        case CBManagerState.poweredOff:
-        //            // Alert user to turn on Bluetooth
-        //            fallthrough
-        //        case CBManagerState.resetting:
-        //            // Wait for next state update and consider logging interruption of Bluetooth service
-        //            fallthrough
-        //        case CBManagerState.unauthorized:
-        //            // Alert user to enable Bluetooth permission in app Settings
-        //            fallthrough
-        //        case CBManagerState.unsupported:
-        //            // Alert user their device does not support Bluetooth and app will not work as expected
-        //            fallthrough
-        //        case CBManagerState.unknown:
-        //            // Wait for next state update
-        //            fallthrough
-        //        default:
-        //            return
-        //            //Globals.logToScreen("Central state update:" + String(central.state.rawValue))
-        //        }
+                switch central.state {
+                case CBManagerState.poweredOn:
+                    // Notify user Bluetooth in ON
+                    startScan()
+                    fallthrough
+                case CBManagerState.poweredOff:
+                    // Alert user to turn on Bluetooth
+                    fallthrough
+                case CBManagerState.resetting:
+                    // Wait for next state update and consider logging interruption of Bluetooth service
+                    fallthrough
+                case CBManagerState.unauthorized:
+                    // Alert user to enable Bluetooth permission in app Settings
+                    fallthrough
+                case CBManagerState.unsupported:
+                    // Alert user their device does not support Bluetooth and app will not work as expected
+                    fallthrough
+                case CBManagerState.unknown:
+                    // Wait for next state update
+                    fallthrough
+                default:
+                    return
+                    //Globals.logToScreen("Central state update:" + String(central.state.rawValue))
+                }
     }
 
+   
     // Start Scanning
-    func startScan() {
+    //
+    // @see self-called function
+    //
+    public func startScan() {
         Globals.logToScreen("Start Scanning ...")
         peripheralsMap.removeAll()
         centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
 
+    // Stop Scanning
+    public func stopScanning(){
+        centralManager.stopScan()
+    }
+    
     // Handles the result of the scan
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
         Globals.logToScreen("Scan update ...")
@@ -85,7 +94,7 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
         //add peripheral to the map
         peripheralsMap[peripheral.identifier.uuidString] = peripheral
 
-        mDataChangeListener?.onPeripheralChange(central, peripheral)
+        btChangeListener?.onPeripheralChange(central, peripheral)
     }
 
     /**
