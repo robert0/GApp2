@@ -74,6 +74,8 @@ struct BTView: View, BTChangeListener {
         } else {
             print("Device not found in BT devices list..")
         }
+        
+        dismiss()
     }
     
     

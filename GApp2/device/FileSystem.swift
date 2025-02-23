@@ -53,4 +53,28 @@ public class FileSystem {
             return []
         }
     }
+            
+    /**
+     * Write the local gestures data
+     *
+     * @param gestures
+     */
+    public static func writeLocalGesturesMappingsDataFile(_ gestures: [InGesture]) -> Void {
+        do {
+            let fileURL = try FileManager.default
+                .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+                .appendingPathComponent(Device.LocalGesturesDataFileName)
+            
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            //encoder.keyEncodingStrategy = .convertToSnakeCase
+            //encoder.dateEncodingStrategy = .iso8601
+            //encoder.dataEncodingStrategy = .base64
+            try encoder
+                .encode(gestures)
+                .write(to: fileURL)
+        } catch {
+            Globals.log("Error saving localGesturesDataFile JSON: \(error)")
+        }
+    }
 }

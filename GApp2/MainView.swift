@@ -11,12 +11,15 @@ struct MainView: View {
     //logger view wg
     private var logView: LogView
     var gesturesStore:MultiGestureStore
+    var inGesturesStore:InGestureStore
     var gestureAnalyser:RealtimeMultiGestureStoreAnalyser
-    @State var viewCount:Int = 0
+    @State var gCount:Int = 0
+    @State var inGCount:Int = 0
     
     init () {
         //initilize local vars
         self.gesturesStore = MultiGestureStore()
+        self.inGesturesStore = InGestureStore()
         self.gestureAnalyser = RealtimeMultiGestureStoreAnalyser(gesturesStore)
         self.logView = LogView()
         Globals.setChangeCallback(self.logView.logCallbackFunction)
@@ -51,7 +54,13 @@ struct MainView: View {
                     NavigationLink(destination: ManageGesturesView(gesturesStore)) {
                         Image(systemName: "pencil")
                             .imageScale(.large)
-                        Text("Manage Gestures ( \(viewCount) )")
+                        Text("Manage Gestures ( \(gCount) )")
+                    }
+                    Spacer().frame(height:30)
+                    NavigationLink(destination: IncommingGesturesView(inGesturesStore)) {
+                        Image(systemName: "iphone.and.arrow.right.inward")
+                            .imageScale(.large)
+                        Text("Incomming Gestures ( \(inGCount) )")
                     }
                     Spacer().frame(height:30)
                     NavigationLink(destination: TestGesturesView(gestureAnalyser)) {
@@ -60,10 +69,14 @@ struct MainView: View {
                         Text("Test")
                     }
                     Spacer()
-                    
+                    Text("Gestures App v1.2")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: 150, alignment: .trailing)
                 }
                 .onAppear {
-                    viewCount = gesturesStore.getKeys()?.count ?? 0
+                    gCount = gesturesStore.getKeys()?.count ?? 0
+                    inGCount = inGesturesStore.getKeys().count
                 }
             }
             Spacer()

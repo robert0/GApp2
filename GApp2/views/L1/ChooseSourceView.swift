@@ -33,7 +33,7 @@ struct ChooseSourceView: View {
                 .font(.title3)
             Spacer().frame(height: 30)
             
-            var source = DeviceRouter.shared.deviceType
+            let source = DeviceRouter.shared.deviceType
             if (source == nil || source == DeviceType.Phone){
                 //use highlighted button
                 Button("Use this phone", systemImage:"iphone.homebutton.radiowaves.left.and.right", action: {

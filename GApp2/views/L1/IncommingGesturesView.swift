@@ -7,63 +7,34 @@ import CoreMotion
 //
 import SwiftUI
 
-struct ManageGesturesView: View {
+struct IncommingGesturesView: View {
     @Environment(\.dismiss) var dismiss
     
-    var gesturesStore:MultiGestureStore
+    var gesturesStore:InGestureStore
     @State var counter:Int = 0
     @State var showConfirmation:Bool = false
     @State var deletingKey:String = ""
-    @State private var selectedActionType: ActionType = ActionType.executeCommand
-    
 
     
     // constructor
-    init( _ gesturesStore: MultiGestureStore) {
+    init( _ gesturesStore: InGestureStore) {
         self.gesturesStore = gesturesStore
-        self.selectedActionType = GApp2App.getGestureActionType()
     }
         
     // The app panel
     var body: some View {
         return VStack {
+                        
+            Spacer().frame(height: 30)
+            NavigationLink {
+                EditInGestureView(gesturesStore, nil)
+            } label: {
+                Label("Create new gesture mapping", systemImage: "plus.circle")
+            }.frame(width:250)
+            Spacer().frame(height: 30)
             
-            Text("Select Gestures Action Type:")
-                .font(.title3)
-            Picker("", selection: $selectedActionType) {
-                Text("Execute Command").tag(ActionType.executeCommand)
-                Text("Send via Bluetooth").tag(ActionType.forwardViaBluetooth)
-            }
-            .padding(5)
-            .overlay(
-                RoundedRectangle(cornerRadius: 5)
-                    .stroke(Color.orange)
-            ).onChange(of: selectedActionType){
-                print("on change called!")
-                GApp2App.setGestureActionType(selectedActionType)
-            }
-            Spacer().frame(height: 20)
-            
-            if(selectedActionType == ActionType.forwardViaBluetooth){
-                
-                if(GApp2App.btPeripheralDevice == nil){
-                    NavigationLink {
-                        BTView()
-                    } label: {
-                        Label("Choose BT device...", systemImage: "iphone.gen1.and.arrow.left")
-                    }.frame(width:250)
-                    
-                } else {
-                    NavigationLink {
-                        BTView()
-                    } label: {
-                        Label("Paired to \(GApp2App.btPeripheralDevice?.name ?? "Unknown")", systemImage: "link")
-                    }.frame(width:250)
-                }
-            }
-            Spacer().frame(height: 50)
-            
-            Text("Available Gestures:")
+           
+            Text("Available Gesture Mappings:")
                 .font(.title3)
             HStack {
                 //create reqired data structure to be used by list
@@ -78,7 +49,6 @@ struct ManageGesturesView: View {
                             showConfirmation = true
                             deletingKey = widget.key
                             
-                            
                         } label: {
                             Image(systemName: "trash")
                                 .imageScale(.large)
@@ -87,7 +57,7 @@ struct ManageGesturesView: View {
                         
                         Spacer().frame(width:30)
                         
-                        NavigationLink(destination: EditGestureView(gesturesStore, widget.key)) {
+                        NavigationLink(destination: EditInGestureView(gesturesStore, widget.key)) {
                             Image(systemName: "pencil")
                                 .imageScale(.large)
                         }.frame(width:50)
@@ -102,9 +72,9 @@ struct ManageGesturesView: View {
             }
             Spacer().frame(height: 20)
             
-            Button("Save Gestures to Filesystem") {
-                Globals.log("Save Gestures Clicked !!!...")
-                FileSystem.writeLocalGesturesDataFile(self.gesturesStore.getRecordingData().getAllGestures())
+            Button("Save Gesture Mapping to Filesystem") {
+                Globals.log("Save InGestures Clicked !!!...")
+                FileSystem.writeLocalGesturesMappingsDataFile(self.gesturesStore.getAllGestures())
                 dismiss()
                 
             }.buttonStyle(.borderedProminent)
@@ -112,15 +82,14 @@ struct ManageGesturesView: View {
             
               
         }.onAppear {
-            print("ManageGesturesView: onAppear...")
-            self.selectedActionType = GApp2App.getGestureActionType()
+            print("IncommingGesturesView: onAppear...")
             //used for UI forced updates
             counter = counter + 1
         }
     }
     
     func listItems() -> [ListWidget] {
-        let widgets:[ListWidget] = gesturesStore.getKeys()!.map {
+        let widgets:[ListWidget] = gesturesStore.getKeys().map {
             return ListWidget($0)
         }
         return widgets

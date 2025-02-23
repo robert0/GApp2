@@ -20,7 +20,7 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
 
     override init() {
         super.init()
-        Globals.logToScreen("Starting CBCentralManager...")
+        Globals.log("Starting CBCentralManager...")
         centralManager = CBCentralManager(delegate: self, queue: nil)
     }
 
@@ -40,13 +40,14 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
 
     // Called when BT changes state
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        Globals.logToScreen("Central state update:" + String(central.state.rawValue))
+        Globals.log("Central state update:" + String(central.state.rawValue))
 
         btChangeListener?.onManagerDataChange(central)
 
                 switch central.state {
                 case CBManagerState.poweredOn:
                     // Notify user Bluetooth in ON
+                    // auto-initialize the scanning
                     startScan()
                     fallthrough
                 case CBManagerState.poweredOff:
@@ -66,7 +67,7 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
                     fallthrough
                 default:
                     return
-                    //Globals.logToScreen("Central state update:" + String(central.state.rawValue))
+                    //Globals.log("Central state update:" + String(central.state.rawValue))
                 }
     }
 
@@ -76,9 +77,11 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
     // @see self-called function
     //
     public func startScan() {
-        Globals.logToScreen("Start Scanning ...")
-        peripheralsMap.removeAll()
-        centralManager.scanForPeripherals(withServices: nil, options: nil)
+        Globals.log("BTO(\(centralManager.state.rawValue)|\(centralManager.isScanning)): Start Scanning called...")
+        if(centralManager.state == CBManagerState.poweredOn && !centralManager.isScanning){
+            peripheralsMap.removeAll()
+            centralManager.scanForPeripherals(withServices: nil, options: nil)
+        }
     }
 
     // Stop Scanning
@@ -88,8 +91,8 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
     
     // Handles the result of the scan
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
-        Globals.logToScreen("Scan update ...")
-        Globals.logToScreen("Found peripheral: " + (peripheral.name ?? "no-name, ") + peripheral.identifier.uuidString)
+        Globals.log("Scan update ...")
+        Globals.log("Found peripheral: " + (peripheral.name ?? "no-name, ") + peripheral.identifier.uuidString)
 
         //add peripheral to the map
         peripheralsMap[peripheral.identifier.uuidString] = peripheral
@@ -99,12 +102,21 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
 
     /**
      * Connect to the provided peripheral...
+     * @see connecting to peripheral automatically stops the current scanning
      */
     public func connectToPeripheral(_ peripheral: CBPeripheral) {
-        Globals.logToScreen("Connecting to peripheral: " + (peripheral.name ?? "unknown") + " " + peripheral.identifier.uuidString)
+        Globals.log("Connecting to peripheral: " + (peripheral.name ?? "unknown") + " " + peripheral.identifier.uuidString)
+        
+        //unlink previuos peripheral
+        if(self.peripheral != nil){
+            self.peripheral.delegate = nil
+            self.centralManager.cancelPeripheralConnection(self.peripheral!)
+        }
+        
         //stop scanning first
         self.centralManager.stopScan()
 
+        //link new peripheral
         self.peripheral = peripheral
         self.peripheral.delegate = self
         self.centralManager.connect(peripheral, options: nil)
@@ -112,25 +124,25 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
 
     // retry if error when connecting to peripheral
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        Globals.logToScreen("Failed to connect, retrying...")
+        Globals.log("Failed to connect, retrying...")
         centralManager.connect(peripheral, options: nil)
     }
 
     // The handler if we do connect succesfully
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        Globals.logToScreen("Peripheral connected ...")
+        Globals.log("Peripheral connected ...")
         if peripheral == self.peripheral {
-            Globals.logToScreen("Discovering services...")
+            Globals.log("Discovering services...")
             peripheral.discoverServices(nil)
         }
     }
 
     // Handles services discovery event
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        Globals.logToScreen("Peripheral services discovery completed. " + (error?.localizedDescription ?? "(no-error)"))
+        Globals.log("Peripheral services discovery completed. " + (error?.localizedDescription ?? "(no-error)"))
         if let services = peripheral.services {
             for service in services {
-                Globals.logToScreen("--s-- discovered service: \(service.uuid.uuidString) \(service.description)")
+                Globals.log("--s-- discovered service: \(service.uuid.uuidString) \(service.description)")
                 //Now start discovery of characteristics
                 peripheral.discoverCharacteristics(nil, for: service)
             }
@@ -139,10 +151,10 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
 
     // Handling discovery of characteristics
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        Globals.logToScreen("---- peripheral discovery characteristics...")
+        Globals.log("---- peripheral discovery characteristics...")
         if let characteristics = service.characteristics {
             for characteristic in characteristics {
-                Globals.logToScreen("---- @ Peripheral characteristic found: \(characteristic.uuid.uuidString) \(characteristic.description)")
+                Globals.log("---- @ Peripheral characteristic found: \(characteristic.uuid.uuidString) \(characteristic.description)")
             }
         }
     }
