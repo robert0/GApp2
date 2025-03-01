@@ -8,13 +8,13 @@
 import Foundation
 
 public class InGestureStore {
-    private var dataMap = Dictionary<String, InGesture>()
+    private var dataMap = Dictionary<String, InGestureMapping>()
     
     /**
      * @param key
      * @return
      */
-    public func getGesture(_ key:String) -> InGesture? {
+    public func getGestureMapping(_ key:String) -> InGestureMapping? {
         return dataMap[key]
     }
     
@@ -22,21 +22,21 @@ public class InGestureStore {
      * @param key
      * @return
      */
-    public func setGesture(_ key:String, _ gs: InGesture? ){
+    public func setGestureMapping(_ key:String, _ gs: InGestureMapping? ){
         return dataMap[key] = gs
     }
     
     /**
      * removes gesture binding to the given key
      */
-    public func removeGesture(_ key:String){
+    public func removeGestureMapping(_ key:String){
         dataMap[key] = nil
     }
     
     /**
      * Removes gesture and clears all its data
      */
-    public func deleteGesture(_ key:String){
+    public func deleteGestureMapping(_ key:String){
         dataMap[key] = nil
     }
 
@@ -46,7 +46,7 @@ public class InGestureStore {
      */
     public func deleteAll(){
         for key in dataMap.keys {
-            deleteGesture(key)
+            deleteGestureMapping(key)
         }
     }
         
@@ -54,7 +54,7 @@ public class InGestureStore {
      *
      * @return
      */
-    public func getAllGestures()-> [InGesture]{
+    public func getAllGestures()-> [InGestureMapping]{
         return Array(dataMap.values)
     }
     

@@ -32,6 +32,16 @@ struct MainView: View {
                 self.gesturesStore.setGesture($0.getName(), $0)
             })
         }
+        
+        
+        //load saved incomming gestures mappings from filesystem
+        let igestures = FileSystem.readIncommingGesturesMappingDataFile()
+        Globals.log("Loaded incomming gestures mapping count: \(igestures.count)")
+        if igestures.count > 0 {
+            igestures.forEach({
+                self.inGesturesStore.setGestureMapping($0.getName(), $0)
+            })
+        }
     }
     
     var body: some View {
@@ -69,7 +79,7 @@ struct MainView: View {
                         Text("Test")
                     }
                     Spacer()
-                    Text("Gestures App v1.2")
+                    Text("Gestures App v1.4")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: 150, alignment: .trailing)

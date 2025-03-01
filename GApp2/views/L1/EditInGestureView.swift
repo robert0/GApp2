@@ -13,12 +13,12 @@ struct EditInGestureView: View {
     //special local props
     @ObservedObject var viewModel: EditInGestureViewModel
     private let initialKey: String
-    
+
     //local updatable values
-    @State private var gkey: String
-    @State private var gname: String
+    @State private var igmName: String
+    @State private var igkey: String
     @State private var selectedCmd: InCommand
-    @State private var selectedActionType: GInActionType = GInActionType.executeCommand
+    @State private var selectedActionType: GInActionType = GInActionType.ExecuteCommand
     
     enum InCommand: String, CaseIterable, Identifiable {
         case openWebPage = "open www.google.com"
@@ -28,33 +28,36 @@ struct EditInGestureView: View {
     }
     
     // constructor
-    init(_ gesturesStore: InGestureStore, _ gmkey: String?) {
+    init(_ gesturesStore: InGestureStore, _ igmName: String?) {
         Globals.log("--- init ---")
         self.viewModel = EditInGestureViewModel(gesturesStore)
         
-        let gkey = ""
-        if(gmkey == nil){
+        var igName = ""
+        if(igmName == nil){
             //we are in create mode
-            let gkey = "" // TODO...
-            
+            igName = "" // TODO...
         } else {
-            let gkey = gmkey!
+            igName = igmName!
         }
         
         //Create & link Gesture Analyser
-        self.initialKey = gkey
-        self.gkey = gkey
-        self.gname = ""
-        let gs = gesturesStore.getGesture(gkey)
-        if(gs != nil){
-            Globals.log("init initial cmd:\(gs!.getCommand())")
-            self.selectedCmd = InCommand.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? InCommand.openWebPage
+        self.initialKey = igName
+        let igmObj = gesturesStore.getGestureMapping(igName)
+        if(igmObj != nil){ // edit page
+            Globals.log("init initial cmd:\(igmObj!.getCommand())")
+            self.igmName = igmObj!.getName()
+            self.igkey = igmObj!.getIncommingGKey()
+            self.selectedCmd = InCommand.allCases.filter{$0.rawValue == igmObj!.getCommand()}.first ?? InCommand.openWebPage
+            self.selectedActionType = igmObj!.getIGActionType()
             //Globals.log("init cmd:\( self.selectedCmd)")
-        } else {
+            
+        } else {// create page
+            self.igkey = ""
+            self.igmName = ""
             self.selectedCmd = InCommand.openWebPage
+            self.selectedActionType = GInActionType.ExecuteCommand
         }
         //Globals.log("init cmd:\( self.selectedCmd)")
-        
     }
     
     
@@ -63,10 +66,14 @@ struct EditInGestureView: View {
         return VStack {
             //add buttons
             VStack (alignment: .leading){
-                Spacer().frame(height: 50)
-                Text("Set Name:")
+                Spacer().frame(height: 30)
+                Text("Set the gesture mapping")
                     .font(.title3)
-                TextField("Name", text: $gname)
+                Spacer().frame(height: 30)
+                
+                Text("Name:")
+                    .font(.title3)
+                TextField("Name", text: $igmName)
                     .padding(5)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
@@ -75,9 +82,9 @@ struct EditInGestureView: View {
                 
                 Spacer().frame(height: 20)
                 
-                Text("Map to incomming gesture Key:")
+                Text("Key/Name (incomming gesture):")
                     .font(.title3)
-                TextField("MKey", text: $gkey)
+                TextField("Key", text: $igkey)
                     .padding(5)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
@@ -89,9 +96,9 @@ struct EditInGestureView: View {
                 Text("Select Action Type:")
                     .font(.title3)
                 Picker("", selection: $selectedActionType) {
-                    Text("Execute Command").tag(GInActionType.executeCommand)
-                    Text("Forward to Watch").tag(GInActionType.forwardToWatch)
-                    Text("Execute Command and Send to Watch").tag(GInActionType.executeCmdAndSendToWatch)
+                    Text("Execute Command").tag(GInActionType.ExecuteCommand)
+                    Text("Forward to Watch").tag(GInActionType.ForwardToWatch)
+                    Text("Execute Command and Send to Watch").tag(GInActionType.ExecuteCmdAndSendToWatch)
                 }
                 .padding(5)
                 .overlay(
@@ -100,52 +107,51 @@ struct EditInGestureView: View {
                 )
                 Spacer().frame(height: 20)
                 
-                Text("Choose Command to execute:")
-                    .font(.title3)               
-                Picker("Execute Command:", selection: $selectedCmd) {
-                    Text("Open Web Page").tag(InCommand.openWebPage)
-                    Text("Execute App").tag(InCommand.executeApp)
-                    Text("Run Script").tag(InCommand.runScript)
+                if(selectedActionType == GInActionType.ExecuteCommand || selectedActionType == GInActionType.ExecuteCmdAndSendToWatch){
+                    Text("Choose Command to execute:")
+                        .font(.title3)
+                    Picker("Execute Command:", selection: $selectedCmd) {
+                        Text("Open Web Page").tag(InCommand.openWebPage)
+                        Text("Execute App").tag(InCommand.executeApp)
+                        Text("Run Script").tag(InCommand.runScript)
+                    }
+                    .padding(5)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.orange)
+                    )
                 }
-                .padding(5)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.orange)
-                )
-                
                 
             }.padding(20)
             
             Spacer()
             Button("Update") {
-                Globals.log("Update Edited")
+                Globals.log("Update clicked....")
                 
-                var gs = viewModel.gesturesStore.getGesture(initialKey)
+                var gs = viewModel.gesturesStore.getGestureMapping(initialKey)
                 if(gs != nil){
-//TODO...
-//                    //set/change all props
-//                    gs!.setCommand(selectedCmd.rawValue)
-//                    Globals.log("cmd: \(gs!.getCommand())")
-//                    
-//                    //set/change key (&name)
-//                    if(self.initialKey != gkey){
-//                        gs!.setName(gname)
-//                        gs!.setMappingName(gkey)
-//                        Globals.log("name: \(gs!.getName())")
-//                        viewModel.gesturesStore.removeGesture(initialKey)
-//                        viewModel.gesturesStore.setGesture(gkey, gs)
-//                    }
+                    //set/change all props
+                    gs!.setName(igmName)
+                    gs!.setIncommingGKey(igkey)
+                    gs!.setGInActionType(selectedActionType)
+                    gs!.setCommand(selectedCmd.rawValue)
+                    
+                    //set/change key (&name)
+                    //remove old ->  insert new
+                    viewModel.gesturesStore.removeGestureMapping(initialKey)
+                    viewModel.gesturesStore.setGestureMapping(igmName, gs)
+                    
                     
                 } else {
                     
                     //create mode
-                    let gs = InGesture()
-                    gs.setName(gname)
-                    gs.setMappingName(gkey)
-                    gs.setCommand(selectedCmd.rawValue)
+                    let gs = InGestureMapping()
+                    gs.setName(igmName)
+                    gs.setIncommingGKey(igkey)
                     gs.setGInActionType(selectedActionType)
-                    //TODO .. set action
-                    viewModel.gesturesStore.setGesture(gname, gs)
+                    gs.setCommand(selectedCmd.rawValue)
+                    //save to store
+                    viewModel.gesturesStore.setGestureMapping(igmName, gs)
                 }
                 
                 //return to previous view

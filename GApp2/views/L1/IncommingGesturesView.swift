@@ -74,7 +74,7 @@ struct IncommingGesturesView: View {
             
             Button("Save Gesture Mapping to Filesystem") {
                 Globals.log("Save InGestures Clicked !!!...")
-                FileSystem.writeLocalGesturesMappingsDataFile(self.gesturesStore.getAllGestures())
+                FileSystem.writeIncommingGesturesMappingsDataFile(self.gesturesStore.getAllGestures())
                 dismiss()
                 
             }.buttonStyle(.borderedProminent)
@@ -97,7 +97,7 @@ struct IncommingGesturesView: View {
     
     
     func deleteGesture(_ key:String){
-        gesturesStore.deleteGesture(key)
+        gesturesStore.deleteGestureMapping(key)
         //force UI update
         counter = counter + 1
     }
