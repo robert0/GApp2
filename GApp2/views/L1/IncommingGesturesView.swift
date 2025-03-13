@@ -14,7 +14,7 @@ struct IncommingGesturesView: View {
     @State var counter:Int = 0
     @State var showConfirmation:Bool = false
     @State var deletingKey:String = ""
-
+    @State var isBTListening:Bool = false
     
     // constructor
     init( _ gesturesStore: InGestureStore) {
@@ -24,13 +24,50 @@ struct IncommingGesturesView: View {
     // The app panel
     var body: some View {
         return VStack {
-                        
             Spacer().frame(height: 30)
+            
+            if(GApp2App.btPeripheralDevice == nil){
+                Text("Bluetooth source device not configured")
+                NavigationLink {
+                    BTView()
+                } label: {
+                    Label("Configure Bluetooth...", systemImage: "iphone.gen1.and.arrow.left")
+                }.frame(width:250)
+                
+            } else {
+                NavigationLink {
+                    BTView()
+                } label: {
+                    Label("Paired to \(GApp2App.btPeripheralDevice?.name ?? "Unknown")", systemImage: "link")
+                }.frame(width:250)
+            }
+            
+//            if(isBTListening == false){
+//                
+//                Button("Enable Bluetooth Listening") {
+//                    Globals.log("Enable Bluetooth Listening Clicked !!!...")
+//                    isBTListening = true
+//                    //GApp2App.enableBTListening()
+//                }.toggleStyle(SwitchToggleStyle())
+//                .buttonStyle(.borderedProminent)
+//                
+//            } else {
+//                Text("Bluetooth Listening is Enabled.")
+//                Button("Disble Bluetooth Listening") {
+//                    Globals.log("Enable Bluetooth Listening Clicked !!!...")
+//                    isBTListening = false
+//                    
+//                }.toggleStyle(SwitchToggleStyle())
+//                .buttonStyle(.borderedProminent)
+//            }
+
+            Spacer().frame(height: 30)
+            
             NavigationLink {
                 EditInGestureView(gesturesStore, nil)
             } label: {
                 Label("Create new gesture mapping", systemImage: "plus.circle")
-            }.frame(width:250)
+            }.frame(width:250).buttonStyle(.borderedProminent)
             Spacer().frame(height: 30)
             
            

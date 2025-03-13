@@ -33,12 +33,12 @@ struct ChooseSourceView: View {
                 .font(.title3)
             Spacer().frame(height: 30)
             
-            let source = DeviceRouter.shared.deviceType
+            let source = RawGestureDeviceRouter.shared.deviceType
             if (source == nil || source == DeviceType.Phone){
                 //use highlighted button
                 Button("Use this phone", systemImage:"iphone.homebutton.radiowaves.left.and.right", action: {
                     Globals.log("Use this phone clicked !!!...")
-                    DeviceRouter.setSourceToThisPhone()
+                    RawGestureDeviceRouter.setSourceToThisPhone()
                     dismiss()
                     
                 }).buttonStyle(.borderedProminent)
@@ -47,7 +47,7 @@ struct ChooseSourceView: View {
                 //use plain button
                 Button("Use this phone", systemImage:"iphone.homebutton.radiowaves.left.and.right", action: {
                     Globals.log("Use this phone clicked !!!...")
-                    DeviceRouter.setSourceToThisPhone()
+                    RawGestureDeviceRouter.setSourceToThisPhone()
                     dismiss()
                     
                 }).buttonStyle(.plain)
@@ -58,7 +58,7 @@ struct ChooseSourceView: View {
                 //use highlighted button
                 Button("Use paired iWatch", systemImage:"watch.analog", action: {
                     Globals.log("Use paired Watch clicked !!!...")
-                    DeviceRouter.setSourceToPairedWatch()
+                    RawGestureDeviceRouter.setSourceToPairedWatch()
                     dismiss()
                     
                 }).buttonStyle(.borderedProminent)
@@ -67,7 +67,7 @@ struct ChooseSourceView: View {
                 //use plain button
                 Button("Use paired iWatch", systemImage:"watch.analog", action: {
                     Globals.log("Use paired Watch clicked !!!...")
-                    DeviceRouter.setSourceToPairedWatch()
+                    RawGestureDeviceRouter.setSourceToPairedWatch()
                     dismiss()
                     
                 }).buttonStyle(.plain)
@@ -79,7 +79,7 @@ struct ChooseSourceView: View {
                 //use highlighted button
                 Button("Use paired phone", systemImage:"iphone.sizes", action: {
                     Globals.log("Use paired phone clicked !!!...")
-                    DeviceRouter.setSourceToBTPhone()
+                    RawGestureDeviceRouter.setSourceToBTPhone()
                     dismiss()
                     
                 }).buttonStyle(.borderedProminent).disabled(true)
@@ -88,7 +88,7 @@ struct ChooseSourceView: View {
                 //use plain button
                 Button("Use paired phone", systemImage:"iphone.sizes", action: {
                     Globals.log("Use paired phone clicked !!!...")
-                    DeviceRouter.setSourceToBTPhone()
+                    RawGestureDeviceRouter.setSourceToBTPhone()
                     dismiss()
                     
                 }).buttonStyle(.plain).disabled(true)

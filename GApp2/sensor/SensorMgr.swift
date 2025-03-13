@@ -40,7 +40,7 @@ public class SensorMgr {
                 //print("SensorManager > Accelerometer Data Update: x:\(x), y:\(y), z:\(z)")
        
                 // Use the accelerometer data
-                DeviceRouter.routeData(DeviceType.Phone, Sample4D(x, y, z, Utils.getCurrentMillis()))
+                RawGestureDeviceRouter.routeData(DeviceType.Phone, Sample4D(x, y, z, Utils.getCurrentMillis()))
              }
 
         } else {

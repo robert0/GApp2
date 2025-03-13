@@ -15,10 +15,10 @@ public enum DeviceType {
 }
 
 //
+// This entity should handle only gesture data in the raw format, composed of samples that need recognition
 //
-//
-public class DeviceRouter: ObservableObject {
-    static let shared = DeviceRouter()
+public class RawGestureDeviceRouter: ObservableObject {
+    static let shared = RawGestureDeviceRouter()
     //
     @Published var deviceType:DeviceType? = nil
     @Published var isStreaming = false
@@ -40,17 +40,17 @@ public class DeviceRouter: ObservableObject {
      * Incomming data
      */
     public static func routeData(_ type:DeviceType, _ data: Any) {
-        if(DeviceRouter.shared.deviceType != type){
+        if(RawGestureDeviceRouter.shared.deviceType != type){
             //if data stil comes from other device(s), just discard it
             //handle only currently set device
             return
         }
         
-        if DeviceRouter.shared.deviceType == .Phone {
+        if RawGestureDeviceRouter.shared.deviceType == .Phone {
             let sample = data as! Sample4D
             forwardToListeners(sample.getTime(), sample.getX(), sample.getY(), sample.getZ())
             
-        } else if DeviceRouter.shared.deviceType == .Watch {
+        } else if RawGestureDeviceRouter.shared.deviceType == .Watch {
 //            var smpl = Sample4D(0.2345, -2.34556, 23.03, 1234567)
 //            let esmpl = try! JSONEncoder().encode(smpl)
 //            let dsmpl =  String(data: esmpl, encoding: .utf8)!
@@ -65,7 +65,7 @@ public class DeviceRouter: ObservableObject {
             for sample in samples! {
                 forwardToListeners(sample.getTime(), sample.getX(), sample.getY(), sample.getZ())
             }
-        } else if DeviceRouter.shared.deviceType == .BTPhone {
+        } else if RawGestureDeviceRouter.shared.deviceType == .BTPhone {
 
         }
     }
@@ -75,8 +75,8 @@ public class DeviceRouter: ObservableObject {
      *
      */
     private static func forwardToListeners(_ time:Int64, _ x:Double, _ y:Double, _ z:Double){
-        if  DeviceRouter.shared.isStreaming {
-            DeviceRouter.shared.listeners.forEach { $0.onSensorChanged(time, x, y, z) }
+        if  RawGestureDeviceRouter.shared.isStreaming {
+            RawGestureDeviceRouter.shared.listeners.forEach { $0.onSensorChanged(time, x, y, z) }
         }
     }
     
@@ -108,22 +108,22 @@ public class DeviceRouter: ObservableObject {
      *
      */
     public static func sourceToDevice(_ device: DeviceType) {
-        DeviceRouter.shared.deactivateCurrentDeviceDataStream()
-        DeviceRouter.shared.deviceType = device
-        DeviceRouter.shared.activateCurrentDeviceDataStream()
+        RawGestureDeviceRouter.shared.deactivateCurrentDeviceDataStream()
+        RawGestureDeviceRouter.shared.deviceType = device
+        RawGestureDeviceRouter.shared.activateCurrentDeviceDataStream()
     }
     
     /*
      *
      */
     private func deactivateCurrentDeviceDataStream() {
-        if DeviceRouter.shared.deviceType == .Phone {
+        if RawGestureDeviceRouter.shared.deviceType == .Phone {
             SensorMgr.stopAccelerometers()
             
-        } else if DeviceRouter.shared.deviceType == .Watch {
+        } else if RawGestureDeviceRouter.shared.deviceType == .Watch {
             //TODO ...
             
-        } else if DeviceRouter.shared.deviceType == .BTPhone {
+        } else if RawGestureDeviceRouter.shared.deviceType == .BTPhone {
             //TODO ...
         }
     }
@@ -132,13 +132,13 @@ public class DeviceRouter: ObservableObject {
      *
      */
     private func activateCurrentDeviceDataStream() {
-        if DeviceRouter.shared.deviceType == .Phone {
+        if RawGestureDeviceRouter.shared.deviceType == .Phone {
             SensorMgr.startAccelerometers(Device.View_Accelerometer_Interval)
             
-        } else if DeviceRouter.shared.deviceType == .Watch {
+        } else if RawGestureDeviceRouter.shared.deviceType == .Watch {
             //TODO ...
             
-        } else if DeviceRouter.shared.deviceType == .BTPhone {
+        } else if RawGestureDeviceRouter.shared.deviceType == .BTPhone {
             //TODO ...
         }
     }

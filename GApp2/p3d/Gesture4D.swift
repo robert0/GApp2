@@ -11,11 +11,13 @@ public class Gesture4D: Codable {
     private var data:[Sample4D] = []
     private var cmd:String = ""
     private var name:String = ""
+    private var actionType:ActionType = ActionType.executeCommand
     
     public enum ConfigKeys: String, CodingKey {
         case data
         case cmd
         case name
+        case actionType
     }
         
     public init(){
@@ -30,6 +32,8 @@ public class Gesture4D: Codable {
         self.cmd = try values.decodeIfPresent(String.self, forKey: .cmd)!
         self.name = try values.decodeIfPresent(String.self, forKey: .name)!
         self.data = try values.decodeIfPresent([Sample4D].self, forKey: .data)!
+        //TODO ...
+        //self.actionType = try values.decodeIfPresent(String.self, forKey: .actionType)!
     }
     
     /**
@@ -41,6 +45,8 @@ public class Gesture4D: Codable {
         try container.encode(cmd, forKey: .cmd)
         try container.encode(name, forKey: .name)
         try container.encode(data, forKey: .data)
+        //TODO ...
+        //try container.encode(actionType, forKey: .actionType)
     }
     
     
@@ -60,6 +66,9 @@ public class Gesture4D: Codable {
         return cmd
     }
     
+    public func getActionType() -> ActionType {
+        return actionType
+    }
     
     public func setData(_ data: [Sample4D]) {
         self.data = data
@@ -72,6 +81,10 @@ public class Gesture4D: Codable {
     
     public func setCommand(_ cmd: String) {
         self.cmd = cmd
+    }
+    
+    public func setActionType(_ at: ActionType) {
+        self.actionType = at
     }
     
     

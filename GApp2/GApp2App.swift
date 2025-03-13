@@ -8,19 +8,19 @@
 import SwiftUI
 import CoreBluetooth
 
-enum ActionType: String, CaseIterable, Identifiable {
+public enum ActionType: String, CaseIterable, Identifiable {
     case executeCommand = "Execute Command"
     case forwardViaBluetooth = "Send via Bluetooth"
-    var id: Self { self }
+    case executeCmdAndForwardViaBluetooth = "Execute Command and Send via Bluetooth"
+    public var id: Self { self }
 }
 
 
 @main
 struct GApp2App: App {
     static var watchDelegateConnector: WDConnector?
-    static var btoInstance:BTObject?
+    static var btoInstance:BTPeripheralObj?
     static var btPeripheralDevice:CBPeripheral?
-    static var gestureActionType:ActionType = ActionType.executeCommand
   
     
     //static var contentView:ContentView? = nil
@@ -42,21 +42,7 @@ struct GApp2App: App {
             MainView()
         }
     }
-    
-    /*
-     *
-     */
-    public static func setGestureActionType(_ actionType:ActionType){
-        GApp2App.gestureActionType = actionType
-    }
-    
-    /*
-     *
-     */
-    public static func getGestureActionType() -> ActionType {
-        return GApp2App.gestureActionType
-    }
-    
+       
     /*
      *
      */
@@ -78,12 +64,25 @@ struct GApp2App: App {
     /*
      *
      */
-    public static func startBT() -> BTObject? {
+    public static func startBT() -> BTPeripheralObj? {
         Globals.log("APP_Main:startBT() called..")
         if(GApp2App.btoInstance == nil){
-            GApp2App.btoInstance = BTObject()//self start scanning
+            GApp2App.btoInstance = BTPeripheralObj()//self start scanning
         }
         return GApp2App.btoInstance
+    }
+    
+    /*
+     *
+     */
+    public static func startBTScanning() {
+        Globals.log("APP_Main:startBTScanning() called..")
+        if(GApp2App.btoInstance != nil){
+            GApp2App.btoInstance!.startScan()
+            
+        } else {
+            Globals.log("APP_Main:advertiseMessage failed; No btoInstance")
+        }
     }
     
     /*
@@ -103,7 +102,41 @@ struct GApp2App: App {
     /*
      *
      */
-    public static func sendPairedBTDeviceAMessage(_ msg:String) {
-        //TODO...
+    public static func advertiseMessage(_ msg:String) {
+        Globals.log("APP_Main:advertiseMessage() called..")
+        if(GApp2App.btoInstance != nil){
+            GApp2App.btoInstance!.advertiseText(msg)
+            
+        } else {
+            Globals.log("APP_Main:advertiseMessage failed; No btoInstance")
+        }
+    }
+    
+    /*
+     *
+     */
+//    public static func sendMessageToPairedBTDevice(_ msg:String) {
+//        Globals.log("APP_Main:sendMessageToPairedBTDevice() called..")
+//        //TODO .. verify that we are paired to a device
+//        if( GApp2App.btPeripheralDevice != nil ){
+//            GApp2App.btoInstance?.sendText(msg)
+//            
+//        } else {
+//            Globals.log("APP_Main:sendMessageToPairedBTDevice failed; No paired device")
+//        }
+//    }
+    
+    /*
+     *
+     */
+    public static func enableBluetoothListening(){
+        //TODO ...
+    }
+    
+    /*
+     *
+     */
+    public static func disableBluetoothListening(){
+        //TODO ...
     }
 }

@@ -47,7 +47,7 @@ public class WDConnector : NSObject, WCSessionDelegate {
     public func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         guard let data: String = message["data"] as? String else { return }
         //print("iPhone: got message from watch: \(data)\(counter)")
-        DeviceRouter.routeData(DeviceType.Watch, data)//of type String
+        RawGestureDeviceRouter.routeData(DeviceType.Watch, data)//of type String
         counter += 1
     }
     

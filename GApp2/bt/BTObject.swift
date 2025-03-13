@@ -12,6 +12,7 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
     // Properties
     private var centralManager: CBCentralManager!
     private var peripheral: CBPeripheral!
+    
     private let SERVICE_UUID = CBUUID(string: "8c2a81f7-f8b8-4b31-89b4-6b5d98a822db")
     private let CHARACTERISTIC_UUID = CBUUID(string: "e8bd8c82-2506-4fae-b5f2-9bbbf4ab5b0e")
     
@@ -164,11 +165,11 @@ class BTObject: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
         guard let peripheral = self.peripheral,
               let characteristic = peripheral.services?.first?.characteristics?.first(where: { $0.uuid == CHARACTERISTIC_UUID })
         else {
-            print("Peripheral or characteristic not found")
+            Globals.log("Peripheral or characteristic not found")
             return
         }
         
-        print("Sending: \(text)")
+        Globals.log("BT Sending: \(text)")
         let data = text.data(using: .utf8)!
         peripheral.writeValue(data, for: characteristic, type: .withResponse)
     }

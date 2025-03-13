@@ -12,6 +12,7 @@ struct MainView: View {
     private var logView: LogView
     var gesturesStore:MultiGestureStore
     var inGesturesStore:InGestureStore
+    var gestureDispatcher:GestureDispatcher
     var gestureAnalyser:RealtimeMultiGestureStoreAnalyser
     @State var gCount:Int = 0
     @State var inGCount:Int = 0
@@ -20,7 +21,10 @@ struct MainView: View {
         //initilize local vars
         self.gesturesStore = MultiGestureStore()
         self.inGesturesStore = InGestureStore()
+        self.gestureDispatcher = GestureDispatcher(gesturesStore, inGesturesStore)
         self.gestureAnalyser = RealtimeMultiGestureStoreAnalyser(gesturesStore)
+        self.gestureAnalyser.addEvaluationListener(gestureDispatcher)
+        
         self.logView = LogView()
         Globals.setChangeCallback(self.logView.logCallbackFunction)
         
@@ -42,6 +46,9 @@ struct MainView: View {
                 self.inGesturesStore.setGestureMapping($0.getName(), $0)
             })
         }
+        
+        //start bluetooth now, so that we can have all features ready
+        GApp2App.startBT()
     }
     
     var body: some View {

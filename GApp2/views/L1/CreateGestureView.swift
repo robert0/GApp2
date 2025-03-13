@@ -54,7 +54,7 @@ struct CreateGestureView: View, DataChangeListener {
         
         // Create a CMMotionManager instance
         Globals.logToScreen("Initializing Sensor Manager...")
-        DeviceRouter.addListener(CreateGestureView.eventsHandler!)
+        RawGestureDeviceRouter.addListener(CreateGestureView.eventsHandler!)
     }
     
     // The app panel
@@ -67,12 +67,12 @@ struct CreateGestureView: View, DataChangeListener {
             HStack {
                 Button("Start Recording") {
                     Globals.logToScreen("Start Recording Pressed")
-                    if(DeviceRouter.shared.deviceType == nil){
-                        DeviceRouter.setSourceToThisPhone()
+                    if(RawGestureDeviceRouter.shared.deviceType == nil){
+                        RawGestureDeviceRouter.setSourceToThisPhone()
                     }
                     if(CreateGestureView.eventsHandler != nil){
                         CreateGestureView.eventsHandler!.clearRecordingData()
-                        DeviceRouter.startStreaming()
+                        RawGestureDeviceRouter.startStreaming()
                         CreateGestureView.eventsHandler!.startRecording()
                     }
                     
@@ -124,7 +124,7 @@ struct CreateGestureView: View, DataChangeListener {
         }.onDisappear {
             //force stop streaming
             CreateGestureView.eventsHandler!.stopRecording()
-            DeviceRouter.stopStreaming()
+            RawGestureDeviceRouter.stopStreaming()
         }
     }
     
@@ -132,7 +132,7 @@ struct CreateGestureView: View, DataChangeListener {
     func onDataChange(_ type: Int) {
         if(type == RealtimeSingleGestureStore.DATA_COMPLETE_UPDATE){
             CreateGestureView.eventsHandler!.stopRecording()
-            DeviceRouter.stopStreaming()
+            RawGestureDeviceRouter.stopStreaming()
             CreateGestureView.singleGestureStore!.recomputeMeanFromRecordingSignal()
         }
     }

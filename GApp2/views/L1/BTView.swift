@@ -10,7 +10,7 @@ import CoreBluetooth
 struct BTView: View, BTChangeListener {
     @Environment(\.dismiss) var dismiss
 
-    static var btoInstance: BTObject?
+    static var btoInstance: BTPeripheralObj?
     
     @ObservedObject var viewModel = BTViewModel()
     @State private var selection: String?
@@ -47,19 +47,19 @@ struct BTView: View, BTChangeListener {
                 }.background(Color.white).padding(20)
             }
         }.onAppear {
-            Globals.logToScreen("BTView onAppear called..")
+            Globals.log("BTView onAppear called..")
             //used for UI forced updates
             viewModel.updateCounter = viewModel.updateCounter + 1
-            startBT()
+            initializeBT()
         }
         
     }
     
-    func startBT() {
-        Globals.logToScreen("startBT called..")
+    func initializeBT() {
+        Globals.logToScreen("initializeBT called..")
         if( BTView.btoInstance == nil){
-            BTView.btoInstance = GApp2App.startBT()//this is usually a single intance
-            BTView.btoInstance!.setChangeListener(self)//add/set listener only once
+            BTView.btoInstance = GApp2App.startBT()//ensure BT is started (usually a single instance is created)
+            BTView.btoInstance!.setBTChangeListener(self)//add/set listener only once
         }
     }
     

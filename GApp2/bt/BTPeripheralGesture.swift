@@ -1,5 +1,5 @@
 //
-//  BTPeripheralSensor.swift
+//  BTPeripheralGesture.swift
 //  GApp
 //
 //  Created by Robert Talianu
@@ -15,7 +15,7 @@ class BTPeripheralGesture: GestureEvaluationListener {
     
     init() {
         btpObj = BTPeripheralObj()
-        Globals.logToScreen("Starting CBCentralManager...")
+        Globals.log("Starting CBCentralManager...")
     }
     
     /**
@@ -29,14 +29,14 @@ class BTPeripheralGesture: GestureEvaluationListener {
      *
      */
     public func gestureEvaluationCompleted(_ gw: GestureWindow, _ status: GestureEvaluationStatus) {
-        Globals.logToScreen("BTPeripheralGesture gestureEvaluationCompleted...")
+        Globals.log("BTPeripheralGesture gestureEvaluationCompleted...")
         //trigger repaint
         //onDataChange()
         
         guard let peripheralMgr = btpObj?.peripheralManager,
               let characteristic = btpObj?.characteristic
         else {
-            Globals.logToScreen("BT message not send. PeripheralMgr or Characteristic not initialized")
+            Globals.log("BT message not send. PeripheralMgr or Characteristic not initialized")
             return
         }
         let gkey = status.getGestureKey();
@@ -46,7 +46,7 @@ class BTPeripheralGesture: GestureEvaluationListener {
         let jsonData = jsonDataStr.data(using: .utf8) ?? Data()
         
         
-        //Globals.logToScreen("BT Sending position: \(jsonDataStr)")
+        //Globals.log("BT Sending position: \(jsonDataStr)")
         peripheralMgr.updateValue(jsonData, for: characteristic, onSubscribedCentrals:nil)
     }
 }

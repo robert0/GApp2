@@ -38,7 +38,7 @@ struct TestGesturesView: View {
         
         //connect to the data supplier
         Globals.logToScreen("Initializing Sensor Manager...")
-        DeviceRouter.addListener(analyser)
+        RawGestureDeviceRouter.addListener(analyser)
 
     }
     
@@ -56,11 +56,11 @@ struct TestGesturesView: View {
                 Spacer()
                 Button("Test") {
                     Globals.log("Testing Clicked !!!...")
-                    if(DeviceRouter.shared.deviceType == nil){
-                        DeviceRouter.setSourceToThisPhone()
+                    if(RawGestureDeviceRouter.shared.deviceType == nil){
+                        RawGestureDeviceRouter.setSourceToThisPhone()
                     }
                     
-                    DeviceRouter.startStreaming()
+                    RawGestureDeviceRouter.startStreaming()
                     self.analyser.startAnalysing()
                   
                 }.buttonStyle(.borderedProminent)
@@ -69,7 +69,7 @@ struct TestGesturesView: View {
                 Button("Stop Testing") {
                     Globals.log("Stop Testing Clicked !!!...")
                     self.analyser.stopAnalysing()
-                    DeviceRouter.stopStreaming()
+                    RawGestureDeviceRouter.stopStreaming()
 
                 }.buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)
@@ -99,9 +99,10 @@ struct TestGesturesView: View {
                 }.buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)
                 
-                Button("Send 3 Click Message") {
-                    Globals.log("Send Watch A 3.click Message!!!...")
-                    GApp2App.sendWatchAMessage(".click3")
+                Button("Advertise Message") {
+                    Globals.log("Advertise Message clicked...")
+                    //GApp2App.sendWatchAMessage(".click3")
+                    GApp2App.advertiseMessage("This is an advertised message!")
 
                 }.buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)
@@ -114,7 +115,7 @@ struct TestGesturesView: View {
         }.onDisappear {
             //force stop streaming
             self.analyser.stopAnalysing()
-            DeviceRouter.stopStreaming()
+            RawGestureDeviceRouter.stopStreaming()
             //self.analyser.clear() - to be implemented
         }
     }
