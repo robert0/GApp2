@@ -19,9 +19,9 @@ public enum ActionType: String, CaseIterable, Identifiable {
 @main
 struct GApp2App: App {
     static var watchDelegateConnector: WDConnector?
-    static var btoInstance:BTPeripheralObj?
-    static var btPeripheralDevice:CBPeripheral?
-  
+    static var btOutInstance:BTPeripheralObj_OUT?
+    static var btInInstance:BTCentralObj_IN?
+    static var btPeripheralDevice:CBPeripheral?  
     
     //static var contentView:ContentView? = nil
     
@@ -31,10 +31,6 @@ struct GApp2App: App {
 //            "name": "Taylor Swift",
 //            "highScore": 10
 //        ])
-        
-       //let dbls: [Double] = [1.001, 2.005, 3.009]
-        
-        //writeData(dbls)
     }
     
     var body: some Scene {
@@ -64,38 +60,62 @@ struct GApp2App: App {
     /*
      *
      */
-    public static func startBT() -> BTPeripheralObj? {
-        Globals.log("APP_Main:startBT() called..")
-        if(GApp2App.btoInstance == nil){
-            GApp2App.btoInstance = BTPeripheralObj()//self start scanning
+    public static func startBTOutbound() -> BTPeripheralObj_OUT? {
+        Globals.log("APP_Main:startBTOutbound() called..")
+        if(GApp2App.btOutInstance == nil){
+            GApp2App.btOutInstance = BTPeripheralObj_OUT()//self start scanning
         }
-        return GApp2App.btoInstance
+        return GApp2App.btOutInstance
+    }
+    
+    /*
+     *
+     */
+    public static func startBTInbound() -> BTCentralObj_IN? {
+        Globals.log("APP_Main:startBT() called..")
+        if(GApp2App.btInInstance == nil){
+            GApp2App.btInInstance = BTCentralObj_IN()//self start scanning
+        }
+        return GApp2App.btInInstance
     }
     
     /*
      *
      */
     public static func startBTScanning() {
-        Globals.log("APP_Main:startBTScanning() called..")
-        if(GApp2App.btoInstance != nil){
-            GApp2App.btoInstance!.startScan()
+        //Globals.log("APP_Main:startBTScanning() called..")
+        if(GApp2App.btInInstance != nil){
+            GApp2App.btInInstance!.startScan()
             
         } else {
-            Globals.log("APP_Main:advertiseMessage failed; No btoInstance")
+            Globals.log("APP_Main:startBTScanning failed; No btInInstance")
         }
     }
     
     /*
      *
      */
-    public static func pairToBTDevice(_ cbp:CBPeripheral) {
-        Globals.log("APP_Main:pairToBTDevice() called..")
+    public static func stopBTScanning() {
+        //Globals.log("APP_Main:stopBTScanning() called..")
+        if(GApp2App.btInInstance != nil){
+            GApp2App.btInInstance!.stopScanning()
+            
+        } else {
+            Globals.log("APP_Main:stopBTScanning failed; No btInInstance")
+        }
+    }
+    
+    /*
+     *
+     */
+    public static func connectToBTDevice(_ cbp:CBPeripheral) {
+        Globals.log("APP_Main:connectToBTDevice() called..")
         
         //store locally
         GApp2App.btPeripheralDevice = cbp
         
         //connecting to a peripheral will automatically stop the current scanning
-        GApp2App.btoInstance?.connectToPeripheral(cbp)
+        GApp2App.btInInstance?.connectToPeripheral(cbp)
         
     }
     
@@ -104,8 +124,8 @@ struct GApp2App: App {
      */
     public static func advertiseMessage(_ msg:String) {
         Globals.log("APP_Main:advertiseMessage() called..")
-        if(GApp2App.btoInstance != nil){
-            GApp2App.btoInstance!.advertiseText(msg)
+        if(GApp2App.btOutInstance != nil){
+            GApp2App.btOutInstance!.advertiseText(msg)
             
         } else {
             Globals.log("APP_Main:advertiseMessage failed; No btoInstance")

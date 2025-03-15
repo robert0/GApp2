@@ -9,12 +9,12 @@ import OrderedCollections
 import UIKit
 
 class BTPeripheralGesture: GestureEvaluationListener {
-    var btpObj: BTPeripheralObj?
+    var btpObj: BTPeripheralObj_OUT?
     private var mDataChangeListener: BTChangeListener?
     private let correlationFactorFormat: String = " %.3f"//add space first for good JSON formatting
     
     init() {
-        btpObj = BTPeripheralObj()
+        btpObj = BTPeripheralObj_OUT()
         Globals.log("Starting CBCentralManager...")
     }
     
@@ -34,7 +34,7 @@ class BTPeripheralGesture: GestureEvaluationListener {
         //onDataChange()
         
         guard let peripheralMgr = btpObj?.peripheralManager,
-              let characteristic = btpObj?.characteristic
+              let characteristic = btpObj?.advertiseCharacteristic
         else {
             Globals.log("BT message not send. PeripheralMgr or Characteristic not initialized")
             return

@@ -23,5 +23,5 @@ public protocol BTChangeListener {
     /**
      * @return
      */
-    func onPeripheralDataChange();
+    func onPeripheralDataChange(_ central: CBCentralManager, _ peripheral: CBPeripheral, _ characteristic:CBCharacteristic);
 }

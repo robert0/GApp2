@@ -9,11 +9,11 @@ import OrderedCollections
 import UIKit
 
 class BTPeripheralSensor: SensorListener {
-    var btpObj: BTPeripheralObj?
+    var btpObj: BTPeripheralObj_OUT?
     private var mDataChangeListener: BTChangeListener?
     
     init() {
-        btpObj = BTPeripheralObj()
+        btpObj = BTPeripheralObj_OUT()
         Globals.logToScreen("Starting CBCentralManager...")
     }
     
@@ -29,7 +29,7 @@ class BTPeripheralSensor: SensorListener {
      */
     func onSensorChanged(_ time: Int64, _ x: Double, _ y: Double, _ z: Double) {
         guard let peripheralMgr = btpObj?.peripheralManager,
-              let characteristic = btpObj?.characteristic
+              let characteristic = btpObj?.advertiseCharacteristic
         else {
             Globals.logToScreen("BT message not send. PeripheralMgr or Characteristic not initialized")
             return

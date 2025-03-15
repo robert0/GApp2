@@ -47,8 +47,8 @@ struct MainView: View {
             })
         }
         
-        //start bluetooth now, so that we can have all features ready
-        GApp2App.startBT()
+        //start bluetooth & advertising
+        GApp2App.startBTOutbound()
     }
     
     var body: some View {
@@ -86,7 +86,7 @@ struct MainView: View {
                         Text("Test")
                     }
                     Spacer()
-                    Text("Gestures App v1.4")
+                    Text("Gestures App v1.5")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: 150, alignment: .trailing)

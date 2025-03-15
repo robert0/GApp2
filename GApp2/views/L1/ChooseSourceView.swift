@@ -75,24 +75,24 @@ struct ChooseSourceView: View {
             Spacer().frame(height: 30)
             
             
-            if (source == DeviceType.BTPhone){
-                //use highlighted button
-                Button("Use paired phone", systemImage:"iphone.sizes", action: {
-                    Globals.log("Use paired phone clicked !!!...")
-                    RawGestureDeviceRouter.setSourceToBTPhone()
-                    dismiss()
-                    
-                }).buttonStyle(.borderedProminent).disabled(true)
-                
-            } else {
-                //use plain button
-                Button("Use paired phone", systemImage:"iphone.sizes", action: {
-                    Globals.log("Use paired phone clicked !!!...")
-                    RawGestureDeviceRouter.setSourceToBTPhone()
-                    dismiss()
-                    
-                }).buttonStyle(.plain).disabled(true)
-            }
+//            if (source == DeviceType.BTPhone){
+//                //use highlighted button
+//                Button("Use paired phone", systemImage:"iphone.sizes", action: {
+//                    Globals.log("Use paired phone clicked !!!...")
+//                    RawGestureDeviceRouter.setSourceToBTPhone()
+//                    dismiss()
+//                    
+//                }).buttonStyle(.borderedProminent).disabled(true)
+//                
+//            } else {
+//                //use plain button
+//                Button("Use paired phone", systemImage:"iphone.sizes", action: {
+//                    Globals.log("Use paired phone clicked !!!...")
+//                    RawGestureDeviceRouter.setSourceToBTPhone()
+//                    dismiss()
+//                    
+//                }).buttonStyle(.plain).disabled(true)
+//            }
             Spacer()
             
               

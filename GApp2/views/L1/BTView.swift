@@ -10,7 +10,7 @@ import CoreBluetooth
 struct BTView: View, BTChangeListener {
     @Environment(\.dismiss) var dismiss
 
-    static var btoInstance: BTPeripheralObj?
+    static var btoInstance: BTCentralObj_IN?
     
     @ObservedObject var viewModel = BTViewModel()
     @State private var selection: String?
@@ -46,31 +46,33 @@ struct BTView: View, BTChangeListener {
                         .disabled(selection == nil)
                 }.background(Color.white).padding(20)
             }
+            
         }.onAppear {
-            Globals.log("BTView onAppear called..")
+            Globals.log("BTView onAppear..")
             //used for UI forced updates
             viewModel.updateCounter = viewModel.updateCounter + 1
-            initializeBT()
+            if( BTView.btoInstance == nil){
+                BTView.btoInstance = GApp2App.startBTInbound()//ensure BT is started (usually a single instance is created)
+                BTView.btoInstance!.addBTChangeListener(self)//add/set listener only once
+            }
+            GApp2App.startBTScanning()
+            
+        }.onDisappear{
+            Globals.log("BTView onDisappear..")
+            GApp2App.stopBTScanning()
         }
-        
     }
     
-    func initializeBT() {
-        Globals.logToScreen("initializeBT called..")
-        if( BTView.btoInstance == nil){
-            BTView.btoInstance = GApp2App.startBT()//ensure BT is started (usually a single instance is created)
-            BTView.btoInstance!.setBTChangeListener(self)//add/set listener only once
-        }
-    }
-    
-   
+    /**
+     *
+     */
     func connectToBTDevice() {
         let entries = BTView.btoInstance?.getPeripheralMap()
         let cbp:CBPeripheral? = entries?[self.selection!]
         print("connectToBTDevice called..\(cbp?.identifier)")
         
         if(cbp != nil){
-            GApp2App.pairToBTDevice(cbp!)
+            GApp2App.connectToBTDevice(cbp!)
         } else {
             print("Device not found in BT devices list..")
         }
@@ -78,17 +80,25 @@ struct BTView: View, BTChangeListener {
         dismiss()
     }
     
-    
+    /**
+     *
+     */
     func onManagerDataChange(_ central: CBCentralManager) {
         print("onManagerDataChange called..")
     }
     
+    /**
+     *
+     */
     func onPeripheralChange(_ central: CBCentralManager, _ peripheral: CBPeripheral) {
         print("onPeripheralChange called.. \(BTView.btoInstance?.getPeripheralMap().count) _ \(self.viewModel.updateCounter)")
         self.viewModel.updateCounter = self.viewModel.updateCounter + 1
     }
     
-    func onPeripheralDataChange() {
+    /**
+     *
+     */
+    func onPeripheralDataChange(_ central: CBCentralManager, _ peripheral: CBPeripheral, _ characteristic:CBCharacteristic){
         print("onPeripheralDataChange called..")
     }
 }

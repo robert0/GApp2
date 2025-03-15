@@ -29,7 +29,7 @@ struct EditInGestureView: View {
     
     // constructor
     init(_ gesturesStore: InGestureStore, _ igmName: String?) {
-        Globals.log("--- init ---")
+        //Globals.log("--- init ---")
         self.viewModel = EditInGestureViewModel(gesturesStore)
         
         var igName = ""

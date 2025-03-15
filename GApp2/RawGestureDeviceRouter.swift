@@ -11,7 +11,7 @@ import Foundation
 //
 //
 public enum DeviceType {
-    case Phone, Watch, BTPhone
+    case Phone, Watch//, BTPhone
 }
 
 //
@@ -65,9 +65,10 @@ public class RawGestureDeviceRouter: ObservableObject {
             for sample in samples! {
                 forwardToListeners(sample.getTime(), sample.getX(), sample.getY(), sample.getZ())
             }
-        } else if RawGestureDeviceRouter.shared.deviceType == .BTPhone {
-
         }
+//        else if RawGestureDeviceRouter.shared.deviceType == .BTPhone {
+//
+//        }
     }
     
 
@@ -99,10 +100,10 @@ public class RawGestureDeviceRouter: ObservableObject {
     /*
      *
      */
-    public static func setSourceToBTPhone() {
-        print("DeviceRouter: setSourceToBTPhone() called ...")
-        sourceToDevice(.BTPhone)
-    }
+//    public static func setSourceToBTPhone() {
+//        print("DeviceRouter: setSourceToBTPhone() called ...")
+//        sourceToDevice(.BTPhone)
+//    }
     
     /*
      *
@@ -123,9 +124,10 @@ public class RawGestureDeviceRouter: ObservableObject {
         } else if RawGestureDeviceRouter.shared.deviceType == .Watch {
             //TODO ...
             
-        } else if RawGestureDeviceRouter.shared.deviceType == .BTPhone {
-            //TODO ...
         }
+//        else if RawGestureDeviceRouter.shared.deviceType == .BTPhone {
+//            //TODO ...
+//        }
     }
 
     /*
@@ -138,9 +140,10 @@ public class RawGestureDeviceRouter: ObservableObject {
         } else if RawGestureDeviceRouter.shared.deviceType == .Watch {
             //TODO ...
             
-        } else if RawGestureDeviceRouter.shared.deviceType == .BTPhone {
-            //TODO ...
         }
+//        else if RawGestureDeviceRouter.shared.deviceType == .BTPhone {
+//            //TODO ...
+//        }
     }
     
     /*
