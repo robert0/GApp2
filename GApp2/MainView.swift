@@ -12,7 +12,6 @@ struct MainView: View {
     private var logView: LogView
     var gesturesStore:MultiGestureStore
     var inGesturesStore:InGestureStore
-    var gestureDispatcher:GestureDispatcher
     var gestureAnalyser:RealtimeMultiGestureStoreAnalyser
     @State var gCount:Int = 0
     @State var inGCount:Int = 0
@@ -21,9 +20,10 @@ struct MainView: View {
         //initilize local vars
         self.gesturesStore = MultiGestureStore()
         self.inGesturesStore = InGestureStore()
-        self.gestureDispatcher = GestureDispatcher(gesturesStore, inGesturesStore)
+        GApp2App.gestureDispatcher.setGestureStore(gesturesStore)
+        GApp2App.gestureDispatcher.setInGestureStore(inGesturesStore)
         self.gestureAnalyser = RealtimeMultiGestureStoreAnalyser(gesturesStore)
-        self.gestureAnalyser.addEvaluationListener(gestureDispatcher)
+        self.gestureAnalyser.addEvaluationListener(GApp2App.gestureDispatcher)
         
         self.logView = LogView()
         Globals.setChangeCallback(self.logView.logCallbackFunction)

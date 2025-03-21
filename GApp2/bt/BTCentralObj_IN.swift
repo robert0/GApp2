@@ -17,6 +17,7 @@ class BTCentralObj_IN: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate 
     
     private var peripheralsMap = OrderedDictionary<String, CBPeripheral>()
     private var mDataChangeListeners: [BTChangeListener] = []
+    private var isScanning:Bool = false
     
     override init() {
         super.init()
@@ -53,7 +54,9 @@ class BTCentralObj_IN: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate 
         case CBManagerState.poweredOn:
             // Notify user Bluetooth in ON
             // auto-initialize the scanning
-            // startScan()
+            if(isScanning){
+                startScan()
+            }
             fallthrough
         case CBManagerState.poweredOff:
             // Alert user to turn on Bluetooth
@@ -81,6 +84,7 @@ class BTCentralObj_IN: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate 
      */
     // Start Scanning
     public func startScan() {
+        self.isScanning = true
         Globals.log("BTO(\(centralManager.state.rawValue)|\(centralManager.isScanning)): Start Scanning called...")
         if(centralManager.state == CBManagerState.poweredOn && !centralManager.isScanning){
             peripheralsMap.removeAll()
@@ -93,6 +97,7 @@ class BTCentralObj_IN: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate 
      */
     // Stop Scanning
     public func stopScanning(){
+        self.isScanning = true
         centralManager.stopScan()
     }
     

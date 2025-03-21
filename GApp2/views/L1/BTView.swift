@@ -52,6 +52,7 @@ struct BTView: View, BTChangeListener {
             //used for UI forced updates
             viewModel.updateCounter = viewModel.updateCounter + 1
             if( BTView.btoInstance == nil){
+                Globals.log("BTView add bt listener...")
                 BTView.btoInstance = GApp2App.startBTInbound()//ensure BT is started (usually a single instance is created)
                 BTView.btoInstance!.addBTChangeListener(self)//add/set listener only once
             }

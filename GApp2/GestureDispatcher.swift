@@ -6,36 +6,40 @@
 //
 
 import Foundation
+import CoreBluetooth
 
 //
 // This class handles the realtime gesture dispatching once a gesture is found
 //
-public class GestureDispatcher : GestureEvaluationListener {
+public class GestureDispatcher : GestureEvaluationListener, BTChangeListener {
+
     private let correlationFactorFormat: String = " %.3f"//add space first for good JSON formatting
-    
-    
-    var gesturesStore:MultiGestureStore
-    var inGesturesStore:InGestureStore
+    var gesturesStore:MultiGestureStore?
+    var inGesturesStore:InGestureStore?
     
 
-    public init (_ gesturesStore:MultiGestureStore, _ inGesturesStore:InGestureStore){
-        self.gesturesStore = gesturesStore
-        self.inGesturesStore = inGesturesStore
+    public init (){
     }
     
+    public func setGestureStore(_ gesturesStore:MultiGestureStore){
+        self.gesturesStore = gesturesStore
+    }
+    
+    public func setInGestureStore(_ inGesturesStore:InGestureStore){
+        self.inGesturesStore = inGesturesStore
+    }
        
-    //internal gestures that need to be dispatched - either executing commands or send via BT to other devices, or both
+
+    
     public func gestureEvaluationCompleted(_ gw: GestureWindow, _ status: GestureEvaluationStatus) {
-        let gkey = status.getGestureKey();
-        let gCorr = status.getGestureCorrelationFactor();
+        let gkey = status.getGestureKey()
+        let gCorr:Double = status.getGestureCorrelationFactor()
         
-        let gesture:Gesture4D? = gesturesStore.getGesture(gkey) ?? nil
-        if (gesture != nil) {
+        let gesture:Gesture4D? = gesturesStore?.getGesture(gkey) ?? nil
+        if (gesture != nil && gCorr >= (gesture?.getActionThreshold())!) {
             if(gesture?.getActionType() == ActionType.forwardViaBluetooth){
-                Globals.log("GestureDispatcher:Forwarding gesture viw BT...")
-                let gCorrFt = String(format: self.correlationFactorFormat, gCorr)
-                let jsonDataStr = "{\"gestureKey\":\"\(gkey)\", \"gestureCorrelationFactor\":\(gCorrFt)}"
-                GApp2App.advertiseMessage(jsonDataStr)
+                //send to bluetooth
+                sendViaBluetooth(gCorr, gkey)
                 
             } else  if(gesture?.getActionType() == ActionType.executeCommand){
                 Globals.log("GestureDispatcher:Executing gesture command ...")
@@ -44,12 +48,54 @@ public class GestureDispatcher : GestureEvaluationListener {
             } else  if(gesture?.getActionType() == ActionType.executeCmdAndForwardViaBluetooth){
                 Globals.log("GestureDispatcher:Executing gesture command ...")
                 //CommandExecutor.executeCommand(gesture?.getCommand())
-                Globals.log("GestureDispatcher:Forwarding gesture viw BT...")
-                let gCorrFt = String(format: self.correlationFactorFormat, gCorr)
-                let jsonDataStr = "{\"gestureKey\":\"\(gkey)\", \"gestureCorrelationFactor\":\(gCorrFt)}"
-                GApp2App.advertiseMessage(jsonDataStr)
+                
+                //send to bluetooth
+                sendViaBluetooth(gCorr, gkey)
             }
         }
     }
+    
+    //
+    fileprivate func sendViaBluetooth(_ gCorr: Double, _ gkey: String) {
+        
+        Globals.log("GestureDispatcher:Forwarding gesture viw BT...")
+        let gCorrFt = String(format: self.correlationFactorFormat, gCorr)
+        let cutCorrFt:Double = floor(gCorr * 1000.0)/1000.0
+        let gs:GestureJson = GestureJson(gkey, cutCorrFt )
+        
+        do {
+            let encoder = JSONEncoder()
+            //encoder.outputFormatting = .prettyPrinted
+            //encoder.keyEncodingStrategy = .convertToSnakeCase
+            //encoder.dateEncodingStrategy = .iso8601
+            //encoder.dataEncodingStrategy = .base64
+            let egs = try encoder.encode(gs)
+            
+            //send data via Bluetooth
+            GApp2App.advertiseData(egs)
+            Globals.log("GestureDispatcher:send gesture: {\(gs.gestureKey):\(gs.gestureCorrelationFactor)}")
+            
+        } catch {
+            Globals.log("GestureDispatcher: Error encoding to JSON: \(error)")
+        }
+    }
+        
+    public func onManagerDataChange(_ central: CBCentralManager) {
+        Globals.log("GestureDispatcher:onManagerDataChange called...")
+        //not used
+    }
+    
+    public func onPeripheralChange(_ central: CBCentralManager, _ peripheral: CBPeripheral) {
+        Globals.log("GestureDispatcher:onPeripheralChange called...")
+        //not used
+    }
+    
+    public func onPeripheralDataChange(_ central: CBCentralManager, _ peripheral: CBPeripheral, _ characteristic: CBCharacteristic) {
+        Globals.log("GestureDispatcher:onPeripheralDataChange called...")
+        let value = characteristic.value ?? Data()
+        let message = String(data: value, encoding: .utf8)
+        Globals.log("BT Received message: \(message)")
+    }
+    
     
 }

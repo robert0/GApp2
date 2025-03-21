@@ -13,7 +13,7 @@ public class GestureJson: Codable {
     var gestureKey: String
     var gestureCorrelationFactor: Double
     
-    init(gestureKey: String, gestureCorrelationFactor: Double) {
+    init(_ gestureKey: String, _ gestureCorrelationFactor: Double) {
         self.gestureKey = gestureKey
         self.gestureCorrelationFactor = gestureCorrelationFactor
     }

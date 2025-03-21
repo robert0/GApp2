@@ -100,6 +100,19 @@ class BTPeripheralObj_OUT: NSObject, CBPeripheralManagerDelegate, CBPeripheralDe
         peripheralMgr.updateValue(jsonData, for: characteristic, onSubscribedCentrals:nil)
     }
     
+    //advertising text to all listeners to the defined service & characteristic
+    public func advertiseData(_ data:Data){
+        guard let peripheralMgr = peripheralManager,
+              let characteristic = advertiseCharacteristic
+        else {
+            Globals.log("BT advertiseText failed. PeripheralMgr or Characteristic not initialized!")
+            return
+        }
+        
+        //Globals.logToScreen("BT Sending position: \(jsonDataStr)")
+        peripheralMgr.updateValue(data, for: characteristic, onSubscribedCentrals:nil)
+    }
+    
     /**
      *
      * Incomming message from a peripheral that is listened

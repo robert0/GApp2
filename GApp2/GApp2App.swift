@@ -18,10 +18,12 @@ public enum ActionType: String, CaseIterable, Identifiable {
 
 @main
 struct GApp2App: App {
+    static var gestureDispatcher:GestureDispatcher = GestureDispatcher()
     static var watchDelegateConnector: WDConnector?
     static var btOutInstance:BTPeripheralObj_OUT?
     static var btInInstance:BTCentralObj_IN?
-    static var btPeripheralDevice:CBPeripheral?  
+    static var btPeripheralDevice:CBPeripheral?
+    
     
     //static var contentView:ContentView? = nil
     
@@ -75,9 +77,23 @@ struct GApp2App: App {
         Globals.log("APP_Main:startBT() called..")
         if(GApp2App.btInInstance == nil){
             GApp2App.btInInstance = BTCentralObj_IN()//self start scanning
+            GApp2App.btInInstance?.addBTChangeListener(gestureDispatcher)
         }
         return GApp2App.btInInstance
     }
+    
+    /**
+     *
+     */
+    public static func addBTChangeListener(_ btl:BTChangeListener) {
+        if(GApp2App.btInInstance != nil){
+            GApp2App.btInInstance!.addBTChangeListener(btl)
+            
+        } else {
+            Globals.log("APP_Main:addBTChangeListener failed; No btInInstance")
+        }
+    }
+    
     
     /*
      *
@@ -129,6 +145,19 @@ struct GApp2App: App {
             
         } else {
             Globals.log("APP_Main:advertiseMessage failed; No btoInstance")
+        }
+    }
+    
+    /*
+     *
+     */
+    public static func advertiseData(_ data:Data) {
+        Globals.log("APP_Main:advertiseData() called..")
+        if(GApp2App.btOutInstance != nil){
+            GApp2App.btOutInstance!.advertiseData(data)
+            
+        } else {
+            Globals.log("APP_Main:advertiseData failed; No btoInstance")
         }
     }
     

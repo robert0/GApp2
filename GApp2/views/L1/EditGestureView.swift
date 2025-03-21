@@ -18,7 +18,7 @@ struct EditGestureView: View {
     @State private var gkey: String
     @State private var selectedCmd: Command = Command.openGoogle
     @State private var selectedActionType: ActionType = ActionType.executeCommand
-    
+    @State private var threshold:Double = 0.5
     
     enum Command: String, CaseIterable, Identifiable {
         case openGoogle = "open www.google.com"
@@ -52,7 +52,8 @@ struct EditGestureView: View {
                 Text("Edit Name:")
                     .font(.title3)
                 TextField("Name", text: $gkey)
-                    .padding(5)
+                    .padding(10)
+                    .contentMargins(10)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(Color.orange)
@@ -60,7 +61,23 @@ struct EditGestureView: View {
                 
                 Spacer().frame(height: 20)
                 
-                Text("Select Gestures Action Type:")
+                Text("Do action when gesture match is above threshold:")
+                    .font(.title3)
+                TextField("Value", value: $threshold, format:.number)
+                //.textFieldStyle(.plain)
+                    .padding(10)
+                    .contentMargins(10)
+                    .onChange(of: threshold) { oldValue, newValue in
+                        //TODO...
+                    }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.orange)
+                    )
+                //.overlay(RoundedRectangle(cornerRadius: 5).stroke(isNameMissing ? Color.red : Color.gray))
+                Spacer().frame(height: 20)
+                
+                Text("Select Action Type:")
                     .font(.title3)
                 Picker("", selection: $selectedActionType) {
                     Text("Execute Command").tag(ActionType.executeCommand)
@@ -74,6 +91,19 @@ struct EditGestureView: View {
                 )
                 Spacer().frame(height: 20)
                 
+                ///     @State private var myMoney: Double? = 300.0
+                ///     var body: some View {
+                ///         TextField(
+                ///             "Currency (USD)",
+                ///             value: $myMoney,
+                ///             format: .currency(code: "USD")
+                ///         )
+                ///         .onChange(of: myMoney) { newValue in
+                ///             print ("myMoney: \(newValue)")
+                ///         }
+                ///     }
+                ///
+
                 if(selectedActionType == ActionType.executeCommand || selectedActionType == ActionType.executeCmdAndForwardViaBluetooth){
                     Text("Choose Command to execute:")
                         .font(.title3)
@@ -90,7 +120,7 @@ struct EditGestureView: View {
                     )
                     if(selectedActionType == ActionType.executeCmdAndForwardViaBluetooth){
                         Spacer().frame(height: 20)
-                        Text("Info: Gestures data will be streamed to all Bluetooth connected devices.").italic()
+                        Text("Info: Gestures data will be streamed to all connected Bluetooth devices.").italic()
                     }
 //                    if(GApp2App.btPeripheralDevice == nil){
 //                        NavigationLink {
@@ -139,6 +169,7 @@ struct EditGestureView: View {
                     //set/change all props
                     gs!.setCommand(selectedCmd.rawValue)
                     gs!.setActionType(selectedActionType)
+                    gs!.setActionThreshold(threshold)
                     //Globals.log("cmd: \(gs!.getCommand())")
                     
                     //set/change key (&name)
@@ -163,6 +194,7 @@ struct EditGestureView: View {
             if(gs != nil){
                 self.selectedCmd = Command.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? Command.openGoogle
                 self.selectedActionType = gs!.getActionType()
+                self.threshold = gs!.getActionThreshold()
             } else {
                 self.selectedCmd = Command.openGoogle
                 self.selectedActionType = ActionType.executeCommand

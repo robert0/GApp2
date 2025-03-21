@@ -23,7 +23,7 @@ class Globals {
     @Published var logger = Logger(
         //        subsystem: Bundle.main.bundleIdentifier!,
         //        category: String(describing: ProductsViewModel.self)
-        )
+    )
 
     
     /**

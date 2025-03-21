@@ -15,4 +15,5 @@ public class Utils {
     public static func getCurrentMillis() -> Int64 {
         return Int64(Date().timeIntervalSince1970 * 1000)
     }
+  
 }
