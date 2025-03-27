@@ -9,9 +9,8 @@ import SwiftUI
 import CoreBluetooth
 
 public enum ActionType: String, CaseIterable, Identifiable {
-    case executeCommand = "Execute Command"
-    case forwardViaBluetooth = "Send via Bluetooth"
-    case executeCmdAndForwardViaBluetooth = "Execute Command and Send via Bluetooth"
+    case executeCommand = "Execute Command Locally"
+    case executeCmdViaBluetooth = "Forward Gesture/Command via Bluetooth"
     public var id: Self { self }
 }
 

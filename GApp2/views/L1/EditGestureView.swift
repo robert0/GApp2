@@ -21,9 +21,9 @@ struct EditGestureView: View {
     @State private var threshold:Double = 0.5
     
     enum Command: String, CaseIterable, Identifiable {
-        case openGoogle = "open www.google.com"
-        case openYahoo = "open www.yahoo.com"
-        case openFacebook = "open www.facebook.com"
+        case openGoogle = "open http://www.google.com"
+        case openYahoo = "open http://www.yahoo.com"
+        case openFacebook = "open http://www.facebook.com"
         var id: Self { self }
     }
     
@@ -80,9 +80,8 @@ struct EditGestureView: View {
                 Text("Select Action Type:")
                     .font(.title3)
                 Picker("", selection: $selectedActionType) {
-                    Text("Execute Command").tag(ActionType.executeCommand)
-                    Text("Send via Bluetooth").tag(ActionType.forwardViaBluetooth)
-                    Text("Execute Command and Forward via Bluetooth").tag(ActionType.executeCmdAndForwardViaBluetooth)
+                    Text("Execute Command Locally").tag(ActionType.executeCommand)
+                      Text("Forward Gesture/Command via Bluetooth").tag(ActionType.executeCmdViaBluetooth)
                 }
                 .padding(5)
                 .overlay(
@@ -104,7 +103,7 @@ struct EditGestureView: View {
                 ///     }
                 ///
 
-                if(selectedActionType == ActionType.executeCommand || selectedActionType == ActionType.executeCmdAndForwardViaBluetooth){
+                if(selectedActionType == ActionType.executeCommand || selectedActionType == ActionType.executeCmdViaBluetooth){
                     Text("Choose Command to execute:")
                         .font(.title3)
                     
@@ -118,7 +117,7 @@ struct EditGestureView: View {
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(Color.orange)
                     )
-                    if(selectedActionType == ActionType.executeCmdAndForwardViaBluetooth){
+                    if(selectedActionType == ActionType.executeCmdViaBluetooth){
                         Spacer().frame(height: 20)
                         Text("Info: Gestures data will be streamed to all connected Bluetooth devices.").italic()
                     }
@@ -137,23 +136,6 @@ struct EditGestureView: View {
 //                        }.frame(width:250)
 //                    }
                     
-                } else if(selectedActionType == ActionType.forwardViaBluetooth){
-                    Spacer().frame(height: 20)
-                    Text("Info: Gestures data will be streamed to all Bluetooth connected devices.").italic()
-//                    if(GApp2App.btPeripheralDevice == nil){
-//                        NavigationLink {
-//                            BTView()
-//                        } label: {
-//                            Label("Choose BT device...", systemImage: "iphone.gen1.and.arrow.left")
-//                        }.frame(width:250)
-//                        
-//                    } else {
-//                        NavigationLink {
-//                            BTView()
-//                        } label: {
-//                            Label("Paired to \(GApp2App.btPeripheralDevice?.name ?? "Unknown")", systemImage: "link")
-//                        }.frame(width:250)
-//                    }
                 }
                 Spacer().frame(height: 50)
                 

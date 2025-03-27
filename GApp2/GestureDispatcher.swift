@@ -37,31 +37,26 @@ public class GestureDispatcher : GestureEvaluationListener, BTChangeListener {
         
         let gesture:Gesture4D? = gesturesStore?.getGesture(gkey) ?? nil
         if (gesture != nil && gCorr >= (gesture?.getActionThreshold())!) {
-            if(gesture?.getActionType() == ActionType.forwardViaBluetooth){
-                //send to bluetooth
-                sendViaBluetooth(gCorr, gkey)
-                
-            } else  if(gesture?.getActionType() == ActionType.executeCommand){
+            if(gesture?.getActionType() == ActionType.executeCommand){
                 Globals.log("GestureDispatcher:Executing gesture command ...")
                 //CommandExecutor.executeCommand(gesture?.getCommand())
                 
-            } else  if(gesture?.getActionType() == ActionType.executeCmdAndForwardViaBluetooth){
+            } else  if(gesture?.getActionType() == ActionType.executeCmdViaBluetooth){
                 Globals.log("GestureDispatcher:Executing gesture command ...")
-                //CommandExecutor.executeCommand(gesture?.getCommand())
                 
                 //send to bluetooth
-                sendViaBluetooth(gCorr, gkey)
+                sendViaBluetooth(gCorr, gesture!)
             }
         }
     }
     
     //
-    fileprivate func sendViaBluetooth(_ gCorr: Double, _ gkey: String) {
+    fileprivate func sendViaBluetooth(_ gCorr: Double, _ gesture: Gesture4D) {
         
         Globals.log("GestureDispatcher:Forwarding gesture viw BT...")
         let gCorrFt = String(format: self.correlationFactorFormat, gCorr)
         let cutCorrFt:Double = floor(gCorr * 1000.0)/1000.0
-        let gs:GestureJson = GestureJson(gkey, cutCorrFt )
+        let gs:GestureJson = GestureJson(gesture.getName(), cutCorrFt, gesture.getCommand() )
         
         do {
             let encoder = JSONEncoder()
