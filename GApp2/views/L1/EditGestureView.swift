@@ -16,14 +16,63 @@ struct EditGestureView: View {
     
     //local updatable values
     @State private var gkey: String
-    @State private var selectedCmd: Command = Command.openGoogle
+    @State private var selectedCmd: Command = Command.startKeynote
     @State private var selectedActionType: ActionType = ActionType.executeCommand
     @State private var threshold:Double = 0.5
     
     enum Command: String, CaseIterable, Identifiable {
-        case openGoogle = "open http://www.google.com"
-        case openYahoo = "open http://www.yahoo.com"
-        case openFacebook = "open http://www.facebook.com"
+        case startKeynote = """
+                    if running of application \"Keynote\" is true then
+                            tell application \"Keynote\"
+                            activate
+                            try
+                                if playing is false then start the front document
+                            end try
+                        end tell
+                    end if
+                    """
+        
+        case keynoteNextSlide = """
+                    if running of application \"Keynote\" is true then
+                            tell application \"Keynote\"
+                            activate
+                            try
+                                show next
+                            end try
+                        end tell
+                    end if
+                    """
+        
+        case keynotePreviusSlide = """
+                    if running of application \"Keynote\" is true then
+                            tell application \"Keynote\"
+                            activate
+                            try
+                                show previous
+                            end try
+                        end tell
+                    end if
+                    """
+        case openYahoo = """
+                    if running of application \"Safari\" is true then
+                            tell application \"Safari\"
+                            activate
+                            try
+                                 open location \"https://www.google.com\"
+                            end try
+                        end tell
+                    end if
+                    """
+        case openFacebook = """
+                    if running of application \"Safari\" is true then
+                            tell application \"Safari\"
+                            activate
+                            try
+                                 open location \"https://www.facebook.com\"
+                            end try
+                        end tell
+                    end if
+                    """
         var id: Self { self }
     }
     
@@ -37,7 +86,7 @@ struct EditGestureView: View {
         let gs = gesturesStore.getGesture(gkey)
         if(gs != nil){
             Globals.log("init initial cmd:\(gs!.getCommand())")
-            self.selectedCmd = Command.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? Command.openGoogle
+            self.selectedCmd = Command.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? Command.startKeynote
             self.selectedActionType = gs!.getActionType()
         }
     }
@@ -108,7 +157,9 @@ struct EditGestureView: View {
                         .font(.title3)
                     
                     Picker("Execute Command:", selection: $selectedCmd) {
-                        Text("Open Google Page").tag(Command.openGoogle)
+                        Text("Start Keynote").tag(Command.startKeynote)
+                        Text("Keynote - Go To Next Slide").tag(Command.keynoteNextSlide)
+                        Text("Keynote - Go To Previuos Slide").tag(Command.keynotePreviusSlide)
                         Text("Open Yahoo Page").tag(Command.openYahoo)
                         Text("Open Facebook Page").tag(Command.openFacebook)
                     }
@@ -174,11 +225,11 @@ struct EditGestureView: View {
             //used for UI forced updates
             let gs = viewModel.gesturesStore.getGesture(gkey)
             if(gs != nil){
-                self.selectedCmd = Command.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? Command.openGoogle
+                self.selectedCmd = Command.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? Command.startKeynote
                 self.selectedActionType = gs!.getActionType()
                 self.threshold = gs!.getActionThreshold()
             } else {
-                self.selectedCmd = Command.openGoogle
+                self.selectedCmd = Command.startKeynote
                 self.selectedActionType = ActionType.executeCommand
             }
         }
