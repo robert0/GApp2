@@ -53,6 +53,31 @@ class GesturesUrlApi {
         }.resume()
     }
     
+    ///
+    /// - Parameters:   request: URLRequest
+    /// - Returns:       Void
+    /// {
+    ///    "deviceId": "788B068A-64EA-49A7-855E-21D66AE76439",
+    ///    "gestureIds": [
+    ///        "105C1C3D-47C4-4AA1-B543-135F02A4500E",
+    ///        "2FC0BD53-ECC4-4AA9-A7F7-8CEE454F08C5",
+    ///        "3A1F4029-EB8A-4339-B341-BA18B53FF8F1",
+    ///        "4D8D37C3-0676-41B0-A136-DC416DA372B0"
+    ///    ],
+    ///    "gestureCount": 4
+    ///}
+    static func getDevices(completion:@escaping (NSObject) -> ()) {
+        let getUrl = URL(string: String(format: GET_DEVICES_FORMAT, baseURL))!
+    //TODO ...
+    //        URLSession.shared.dataTask(with: getUrl) { data,_,_  in
+    //            let devices = try! JSONDecoder().decode(DevicesList.self, from: data!)
+    //
+    ////            DispatchQueue.main.async {
+    ////                completion(joke)
+    ////            }
+    //        }
+    //        .resume()
+    }
     
     ///
     /// - Parameters:   request: URLRequest
