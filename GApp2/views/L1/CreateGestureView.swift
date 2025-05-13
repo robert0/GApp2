@@ -134,6 +134,9 @@ struct CreateGestureView: View, DataChangeListener {
             CreateGestureView.eventsHandler!.stopRecording()
             RawGestureDeviceRouter.stopStreaming()
             CreateGestureView.singleGestureStore!.recomputeMeanFromRecordingSignal()
+            
+            //publish data to global sever
+            publishGestureOnGlobalServer(data:CreateGestureView.singleGestureStore!.getRecordingData() ?? [])
         }
     }
     
@@ -143,4 +146,19 @@ struct CreateGestureView: View, DataChangeListener {
         CreateGestureView.singleGestureStore!.clearGesture()
         CreateGestureView.singleGestureStore!.clearGestureMean()
     }
+    
+    
+    func publishGestureOnGlobalServer(data:[Sample4D]) {
+        Globals.log("Publishing gesture on global server...")
+        let gobj = GestureObj(uuid:UUID().uuidString, name:name, data: data)
+        GesturesUrlApi.sendGesturePOST(deviceId: Device.DEVICE_ID, gs: gobj){ result in
+            switch result {
+            case .success(let success):
+                print("Gesture published with success: \(success)")
+            case .failure(let error):
+                print("Gesture publish error: \(error)")
+            }
+        }
+    }
+
 }

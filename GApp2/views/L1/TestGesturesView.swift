@@ -99,10 +99,27 @@ struct TestGesturesView: View {
                 }.buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)
                 
-                Button("Advertise Message") {
+                Button("Advertise") {
                     Globals.log("Advertise Message clicked...")
                     //GApp2App.sendWatchAMessage(".click3")
                     GApp2App.advertiseMessage("This is an advertised message!")
+
+                }.buttonStyle(.borderedProminent)
+                Spacer().frame(width: 10)
+                
+                Button("POST Gesture") {
+                    Globals.log("POST Gesture clicked...")
+                    //GApp2App.sendWatchAMessage(".click3")
+                    let gobj = GestureObj(uuid:UUID().uuidString, name:"FirstG", data: [])
+                    
+                    GesturesUrlApi.sendGesturePOST(deviceId: "iphone-1234ZXCV", gs: gobj){ result in
+                        switch result {
+                        case .success(let success):
+                            print("POST success: \(success)")
+                        case .failure(let error):
+                            print("POST error: \(error)")
+                        }
+                    }
 
                 }.buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)

@@ -6,8 +6,13 @@
 //
 
 import Foundation
+import UIKit
 
 public class Device {
+    //current device props
+    public static let DEVICE_ID = UIDevice.current.identifierForVendor!.uuidString
+    
+    //app-wide constants
     public static let Mock_Update_Interval = 0.01//seconds
     public static let Mock_X_max = 1.0
     public static let Mock_Y_max = 1.0
