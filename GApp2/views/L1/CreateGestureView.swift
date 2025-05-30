@@ -19,12 +19,16 @@ struct CreateGestureView: View, DataChangeListener {
     ///local vars
     @State private var name: String = ""
     @State private var isNameMissing: Bool = true
+    private var gUUID: String = ""
 
     // constructor
     init(_ gesturesStore:MultiGestureStore) {
         //the init will be called every time the user goes away from this page.(the parent has a reference to it, so it will be recreated)
         Globals.log("Create gesture view, init() ...")
         self.allGesturesStore = gesturesStore
+        
+        //reinitialize UUID
+        self.gUUID = UUID().uuidString
         
         if(CreateGestureView.singleGestureStore == nil){
             initializeStatics();
@@ -107,11 +111,12 @@ struct CreateGestureView: View, DataChangeListener {
             Button("Save gesture") {
                 // create gesture with the same name
                 let gs = Gesture4D()
-                gs.setName(name)
+                gs.setUUID(self.gUUID)
+                gs.setName(self.name)
                 gs.setData(CreateGestureView.singleGestureStore!.getRecordingData() ?? [])
                 
                 //save data to store/analyser
-                allGesturesStore.setGesture(name, gs)
+                allGesturesStore.setGesture(self.name, gs)
                                
                 //return to previous view
                 dismiss()
@@ -150,7 +155,8 @@ struct CreateGestureView: View, DataChangeListener {
     
     func publishGestureOnGlobalServer(data:[Sample4D]) {
         Globals.log("Publishing gesture on global server...")
-        let gobj = GestureObj(uuid:UUID().uuidString, name:name, data: data)
+        let sample = GestureSample(timestamp: Utils.getCurrentMillis(), data: data)
+        let gobj = GestureObj(uuid:self.gUUID, name:self.name, samples: [sample])
         GesturesUrlApi.sendGesturePOST(deviceId: Device.DEVICE_ID, gs: gobj){ result in
             switch result {
             case .success(let success):

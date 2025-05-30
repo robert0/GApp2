@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		E84554C92D50CB220067ADF8 /* GApp2Watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = E84554BC2D50CB200067ADF8 /* GApp2Watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E859C76D2DEA1174009A5FD2 /* NMSSH.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E859C76B2DEA114F009A5FD2 /* NMSSH.framework */; };
+		E859C76E2DEA1174009A5FD2 /* NMSSH.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E859C76B2DEA114F009A5FD2 /* NMSSH.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E887D28C2D10593C00A7EB10 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = E887D28B2D10593C00A7EB10 /* Collections */; };
 		E887D28E2D10593C00A7EB10 /* HashTreeCollections in Frameworks */ = {isa = PBXBuildFile; productRef = E887D28D2D10593C00A7EB10 /* HashTreeCollections */; };
 		E887D2902D10593C00A7EB10 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = E887D28F2D10593C00A7EB10 /* OrderedCollections */; };
@@ -35,10 +37,22 @@
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E859C76F2DEA1174009A5FD2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E859C76E2DEA1174009A5FD2 /* NMSSH.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		E84554BC2D50CB200067ADF8 /* GApp2Watch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GApp2Watch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E859C76B2DEA114F009A5FD2 /* NMSSH.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NMSSH.framework; path = System/Library/Frameworks/NMSSH.framework; sourceTree = SDKROOT; };
 		E887D2022D10550600A7EB10 /* GApp2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GApp2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -67,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E859C76D2DEA1174009A5FD2 /* NMSSH.framework in Frameworks */,
 				E887D28E2D10593C00A7EB10 /* HashTreeCollections in Frameworks */,
 				E887D28C2D10593C00A7EB10 /* Collections in Frameworks */,
 				E887D2902D10593C00A7EB10 /* OrderedCollections in Frameworks */,
@@ -76,11 +91,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E859C76A2DEA114F009A5FD2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E859C76B2DEA114F009A5FD2 /* NMSSH.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E887D1F92D10550600A7EB10 = {
 			isa = PBXGroup;
 			children = (
 				E887D2042D10550600A7EB10 /* GApp2 */,
 				E84554BD2D50CB200067ADF8 /* GApp2Watch Watch App */,
+				E859C76A2DEA114F009A5FD2 /* Frameworks */,
 				E887D2032D10550600A7EB10 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -127,6 +151,7 @@
 				E887D1FF2D10550600A7EB10 /* Frameworks */,
 				E887D2002D10550600A7EB10 /* Resources */,
 				E84554CD2D50CB220067ADF8 /* Embed Watch Content */,
+				E859C76F2DEA1174009A5FD2 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -416,6 +441,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = GApp2/GApp2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"GApp2/Preview Content\"";
@@ -447,6 +473,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = GApp2/GApp2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"GApp2/Preview Content\"";

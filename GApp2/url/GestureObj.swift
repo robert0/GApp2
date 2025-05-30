@@ -9,28 +9,36 @@
 import Foundation
 
 struct GestureObj: Codable {
-    var uuid: String
-    var name: String
-    var data:[Sample4D] = []
+    var uuid: String = ""
+    var name: String = ""
+    var samples:[GestureSample] = []
     
     
     public enum ConfigKeys: String, CodingKey {
         case uuid
         case name
-        case data
+        case samples
     }
     
-    
-    init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.uuid = try container.decode(String.self, forKey: .uuid)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.data = try container.decode([Sample4D].self, forKey: .data)
-    }
-    
-    init (  uuid:String, name:String, data:[Sample4D]) {
+    init (  uuid:String, name:String, samples:[GestureSample]) {
         self.uuid = uuid
         self.name = name
-        self.data = data
+        self.samples = samples
     }
+    
+    //decode path
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: ConfigKeys.self)
+        self.uuid = try container.decode(String.self, forKey: ConfigKeys.uuid)
+        self.name = try container.decode(String.self, forKey: ConfigKeys.name)
+        self.samples = try container.decode([GestureSample].self, forKey: ConfigKeys.samples)
+    }
+    
+    //encode path
+//    func encode(to encoder: Encoder) throws {
+//        var container = encoder.container(keyedBy: ConfigKeys.self)
+//       // try container.encode(uuid, forKey: .uuid)
+//        try container.encode(name, forKey: .name)
+//        try container.encode(samples, forKey: .samples)
+//    }
 }

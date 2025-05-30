@@ -47,6 +47,13 @@ struct MainView: View {
             })
         }
         
+        //load saved ssh data from filesystem
+        let sshDataBean = FileSystem.readSshDataBeanFile()
+        Globals.log("Loaded ssh data for: \(sshDataBean?.hostname)")
+        if sshDataBean != nil {
+            GApp2App.setSshDataBean(sshDataBean!)
+        }
+        
         //start bluetooth & advertising
         GApp2App.startBTOutbound()
     }
@@ -56,6 +63,12 @@ struct MainView: View {
             NavigationView {
                 VStack (alignment: .leading) {
                     Spacer()
+                    NavigationLink(destination: Settings(gesturesStore)) {
+                        Image(systemName: "gearshape.2.fill")
+                            .imageScale(.large)
+                        Text("Settings")
+                    }
+                    Spacer().frame(height:30)
                     NavigationLink(destination: ChooseSourceView(gesturesStore)) {
                         Image(systemName: "applewatch.radiowaves.left.and.right")
                             .imageScale(.large)

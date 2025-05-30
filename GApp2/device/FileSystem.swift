@@ -14,6 +14,54 @@ public class FileSystem {
      *
      * @param gestures
      */
+    public static func writeLocalSshDataBeanFile(_ sshData: SshDataBean) -> Void {
+        do {
+            let fileURL = try FileManager.default
+                .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+                .appendingPathComponent(Device.LocalSSHDataFileName)
+            
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            //encoder.keyEncodingStrategy = .convertToSnakeCase
+            //encoder.dateEncodingStrategy = .iso8601
+            //encoder.dataEncodingStrategy = .base64
+            try encoder
+                .encode(sshData)
+                .write(to: fileURL)
+        } catch {
+            Globals.log("Error saving localSSHDataFile JSON: \(error)")
+        }
+    }
+    
+    /**
+     *  Read the local file of SSH data
+     *
+     *  @return sshData
+     */
+    public static func readSshDataBeanFile() -> SshDataBean? {
+        do {
+            let fileURL = try FileManager.default
+                .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+                .appendingPathComponent(Device.LocalSSHDataFileName)
+            
+            let data = try Data(contentsOf: fileURL)
+            let sshData = try JSONDecoder().decode(SshDataBean.self, from: data)
+            
+            return sshData
+        } catch {
+            Globals.log("Error reading localSSHDataFile JSON: \(error)")
+            return nil
+        }
+    }
+    
+
+
+    
+    /**
+     * Write the local gestures data
+     *
+     * @param gestures
+     */
     public static func writeLocalGesturesDataFile(_ gestures: [Gesture4D]) -> Void {
         do {
             let fileURL = try FileManager.default

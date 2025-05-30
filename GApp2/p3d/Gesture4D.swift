@@ -8,6 +8,7 @@
 import Foundation
 
 public class Gesture4D: Codable {
+    private var gUUID:String = ""
     private var data:[Sample4D] = []
     private var cmd:String = ""
     private var name:String = ""
@@ -17,6 +18,7 @@ public class Gesture4D: Codable {
     private var actionThreshold:Double = 0.7
     
     public enum ConfigKeys: String, CodingKey {
+        case gUUID
         case data
         case cmd
         case name
@@ -33,6 +35,7 @@ public class Gesture4D: Codable {
      */
     public required init(from decoder: any Decoder) throws {
         let values = try decoder.container(keyedBy: ConfigKeys.self)
+        self.gUUID = try values.decodeIfPresent(String.self, forKey: .gUUID) ?? ""
         self.cmd = try values.decodeIfPresent(String.self, forKey: .cmd) ?? ""
         self.name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
         self.data = try values.decodeIfPresent([Sample4D].self, forKey: .data) ?? []
@@ -47,6 +50,7 @@ public class Gesture4D: Codable {
      */
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: ConfigKeys.self)
+        try container.encode(gUUID, forKey: .gUUID)
         try container.encode(cmd, forKey: .cmd)
         try container.encode(name, forKey: .name)
         try container.encode(data, forKey: .data)
@@ -68,6 +72,11 @@ public class Gesture4D: Codable {
         return name
     }
     
+    public func getUUID() -> String {
+        return gUUID
+    }
+    
+    
     public func getCommand() -> String {
         return cmd
     }
@@ -87,6 +96,10 @@ public class Gesture4D: Codable {
     
     public func setName(_ name: String) {
         self.name = name
+    }
+    
+    public func setUUID(_ uuid: String) {
+        self.gUUID = uuid
     }
     
     public func setCommand(_ cmd: String) {

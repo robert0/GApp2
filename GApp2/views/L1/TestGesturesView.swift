@@ -106,24 +106,39 @@ struct TestGesturesView: View {
 
                 }.buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)
-                
-                Button("POST Gesture") {
-                    Globals.log("POST Gesture clicked...")
-                    //GApp2App.sendWatchAMessage(".click3")
-                    let gobj = GestureObj(uuid:UUID().uuidString, name:"FirstG", data: [])
-                    
-                    GesturesUrlApi.sendGesturePOST(deviceId: "iphone-1234ZXCV", gs: gobj){ result in
-                        switch result {
-                        case .success(let success):
-                            print("POST success: \(success)")
-                        case .failure(let error):
-                            print("POST error: \(error)")
-                        }
-                    }
 
-                }.buttonStyle(.borderedProminent)
-                Spacer().frame(width: 10)
+                
+//                Button("POST Gesture") {
+//                    Globals.log("POST Gesture clicked...")
+//                    //GApp2App.sendWatchAMessage(".click3")
+//                    let gobj = GestureObj(uuid:UUID().uuidString, name:"FirstG", samples: [])
+//                    
+//                    GesturesUrlApi.sendGesturePOST(deviceId: "iphone-1234ZXCV", gs: gobj){ result in
+//                        switch result {
+//                        case .success(let success):
+//                            print("POST success: \(success)")
+//                        case .failure(let error):
+//                            print("POST error: \(error)")
+//                        }
+//                    }
+//
+//                }.buttonStyle(.borderedProminent)
+//                Spacer().frame(width: 10)
                 Spacer()
+            }
+            
+            HStack {
+                Button("Open") {
+                    openKeynotePressed()
+                }.padding(10)
+                
+                Button("Next >") {
+                    nextPressed()
+                }.padding(10)
+                
+                Button("< Previuos") {
+                    previousPressed()
+                }.padding(10)
             }
             
             //add data view panel
@@ -135,5 +150,34 @@ struct TestGesturesView: View {
             RawGestureDeviceRouter.stopStreaming()
             //self.analyser.clear() - to be implemented
         }
+    }
+    
+    
+    func openKeynotePressed() {
+        print("open pressed")
+        
+        //mac
+        var command = SSHCommands.startKeynoteApp_Play_cmd.rawValue
+        var response: String? = SSHConnector.executeCommand(command)
+
+        print(response ?? "No response")
+    }
+    
+    func nextPressed() {
+        print("next pressed")
+
+        var command = "osascript -e 'tell application \"System Events\" to key code 121'"
+        var response: String? = SSHConnector.executeCommand(command)
+        
+        print(response ?? "No response")
+    }
+    
+    func previousPressed() {
+        print("previous pressed")
+
+        var command = "osascript -e 'tell application \"System Events\" to key code 116'"
+        var response: String? = SSHConnector.executeCommand(command)
+        
+        print(response ?? "No response")
     }
 }

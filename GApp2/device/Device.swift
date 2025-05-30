@@ -30,5 +30,6 @@ public class Device {
     //file used for storing gestures data
     public static let LocalGesturesDataFileName = "LocalGesturesData.json"
     public static let IncommingGesturesDataFileName = "IncommingGesturesData.json"
+    public static let LocalSSHDataFileName = "LocalSSHData.json"
 
 }
