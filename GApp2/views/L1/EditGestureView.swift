@@ -16,65 +16,10 @@ struct EditGestureView: View {
     
     //local updatable values
     @State private var gkey: String
-    @State private var selectedCmd: Command = Command.startKeynote
+    @State private var selectedCmd: String = ScriptCmd.macOs_startKeynoteApp_Play.rawValue
     @State private var selectedActionType: ActionType = ActionType.executeCommand
     @State private var threshold:Double = 0.5
     
-    enum Command: String, CaseIterable, Identifiable {
-        case startKeynote = """
-                    if running of application \"Keynote\" is true then
-                            tell application \"Keynote\"
-                            activate
-                            try
-                                if playing is false then start the front document
-                            end try
-                        end tell
-                    end if
-                    """
-        
-        case keynoteNextSlide = """
-                    if running of application \"Keynote\" is true then
-                            tell application \"Keynote\"
-                            activate
-                            try
-                                show next
-                            end try
-                        end tell
-                    end if
-                    """
-        
-        case keynotePreviusSlide = """
-                    if running of application \"Keynote\" is true then
-                            tell application \"Keynote\"
-                            activate
-                            try
-                                show previous
-                            end try
-                        end tell
-                    end if
-                    """
-        case openYahoo = """
-                    if running of application \"Safari\" is true then
-                            tell application \"Safari\"
-                            activate
-                            try
-                                 open location \"https://www.google.com\"
-                            end try
-                        end tell
-                    end if
-                    """
-        case openFacebook = """
-                    if running of application \"Safari\" is true then
-                            tell application \"Safari\"
-                            activate
-                            try
-                                 open location \"https://www.facebook.com\"
-                            end try
-                        end tell
-                    end if
-                    """
-        var id: Self { self }
-    }
     
     // constructor
     init(_ gesturesStore: MultiGestureStore, _ gkey: String) {
@@ -86,7 +31,7 @@ struct EditGestureView: View {
         let gs = gesturesStore.getGesture(gkey)
         if(gs != nil){
             Globals.log("init initial cmd:\(gs!.getCommand())")
-            self.selectedCmd = Command.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? Command.startKeynote
+            self.selectedCmd = (ScriptCmd.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? ScriptCmd.macOs_startKeynoteApp_Play).rawValue
             self.selectedActionType = gs!.getActionType()
         }
     }
@@ -129,8 +74,11 @@ struct EditGestureView: View {
                 Text("Select Action Type:")
                     .font(.title3)
                 Picker("", selection: $selectedActionType) {
-                    Text("Execute Command Locally").tag(ActionType.executeCommand)
-                      Text("Forward Gesture/Command via Bluetooth").tag(ActionType.executeCmdViaBluetooth)
+                    ForEach(ActionType.allCases, id: \.self) { action in
+                        let menuText = action.stringValue()
+                        Text("\(menuText)")
+                        .tag(action)
+                      }
                 }
                 .padding(5)
                 .overlay(
@@ -152,26 +100,54 @@ struct EditGestureView: View {
                 ///     }
                 ///
 
-                if(selectedActionType == ActionType.executeCommand || selectedActionType == ActionType.executeCmdViaBluetooth){
+                if(selectedActionType == ActionType.executeCommand ||
+                   selectedActionType == ActionType.executeCmdViaBluetooth ||
+                   selectedActionType == ActionType.executeCmdViaSSH
+                ){
                     Text("Choose Command to execute:")
                         .font(.title3)
                     
+                    //picker over an enumeration
                     Picker("Execute Command:", selection: $selectedCmd) {
-                        Text("Start Keynote").tag(Command.startKeynote)
-                        Text("Keynote - Go To Next Slide").tag(Command.keynoteNextSlide)
-                        Text("Keynote - Go To Previuos Slide").tag(Command.keynotePreviusSlide)
-                        Text("Open Yahoo Page").tag(Command.openYahoo)
-                        Text("Open Facebook Page").tag(Command.openFacebook)
+                        ForEach(ScriptCmd.allCases, id: \.self) { cmd in
+                            let menuText = cmd.stringValue()
+                            Text("\(menuText)").tag(cmd.rawValue)
+                          }
                     }
+                      
+
+                    
+//                    Picker("Execute Command:", selection: $selectedCmd) {
+//                        AppleScriptCmd. allCases.map(\.rawValue).enumerated().map(\.element).forEach { item in
+//                            Text(item.fastestEncoding.rawValue).tag(item)
+//                        }
+//                        
+////                        Text("Start Keynote").tag(Command.startKeynote)
+////                        Text("Keynote - Go To Next Slide").tag(Command.keynoteNextSlide)
+////                        Text("Keynote - Go To Previuos Slide").tag(Command.keynotePreviusSlide)
+////                        Text("Open Yahoo Page").tag(Command.openYahoo)
+////                        Text("Open Facebook Page").tag(Command.openFacebook)
+//                    }
                     .padding(5)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(Color.orange)
                     )
-                    if(selectedActionType == ActionType.executeCmdViaBluetooth){
+                    
+                    if(selectedActionType == ActionType.executeCmdViaSSH){
                         Spacer().frame(height: 20)
-                        Text("Info: Gestures data will be streamed to all connected Bluetooth devices.").italic()
+                        if(SSHConnector.isActive()){
+                            Text("Connected to SSH Server: \(GApp2App.getSshServerName()?.description ?? "Unknown")")
+                                .foregroundColor(.green)
+                            Text("Info: Gestures commands will be streamed to the SSH server.")
+                                .italic()
+                                .foregroundColor(.green)
+                        } else {
+                            Text("Not connected to SSH Server")
+                                .foregroundColor(.red)
+                        }
                     }
+                    
 //                    if(GApp2App.btPeripheralDevice == nil){
 //                        NavigationLink {
 //                            BTView()
@@ -190,6 +166,11 @@ struct EditGestureView: View {
                 }
                 Spacer().frame(height: 50)
                 
+                if(selectedCmd ==  ScriptCmd.macOs_openGoogle.rawValue ){
+                    Text("Add a Command to execute:")
+                        .font(.title3)
+                }
+                    
                 
             }.padding(20)
             
@@ -200,7 +181,7 @@ struct EditGestureView: View {
                 var gs = viewModel.gesturesStore.getGesture(initialKey)
                 if(gs != nil){
                     //set/change all props
-                    gs!.setCommand(selectedCmd.rawValue)
+                    gs!.setCommand(selectedCmd)
                     gs!.setActionType(selectedActionType)
                     gs!.setActionThreshold(threshold)
                     //Globals.log("cmd: \(gs!.getCommand())")
@@ -225,11 +206,11 @@ struct EditGestureView: View {
             //used for UI forced updates
             let gs = viewModel.gesturesStore.getGesture(gkey)
             if(gs != nil){
-                self.selectedCmd = Command.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? Command.startKeynote
+                self.selectedCmd = (ScriptCmd.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? ScriptCmd.macOs_startKeynoteApp_Play).rawValue
                 self.selectedActionType = gs!.getActionType()
                 self.threshold = gs!.getActionThreshold()
             } else {
-                self.selectedCmd = Command.startKeynote
+                self.selectedCmd = ScriptCmd.macOs_startKeynoteApp_Play.rawValue
                 self.selectedActionType = ActionType.executeCommand
             }
         }

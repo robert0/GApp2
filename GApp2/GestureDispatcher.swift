@@ -42,10 +42,15 @@ public class GestureDispatcher : GestureEvaluationListener, BTChangeListener {
                 //CommandExecutor.executeCommand(gesture?.getCommand())
                 
             } else  if(gesture?.getActionType() == ActionType.executeCmdViaBluetooth){
-                Globals.log("GestureDispatcher:Executing gesture command ...")
+                Globals.log("GestureDispatcher:Executing gesture command via BT...")
                 
                 //send to bluetooth
                 sendViaBluetooth(gCorr, gesture!)
+            } else  if(gesture?.getActionType() == ActionType.executeCmdViaSSH){
+                Globals.log("GestureDispatcher:Executing gesture command via SSH...")
+                
+                //execute via SSH
+                executeViaSSH(gCorr, gesture!)
             }
         }
     }
@@ -72,6 +77,23 @@ public class GestureDispatcher : GestureEvaluationListener, BTChangeListener {
             
         } catch {
             Globals.log("GestureDispatcher: Error encoding to JSON: \(error)")
+        }
+    }
+    
+    //
+    fileprivate func executeViaSSH(_ gCorr: Double, _ gesture: Gesture4D) {
+        
+        Globals.log("GestureDispatcher: Executing command via SSH...")
+        let gCorrFt = String(format: self.correlationFactorFormat, gCorr)
+        let cutCorrFt:Double = floor(gCorr * 1000.0)/1000.0
+        let cmd = gesture.getCommand()
+        do {
+            var response: String? = GApp2App.executeCommandViaSSH(cmd)
+            Globals.log("GestureDispatcher: Command executed successfully. Response: \(response ?? "No response")")
+            
+        } catch {
+            Globals.log("GestureDispatcher Error: \(error)")
+            Globals.log("GestureDispatcher: Error executing command for gesture: \(gesture.getName())")
         }
     }
         

@@ -10,14 +10,23 @@ import NMSSH
 
 class SSHConnector {
     static let shared = SSHConnector()//self intialization
+    static var sshDataBean: SshDataBean?
     static var ssh_session: NMSSHSession?
     
-   private init(){//initialize only once
-        if(SSHConnector.ssh_session == nil){
-            SSHConnector.authenticate()
-        }
+    private init(){
+        //        if(SSHConnector.ssh_session == nil){
+        //            SSHConnector.authenticate()
+        //        }
     }
     
+    ///
+    public static func initialize( sshDataBean: SshDataBean){
+        if(SSHConnector.ssh_session != nil && ((SSHConnector.ssh_session?.isConnected) != nil)){
+            disconnect()
+        }
+        SSHConnector.sshDataBean = sshDataBean
+        authenticate()
+    }
     
     private static func authenticate() {
         // This function is not needed since we authenticate in the init
@@ -29,9 +38,18 @@ class SSHConnector {
         //        let password:String = "sshpass"
         
         //mac
-        let hostname: String = "192.168.1.104"
-        let username:String = "roberttalianu"
-        let password:String = "alpha"
+        //        let hostname: String = "192.168.1.104"
+        //        let username:String = "roberttalianu"
+        //        let password:String = "alpha"
+        
+        if(self.sshDataBean == nil || sshDataBean?.hostname == nil){
+            print("Error: Session could not be restored!")
+            return
+        }
+        
+        let hostname = sshDataBean?.hostname ?? ""
+        let username = sshDataBean?.username ?? ""
+        let password = sshDataBean?.password ?? ""
         
         ssh_session = NMSSHSession(host: hostname, andUsername: username)
         if ssh_session == nil {
@@ -71,6 +89,12 @@ class SSHConnector {
         } else {
             print("No SSH session to disconnect.")
         }
+    }
+    
+    
+    /// Checks if the SSH session is active.
+    public static func isActive() -> Bool {
+        return ssh_session!.isConnected == true || ssh_session!.isAuthorized == true
     }
     
     

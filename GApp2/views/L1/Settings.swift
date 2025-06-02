@@ -41,8 +41,8 @@ struct Settings: View {
                 Spacer().frame(height: 50)
                 Text("Setup the credentials for SSH connection").italic()
                 Spacer().frame(height: 10)
-                Text("SSH IP Adress:")
-                TextField("IP", text: $gkey)
+                Text("SSH Hostname/IP Adress:")
+                TextField("Hostname", text: $gkey)
                     .padding(10)
                     .contentMargins(10)
                     .overlay(

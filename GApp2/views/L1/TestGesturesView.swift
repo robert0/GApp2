@@ -83,62 +83,63 @@ struct TestGesturesView: View {
                 Spacer()
             }
 
-            HStack {
-                Spacer()
-                Button("Send Click Message") {
-                    Globals.log("Send Watch A .click Message!!!...")
-                    GApp2App.sendWatchAMessage(".click")
-
-                }.buttonStyle(.borderedProminent)
-                Spacer().frame(width: 10)
-                
-                Button("Send 2 Click Message") {
-                    Globals.log("Send Watch A 2.click Message!!!...")
-                    GApp2App.sendWatchAMessage(".click2")
-
-                }.buttonStyle(.borderedProminent)
-                Spacer().frame(width: 10)
-                
-                Button("Advertise") {
-                    Globals.log("Advertise Message clicked...")
-                    //GApp2App.sendWatchAMessage(".click3")
-                    GApp2App.advertiseMessage("This is an advertised message!")
-
-                }.buttonStyle(.borderedProminent)
-                Spacer().frame(width: 10)
-
-                
-//                Button("POST Gesture") {
-//                    Globals.log("POST Gesture clicked...")
-//                    //GApp2App.sendWatchAMessage(".click3")
-//                    let gobj = GestureObj(uuid:UUID().uuidString, name:"FirstG", samples: [])
-//                    
-//                    GesturesUrlApi.sendGesturePOST(deviceId: "iphone-1234ZXCV", gs: gobj){ result in
-//                        switch result {
-//                        case .success(let success):
-//                            print("POST success: \(success)")
-//                        case .failure(let error):
-//                            print("POST error: \(error)")
-//                        }
-//                    }
+//            HStack {
+//                Spacer()
+//                Button("Send Click Message") {
+//                    Globals.log("Send Watch A .click Message!!!...")
+//                    GApp2App.sendWatchAMessage(".click")
 //
 //                }.buttonStyle(.borderedProminent)
 //                Spacer().frame(width: 10)
-                Spacer()
-            }
+//                
+//                Button("Send 2 Click Message") {
+//                    Globals.log("Send Watch A 2.click Message!!!...")
+//                    GApp2App.sendWatchAMessage(".click2")
+//
+//                }.buttonStyle(.borderedProminent)
+//                Spacer().frame(width: 10)
+//                
+//                Button("Advertise") {
+//                    Globals.log("Advertise Message clicked...")
+//                    //GApp2App.sendWatchAMessage(".click3")
+//                    GApp2App.advertiseMessage("This is an advertised message!")
+//
+//                }.buttonStyle(.borderedProminent)
+//                Spacer().frame(width: 10)
+//
+//                
+////                Button("POST Gesture") {
+////                    Globals.log("POST Gesture clicked...")
+////                    //GApp2App.sendWatchAMessage(".click3")
+////                    let gobj = GestureObj(uuid:UUID().uuidString, name:"FirstG", samples: [])
+////                    
+////                    GesturesUrlApi.sendGesturePOST(deviceId: "iphone-1234ZXCV", gs: gobj){ result in
+////                        switch result {
+////                        case .success(let success):
+////                            print("POST success: \(success)")
+////                        case .failure(let error):
+////                            print("POST error: \(error)")
+////                        }
+////                    }
+////
+////                }.buttonStyle(.borderedProminent)
+////                Spacer().frame(width: 10)
+//                Spacer()
+//            }
             
             HStack {
                 Button("Open") {
                     openKeynotePressed()
                 }.padding(10)
                 
-                Button("Next >") {
-                    nextPressed()
-                }.padding(10)
-                
                 Button("< Previuos") {
                     previousPressed()
                 }.padding(10)
+                
+                Button("Next >") {
+                    nextPressed()
+                }.padding(10)
+
             }
             
             //add data view panel
@@ -158,7 +159,7 @@ struct TestGesturesView: View {
         
         //mac
         var command = SSHCommands.startKeynoteApp_Play_cmd.rawValue
-        var response: String? = SSHConnector.executeCommand(command)
+        var response: String? = GApp2App.executeCommandViaSSH(command)
 
         print(response ?? "No response")
     }
@@ -167,7 +168,7 @@ struct TestGesturesView: View {
         print("next pressed")
 
         var command = "osascript -e 'tell application \"System Events\" to key code 121'"
-        var response: String? = SSHConnector.executeCommand(command)
+        var response: String? = GApp2App.executeCommandViaSSH(command)
         
         print(response ?? "No response")
     }
@@ -176,7 +177,7 @@ struct TestGesturesView: View {
         print("previous pressed")
 
         var command = "osascript -e 'tell application \"System Events\" to key code 116'"
-        var response: String? = SSHConnector.executeCommand(command)
+        var response: String? = GApp2App.executeCommandViaSSH(command)
         
         print(response ?? "No response")
     }
