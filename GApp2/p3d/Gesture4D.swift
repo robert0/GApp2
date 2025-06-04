@@ -40,8 +40,8 @@ public class Gesture4D: Codable {
         self.name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
         self.data = try values.decodeIfPresent([Sample4D].self, forKey: .data) ?? []
         self.actionThreshold = try values.decodeIfPresent(Double.self, forKey: .actionThreshold) ?? 0.7
-        //TODO ...
-        //self.actionType = try values.decodeIfPresent(String.self, forKey: .actionType)!
+        let sActionType = try values.decodeIfPresent(String.self, forKey: .actionType) ?? ""
+        self.actionType = ActionType.allCases.first(where: { $0.stringValue() == sActionType }) ?? ActionType.executeCommand
     }
     
     /**
@@ -55,8 +55,7 @@ public class Gesture4D: Codable {
         try container.encode(name, forKey: .name)
         try container.encode(data, forKey: .data)
         try container.encode(actionThreshold, forKey: .actionThreshold)
-        //TODO ...
-        //try container.encode(actionType, forKey: .actionType)
+        try container.encode(actionType.stringValue(), forKey: .actionType)
     }
     
     

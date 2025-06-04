@@ -19,6 +19,8 @@ struct EditGestureView: View {
     @State private var selectedCmd: String = ScriptCmd.macOs_startKeynoteApp_Play.rawValue
     @State private var selectedActionType: ActionType = ActionType.executeCommand
     @State private var threshold:Double = 0.5
+    @State private var customCmd:String = ""
+    @State private var isCmdMissing: Bool = true
     
     
     // constructor
@@ -31,7 +33,19 @@ struct EditGestureView: View {
         let gs = gesturesStore.getGesture(gkey)
         if(gs != nil){
             Globals.log("init initial cmd:\(gs!.getCommand())")
-            self.selectedCmd = (ScriptCmd.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? ScriptCmd.macOs_startKeynoteApp_Play).rawValue
+            
+            //check the command is in the ScriptCmd enumeration
+            var isKnownCmd = ScriptCmd.allCases.filter{$0.rawValue == gs!.getCommand()}.first
+            if(isKnownCmd == nil){
+                //if not, set it to custom command
+                isKnownCmd = ScriptCmd.customCmd
+                self.selectedCmd =  ScriptCmd.customCmd.rawValue
+                self.customCmd = gs!.getCommand()
+                
+            } else {
+                self.selectedCmd = gs!.getCommand()
+            }
+
             self.selectedActionType = gs!.getActionType()
         }
     }
@@ -43,8 +57,7 @@ struct EditGestureView: View {
             //add buttons
             VStack (alignment: .leading){
                 Spacer().frame(height: 50)
-                Text("Edit Name:")
-                    .font(.title3)
+                Text("Gesture Name:")
                 TextField("Name", text: $gkey)
                     .padding(10)
                     .contentMargins(10)
@@ -56,7 +69,6 @@ struct EditGestureView: View {
                 Spacer().frame(height: 20)
                 
                 Text("Do action when gesture match is above threshold:")
-                    .font(.title3)
                 TextField("Value", value: $threshold, format:.number)
                 //.textFieldStyle(.plain)
                     .padding(10)
@@ -72,7 +84,6 @@ struct EditGestureView: View {
                 Spacer().frame(height: 20)
                 
                 Text("Select Action Type:")
-                    .font(.title3)
                 Picker("", selection: $selectedActionType) {
                     ForEach(ActionType.allCases, id: \.self) { action in
                         let menuText = action.stringValue()
@@ -87,26 +98,11 @@ struct EditGestureView: View {
                 )
                 Spacer().frame(height: 20)
                 
-                ///     @State private var myMoney: Double? = 300.0
-                ///     var body: some View {
-                ///         TextField(
-                ///             "Currency (USD)",
-                ///             value: $myMoney,
-                ///             format: .currency(code: "USD")
-                ///         )
-                ///         .onChange(of: myMoney) { newValue in
-                ///             print ("myMoney: \(newValue)")
-                ///         }
-                ///     }
-                ///
-
                 if(selectedActionType == ActionType.executeCommand ||
                    selectedActionType == ActionType.executeCmdViaBluetooth ||
                    selectedActionType == ActionType.executeCmdViaSSH
                 ){
                     Text("Choose Command to execute:")
-                        .font(.title3)
-                    
                     //picker over an enumeration
                     Picker("Execute Command:", selection: $selectedCmd) {
                         ForEach(ScriptCmd.allCases, id: \.self) { cmd in
@@ -114,28 +110,29 @@ struct EditGestureView: View {
                             Text("\(menuText)").tag(cmd.rawValue)
                           }
                     }
-                      
-
-                    
-//                    Picker("Execute Command:", selection: $selectedCmd) {
-//                        AppleScriptCmd. allCases.map(\.rawValue).enumerated().map(\.element).forEach { item in
-//                            Text(item.fastestEncoding.rawValue).tag(item)
-//                        }
-//                        
-////                        Text("Start Keynote").tag(Command.startKeynote)
-////                        Text("Keynote - Go To Next Slide").tag(Command.keynoteNextSlide)
-////                        Text("Keynote - Go To Previuos Slide").tag(Command.keynotePreviusSlide)
-////                        Text("Open Yahoo Page").tag(Command.openYahoo)
-////                        Text("Open Facebook Page").tag(Command.openFacebook)
-//                    }
                     .padding(5)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(Color.orange)
                     )
+                    Spacer().frame(height: 20)
                     
-                    if(selectedActionType == ActionType.executeCmdViaSSH){
+                    // Custom command
+                    if(selectedCmd ==  ScriptCmd.customCmd.rawValue){
+                        Text("Set the Command to execute:")
+                        TextField("Command", text: $customCmd)
+                            .textFieldStyle(.plain)
+                            .padding(10)
+                            .contentMargins(10)
+                            .onChange(of: customCmd) { _ in
+                                isCmdMissing = customCmd.isEmpty
+                            }
+                            .overlay(RoundedRectangle(cornerRadius: 5).stroke(isCmdMissing ? Color.red : Color.gray))
                         Spacer().frame(height: 20)
+                    }
+                    
+                    //Warning for ssh connection
+                    if(selectedActionType == ActionType.executeCmdViaSSH){
                         if(SSHConnector.isActive()){
                             Text("Connected to SSH Server: \(GApp2App.getSshServerName()?.description ?? "Unknown")")
                                 .foregroundColor(.green)
@@ -143,7 +140,7 @@ struct EditGestureView: View {
                                 .italic()
                                 .foregroundColor(.green)
                         } else {
-                            Text("Not connected to SSH Server")
+                            Text("Not connected to SSH Server. Go to Settings menu to configure SSH connection or check if the SSH server is reachable.")
                                 .foregroundColor(.red)
                         }
                     }
@@ -164,13 +161,7 @@ struct EditGestureView: View {
 //                    }
                     
                 }
-                Spacer().frame(height: 50)
-                
-                if(selectedCmd ==  ScriptCmd.macOs_openGoogle.rawValue ){
-                    Text("Add a Command to execute:")
-                        .font(.title3)
-                }
-                    
+                Spacer().frame(height: 20)
                 
             }.padding(20)
             
@@ -181,10 +172,13 @@ struct EditGestureView: View {
                 var gs = viewModel.gesturesStore.getGesture(initialKey)
                 if(gs != nil){
                     //set/change all props
-                    gs!.setCommand(selectedCmd)
                     gs!.setActionType(selectedActionType)
                     gs!.setActionThreshold(threshold)
-                    //Globals.log("cmd: \(gs!.getCommand())")
+                    if(selectedCmd == ScriptCmd.customCmd.rawValue){
+                        gs!.setCommand(customCmd)
+                    } else {
+                        gs!.setCommand(selectedCmd)
+                    }
                     
                     //set/change key (&name)
                     //if(self.initialKey != gkey){
@@ -206,11 +200,21 @@ struct EditGestureView: View {
             //used for UI forced updates
             let gs = viewModel.gesturesStore.getGesture(gkey)
             if(gs != nil){
-                self.selectedCmd = (ScriptCmd.allCases.filter{$0.rawValue == gs!.getCommand()}.first ?? ScriptCmd.macOs_startKeynoteApp_Play).rawValue
+                //check the command is in the ScriptCmd enumeration
+                var isKnownCmd = ScriptCmd.allCases.filter{$0.rawValue == gs!.getCommand()}.first
+                if(isKnownCmd == nil){
+                    //if not, set it to custom command
+                    isKnownCmd = ScriptCmd.customCmd
+                    self.selectedCmd =  ScriptCmd.customCmd.rawValue
+                    self.customCmd = gs!.getCommand()
+                    
+                } else {
+                    self.selectedCmd = gs!.getCommand()
+                }
                 self.selectedActionType = gs!.getActionType()
                 self.threshold = gs!.getActionThreshold()
             } else {
-                self.selectedCmd = ScriptCmd.macOs_startKeynoteApp_Play.rawValue
+                self.selectedCmd = ScriptCmd.allCases.first?.rawValue ?? ""
                 self.selectedActionType = ActionType.executeCommand
             }
         }
