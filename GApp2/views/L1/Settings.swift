@@ -85,10 +85,11 @@ struct Settings: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    Button("Update") {
+                    Button("Update & Connect") {
                         Globals.log("Update Edited")
                         
                         GApp2App.setSshDataBean(gkey, user, password)
+                        GApp2App.connectToSSHServer()
                         
                         //save to filesystem
                         FileSystem.writeLocalSshDataBeanFile(GApp2App.getSshDataBean()!)

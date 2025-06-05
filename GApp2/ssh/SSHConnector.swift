@@ -25,10 +25,10 @@ class SSHConnector {
             disconnect()
         }
         SSHConnector.sshDataBean = sshDataBean
-        authenticate()
+        //authenticate()
     }
     
-    private static func authenticate() {
+    public static func authenticate() {
         // This function is not needed since we authenticate in the init
         let port:Int = 22
         
@@ -43,7 +43,7 @@ class SSHConnector {
         //        let password:String = "alpha"
         
         if(self.sshDataBean == nil || sshDataBean?.hostname == nil){
-            print("Error: Session could not be restored!")
+            print("Error: SSH Server credentials are not configured!")
             return
         }
         
@@ -94,7 +94,7 @@ class SSHConnector {
     
     /// Checks if the SSH session is active.
     public static func isActive() -> Bool {
-        return ssh_session!.isConnected == true || ssh_session!.isAuthorized == true
+        return ssh_session != nil && ssh_session!.isConnected == true && ssh_session!.isAuthorized == true
     }
     
     

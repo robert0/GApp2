@@ -8,6 +8,8 @@ import CoreMotion
 import SwiftUI
 
 struct TestGesturesView: View {
+    @Environment(\.dismiss) var dismiss
+    
     //next vars will be created only once
     private var analyser:RealtimeMultiGestureStoreAnalyser
     private static var dataRenderer: TestingViewRenderer?
@@ -51,6 +53,37 @@ struct TestGesturesView: View {
     // The app panel
     var body: some View {
         return VStack {
+            Spacer().frame(height: 10)
+            if(SSHConnector.isActive()) {
+                Text("Connected to SSH Server: \(GApp2App.getSshServerName()?.description ?? "Unknown")")
+                    .italic()
+                    .foregroundColor(.green)
+                Text("Info: Gestures commands will be streamed to the SSH server.")
+                    .italic()
+                    .foregroundColor(.green)
+            } else {
+                Text("Not connected to SSH Server. Go to Settings menu to configure SSH connection or check if the SSH server is reachable.")
+                    .foregroundColor(.red)
+            }
+            
+//            Text("Test commands via ssh:").italic()
+//            HStack {
+//                Button("Open") {
+//                    openKeynotePressed()
+//                }.padding(10)
+//                
+//                Button("< Previous") {
+//                    previousPressed()
+//                }.padding(10)
+//                
+//                Button("Next >") {
+//                    nextPressed()
+//                }.padding(10)
+//                
+//            }.padding(0)
+            
+            Spacer().frame(height: 30)
+            Text("Test gestures:").italic()
             //add buttons
             HStack {
                 Spacer()
@@ -73,13 +106,7 @@ struct TestGesturesView: View {
 
                 }.buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)
-               
-//                Button("Execute App") {
-//                    Globals.log("Execute App Clicked !!!...")
-//                    let url = URL(string: "https://www.bing.com")
-//                    UIApplication.shared.open(url!)
-//
-//                }.buttonStyle(.borderedProminent)
+                
                 Spacer()
             }
 
@@ -108,42 +135,10 @@ struct TestGesturesView: View {
 //                Spacer().frame(width: 10)
 //
 //                
-////                Button("POST Gesture") {
-////                    Globals.log("POST Gesture clicked...")
-////                    //GApp2App.sendWatchAMessage(".click3")
-////                    let gobj = GestureObj(uuid:UUID().uuidString, name:"FirstG", samples: [])
-////                    
-////                    GesturesUrlApi.sendGesturePOST(deviceId: "iphone-1234ZXCV", gs: gobj){ result in
-////                        switch result {
-////                        case .success(let success):
-////                            print("POST success: \(success)")
-////                        case .failure(let error):
-////                            print("POST error: \(error)")
-////                        }
-////                    }
-////
-////                }.buttonStyle(.borderedProminent)
-////                Spacer().frame(width: 10)
-//                Spacer()
-//            }
-            
-            HStack {
-                Button("Open") {
-                    openKeynotePressed()
-                }.padding(10)
-                
-                Button("< Previuos") {
-                    previousPressed()
-                }.padding(10)
-                
-                Button("Next >") {
-                    nextPressed()
-                }.padding(10)
-
-            }
             
             //add data view panel
             TestGesturesView.dataRenderer
+            Spacer()
             
         }.onDisappear {
             //force stop streaming

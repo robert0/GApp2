@@ -29,7 +29,8 @@ struct GApp2App: App {
     static var btInInstance: BTCentralObj_IN?
     static var btPeripheralDevice: CBPeripheral?
     private static var sshDataBean: SshDataBean?
-
+    static var lastSshCmd: String? = nil
+        
     //static var contentView:ContentView? = nil
 
     init() {
@@ -45,6 +46,10 @@ struct GApp2App: App {
         }
     }
 
+    public static func connectToSSHServer() {
+        SSHConnector.authenticate()
+    }
+                
     /// Sets the SSH data bean
     public static func setSshDataBean(_ bean: SshDataBean) {
         GApp2App.sshDataBean = bean
@@ -77,6 +82,7 @@ struct GApp2App: App {
     /// Executes a command via SSH using the SSHConnector.
     public static func executeCommandViaSSH(_ cmd: String) -> String? {
         if GApp2App.sshDataBean != nil {
+            lastSshCmd = cmd
             return SSHConnector.executeCommand(cmd)
         } else {
             Globals.log("APP_Main:executeCommandViaSSH failed; SSH is not configured!")
@@ -84,7 +90,10 @@ struct GApp2App: App {
         }
     }
     
-            
+    /// Retrieves the last executed SSH command.
+    public static func getLastSshCommand() -> String? {
+        return GApp2App.lastSshCmd
+    }
             
             
     /*

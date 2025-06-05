@@ -92,10 +92,13 @@ struct TestingViewRenderer: View, DataChangeListener, GestureEvaluationListener 
                 }
 
             }
-
-            Text("Gesture Detection Status:").offset(x: 0, y: 0)
-            ForEach(viewModel.gestureEvaluationStatusMap.elements, id: \.key) { element in
-                Text("\(element.key): \(element.value.getGestureCorrelationFactor())")
+            VStack (alignment: .leading) {
+                Text("Gesture Detection Status:")
+                ForEach(viewModel.gestureEvaluationStatusMap.elements, id: \.key) { element in
+                    Text("\(element.key): \(element.value.getGestureCorrelationFactor())").offset(x: 20).italic().foregroundColor(.blue)
+                }
+                Text("Last Command:")
+                Text(GApp2App.getLastSshCommand() ?? "").offset(x: 20).italic().foregroundColor(.blue)
             }
         }
     }
