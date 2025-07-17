@@ -56,17 +56,22 @@ struct MainView: View {
         
         //start bluetooth & advertising
         GApp2App.startBTOutbound()
+        
+        var _self = self
+        
+        //Notify App started OK
+        ToastManager.show("App started...OK", ToastSeverity.success)
     }
     
     var body: some View {
-          
+        ZStack {
             NavigationView {
                 VStack (alignment: .leading) {
                     Spacer()
                     NavigationLink(destination: Settings(gesturesStore)) {
                         Image(systemName: "gearshape.2.fill")
                             .imageScale(.large)
-                        Text("Settings")
+                        Text("SSH Settings")
                     }
                     Spacer().frame(height:30)
                     NavigationLink(destination: ChooseSourceView(gesturesStore)) {
@@ -99,6 +104,7 @@ struct MainView: View {
                         Text("Test")
                     }
                     Spacer()
+                   
                     Text("Gestures App v1.6")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -109,7 +115,12 @@ struct MainView: View {
                     inGCount = inGesturesStore.getKeys().count
                 }
             }
-            Spacer()
+            
+            //Toast container for showing notifications
+            ToastsContainerView()
+                .environmentObject(ToastManager.shared)
+        }
+        Spacer()
     }
 }
 

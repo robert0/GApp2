@@ -27,6 +27,7 @@ struct GApp2App: App {
     static var watchDelegateConnector: WDConnector?
     static var btOutInstance: BTPeripheralObj_OUT?
     static var btInInstance: BTCentralObj_IN?
+    static var mpbc: HIDBluetoothController?
     static var btPeripheralDevice: CBPeripheral?
     private static var sshDataBean: SshDataBean?
     static var lastSshCmd: String? = nil
@@ -121,6 +122,7 @@ struct GApp2App: App {
         Globals.log("APP_Main:startBTOutbound() called..")
         if GApp2App.btOutInstance == nil {
             GApp2App.btOutInstance = BTPeripheralObj_OUT()  //self start scanning
+            //mpbc = MPBluetoothController()
         }
         return GApp2App.btOutInstance
     }

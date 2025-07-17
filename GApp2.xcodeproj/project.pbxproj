@@ -56,6 +56,28 @@
 		E887D2022D10550600A7EB10 /* GApp2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GApp2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E88F21862E1FBF6000109346 /* Exceptions for "GApp2" folder in "GApp2" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				hid/HID_demo.swift.txt,
+				hid/KeyCodes.swift.txt,
+			);
+			target = E887D2012D10550600A7EB10 /* GApp2 */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		E88F21872E1FBF6000109346 /* Exceptions for "GApp2" folder in "Compile Sources" phase from "GApp2" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = E887D1FE2D10550600A7EB10 /* Sources */;
+			membershipExceptions = (
+				hid/HID_demo.swift.txt,
+				hid/KeyCodes.swift.txt,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E84554BD2D50CB200067ADF8 /* GApp2Watch Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -64,6 +86,10 @@
 		};
 		E887D2042D10550600A7EB10 /* GApp2 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E88F21862E1FBF6000109346 /* Exceptions for "GApp2" folder in "GApp2" target */,
+				E88F21872E1FBF6000109346 /* Exceptions for "GApp2" folder in "Compile Sources" phase from "GApp2" target */,
+			);
 			path = GApp2;
 			sourceTree = "<group>";
 		};
@@ -443,7 +469,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GApp2/GApp2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"GApp2/Preview Content\"";
 				DEVELOPMENT_TEAM = ZRTZ6CPX7Q;
 				ENABLE_PREVIEWS = YES;
@@ -475,7 +501,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GApp2/GApp2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"GApp2/Preview Content\"";
 				DEVELOPMENT_TEAM = ZRTZ6CPX7Q;
 				ENABLE_PREVIEWS = YES;

@@ -149,6 +149,7 @@ class BTCentralObj_IN: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate 
     // The handler if we do connect succesfully
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         Globals.log("BT Peripheral connected ...")
+        ToastManager.show("BLE connected to \(peripheral.name ?? peripheral.identifier.uuidString)", ToastSeverity.success)
         if peripheral == self.remotePeripheral {
             Globals.log("BT Discovering services...")
             peripheral.delegate = self
@@ -197,7 +198,7 @@ class BTCentralObj_IN: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate 
             Globals.logToScreen("BT Characteristic update, reading message...")
             if let value = characteristic.value, let message = String(data: value, encoding: .utf8) {
                 Globals.logToScreen("BT Received message: \(message)")
-
+                ToastManager.show("Received message... ", ToastSeverity.info)
                 mDataChangeListeners.forEach { $0.onPeripheralDataChange(centralManager, peripheral, characteristic) }
             }
         }
