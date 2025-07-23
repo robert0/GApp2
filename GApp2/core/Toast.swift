@@ -96,7 +96,7 @@ struct ToastView: View {
         .background(backgroundColor(for: message.severity))
         .border(borderColor(for: message.severity))
         .cornerRadius(8)
-        //.shadow(radius: 4)
+        //.shadow(color: Color.gray, radius: 5, x: 3, y: 3)
         .padding(.horizontal)
         .opacity(message.isVisible ? 1 : 0)
         .animation(.easeInOut(duration: 0.5), value: message.isVisible)
@@ -108,6 +108,7 @@ struct ToastsContainerView: View {
 
     var body: some View {
         VStack {
+            //on top of the screen
             Spacer()
             ForEach(toastManager.toasts) { toast in
                 ToastView(message: toast) {
@@ -125,6 +126,24 @@ struct ToastsContainerView: View {
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
+            
+            //on bottom of the screen
+//            ForEach(toastManager.toasts) { toast in
+//                ToastView(message: toast) {
+//                    withAnimation(.easeInOut(duration: 0.5)) {
+//                        if let idx = toastManager.toasts.firstIndex(where: { $0.id == toast.id }) {
+//                            toastManager.toasts[idx].isVisible = false
+//                            let toastToRemove = toastManager.toasts[idx]
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//                                toastManager.remove(toastToRemove)
+//                            }
+//                        }
+//                    }
+//                }
+//                .transition(.move(edge: .top).combined(with: .opacity))
+//            }
+//            Spacer()
+            
         }
         .padding(.bottom, 40)
         .zIndex(1)

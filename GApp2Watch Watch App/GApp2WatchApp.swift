@@ -9,15 +9,18 @@ import SwiftUI
 
 @main
 struct GApp2Watch_Watch_AppApp: App {
-    //static class used for easy access
-    static var app:GApp2Watch_Watch_AppApp?
-    static var buffer:GBuffer = GBuffer()
-     
+    //create self initialized singleton
+    private static var app = GApp2Watch_Watch_AppApp()
+    private var buffer:GBuffer = GBuffer()
+    private var sensorStreaming:Bool = false
+    private var dataTransferTimer: Timer?
+    private static var view:WCContentView?
+    
     //plug-in vars
     @WKApplicationDelegateAdaptor(WKAppDelegatePhoneConnector.self) var delegate: WKAppDelegatePhoneConnector
-    static var view:WCContentView?
-    
+
     init() {
+        //create the view
         GApp2Watch_Watch_AppApp.view = WCContentView()
     }
     
@@ -27,18 +30,63 @@ struct GApp2Watch_Watch_AppApp: App {
         }
     }
     
-    /*
-     *
+    
+    /**
+      * Starts the data transfer timer which periodically sends data to the iOS app.
      */
-    static func addToBuffer(_ data:String){
-        buffer.append(data)
+    public static func startDataTransferTimer() {
+         print("GWatchApp_Watch_AppApp: Starting data dispatch timer...")
+         
+         // Start the timer to send data periodically
+        if(app.dataTransferTimer == nil) {
+             print("GWatchApp_Watch_AppApp: Creating update timer...")
+            
+            app.dataTransferTimer = Timer.scheduledTimer(withTimeInterval: WDevice.Phone_Update_Interval, repeats: true) { _ in
+                 print("GWatchApp_Watch_AppApp Timer: tick... ")
+                 //get buffer and clear it
+                 var cdata =  GApp2Watch_Watch_AppApp.consumeBuffer()
+                 if( cdata.last == ","){
+                     cdata.removeLast()
+                 }
+                 
+                 //only send data if the sensors are allowed to stream data
+                 if(GApp2Watch_Watch_AppApp.isSensorStreaming()) {
+                     print("WKAppConnector: >>>>>>> sending data... \(String(describing: app.delegate))")
+                     // send as an array of Sample4D encoded
+                     let dict: [String : Any] = ["data": "[" + cdata + "]"]
+                     app.delegate.sendMessage(dict, replyHandler: nil)
+                 }
+             }
+         }
     }
     
     /*
      *
      */
-    static func extractBuffer() -> String {
-        return buffer.extract()
+    static func addToBuffer(_ data:String){
+        app.buffer.append(data)
+    }
+    
+    /*
+     *
+     */
+    static func consumeBuffer() -> String {
+        return app.buffer.consume()
+    }
+    
+    // MARK: - Sensor Streaming ENABLED
+    public static func activateSensorStreaming(){
+        app.sensorStreaming = true
+    }
+    
+    // MARK: - Sensor Streaming DISABLED
+    public static func deactivateSensorStreaming(){
+        app.sensorStreaming = false
+    }
+    
+    // MARK: - Sensor Streaming STATUS
+    public static func isSensorStreaming() -> Bool {
+        return app.sensorStreaming
     }
     
     /*

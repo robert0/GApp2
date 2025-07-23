@@ -10,7 +10,7 @@ import SwiftUI
 struct IncommingGesturesView: View {
     @Environment(\.dismiss) var dismiss
     
-    var gesturesStore:InGestureStore
+    var igesturesStore:InGestureStore
     @State var counter:Int = 0
     @State var showConfirmation:Bool = false
     @State var deletingKey:String = ""
@@ -18,7 +18,7 @@ struct IncommingGesturesView: View {
     
     // constructor
     init( _ gesturesStore: InGestureStore) {
-        self.gesturesStore = gesturesStore
+        self.igesturesStore = gesturesStore
     }
         
     // The app panel
@@ -64,7 +64,7 @@ struct IncommingGesturesView: View {
             Spacer().frame(height: 30)
             
             NavigationLink {
-                EditInGestureView(gesturesStore, nil)
+                EditInGestureView(igesturesStore, nil)
             } label: {
                 Label("Create new gesture mapping", systemImage: "plus.circle")
             }.frame(width:250).buttonStyle(.borderedProminent)
@@ -94,7 +94,7 @@ struct IncommingGesturesView: View {
                         
                         Spacer().frame(width:30)
                         
-                        NavigationLink(destination: EditInGestureView(gesturesStore, widget.key)) {
+                        NavigationLink(destination: EditInGestureView(igesturesStore, widget.key)) {
                             Image(systemName: "pencil")
                                 .imageScale(.large)
                         }.frame(width:50)
@@ -111,7 +111,7 @@ struct IncommingGesturesView: View {
             
             Button("Save Gesture Mapping to Filesystem") {
                 Globals.log("Save InGestures Clicked !!!...")
-                FileSystem.writeIncommingGesturesMappingsDataFile(self.gesturesStore.getAllGestures())
+                FileSystem.writeIncommingGesturesMappingsDataFile(self.igesturesStore.getAllGestures())
                 dismiss()
                 
             }.buttonStyle(.borderedProminent)
@@ -126,7 +126,7 @@ struct IncommingGesturesView: View {
     }
     
     func listItems() -> [ListWidget] {
-        let widgets:[ListWidget] = gesturesStore.getKeys().map {
+        let widgets:[ListWidget] = igesturesStore.getKeys().map {
             return ListWidget($0)
         }
         return widgets
@@ -134,7 +134,7 @@ struct IncommingGesturesView: View {
     
     
     func deleteGesture(_ key:String){
-        gesturesStore.deleteGestureMapping(key)
+        igesturesStore.deleteGestureMapping(key)
         //force UI update
         counter = counter + 1
     }

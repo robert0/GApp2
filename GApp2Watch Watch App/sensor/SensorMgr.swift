@@ -20,7 +20,7 @@ public class SensorMgr {
     /*
      * @param refreshPeriod in seconds
      */
-    public static func startAccelerometers(_ refreshPeriod: Double) {
+    public static func startAccelerometers() {
         if(SensorMgr.isStarted){//do start only once
             return;
         }
@@ -30,23 +30,28 @@ public class SensorMgr {
         // Make sure the accelerometer hardware is available.
         if SensorMgr.motionMgr.isAccelerometerAvailable {
             SensorMgr.isStarted = true;
-            print("SensorMgr > Accelerometer is starting ...")
+            print("SensorMgr > Accelerometer is LIVE data streaming...")
             
-            SensorMgr.motionMgr.accelerometerUpdateInterval = refreshPeriod
+            SensorMgr.motionMgr.accelerometerUpdateInterval = WDevice.Accelerometers_Update_Interval
             SensorMgr.motionMgr.startAccelerometerUpdates()
 
-            timer = Timer.scheduledTimer(withTimeInterval: refreshPeriod, repeats: true) { _ in
+            var started = false
+            let encoder = JSONEncoder()
+            timer = Timer.scheduledTimer(withTimeInterval: WDevice.Accelerometers_Update_Interval, repeats: true) { _ in
                 let data = SensorMgr.motionMgr.accelerometerData
                 let x = data?.acceleration.x ?? 0.0
                 let y = data?.acceleration.y ?? 0.0
                 let z = data?.acceleration.z ?? 0.0
-                //print("SensorManager > Accelerometer Data Update: x:\(x), y:\(y), z:\(z)")
                 
                 //encode data to JSON and send it to buffer
                 //round values to 4 decimal places
-                let encoder = JSONEncoder()
                 let sampleData = try! encoder.encode( Sample4D(round(x,10000), round(y,10000), round(z,10000), getCurrentMillis()))
                 let sampleStr = String(data: sampleData, encoding: .utf8)!
+                
+                if(!started){
+                    print("SensorManager > Accelerometer Data Timer Starting Now... x:\(x), y:\(y), z:\(z)")
+                    started = true
+                }
                 GApp2Watch_Watch_AppApp.addToBuffer(sampleStr + ",")
                 
                 // Use the accelerometer data
@@ -70,27 +75,27 @@ public class SensorMgr {
     public static func checkSensors(){
         
         if motionMgr.isDeviceMotionAvailable {
-            print("SensorMgr > we have device motion...")
+            print("SensorMgr > device motion is AVAILABLE & WORKING...")
         } else {
-            print("SensorMgr > no device motion...")
+            print("SensorMgr > NO device motion...")
         }
         
         if motionMgr.isAccelerometerAvailable {
-            print("SensorMgr > we have accelerometer...")
+            print("SensorMgr > accelerometer is AVAILABLE & WORKING...")
         } else {
-            print("SensorMgr > no accelerometer...")
+            print("SensorMgr > NO accelerometer...")
         }
         
         if motionMgr.isGyroAvailable {
-            print("SensorMgr > we have gyro...")
+            print("SensorMgr > gyro is AVAILABLE & WORKING...")
         } else {
-            print("SensorMgr > no gyro...")
+            print("SensorMgr > NO gyro...")
         }
         
         if motionMgr.isMagnetometerAvailable {
-            print("SensorMgr > we have magnetometer...")
+            print("SensorMgr > magnetometer is AVAILABLE & WORKING...")
         } else {
-            print("SensorMgr > no magnetometer...")
+            print("SensorMgr > NO magnetometer...")
         }
     }
     

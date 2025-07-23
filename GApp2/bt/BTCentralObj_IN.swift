@@ -198,7 +198,7 @@ class BTCentralObj_IN: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate 
             Globals.logToScreen("BT Characteristic update, reading message...")
             if let value = characteristic.value, let message = String(data: value, encoding: .utf8) {
                 Globals.logToScreen("BT Received message: \(message)")
-                ToastManager.show("Received message... ", ToastSeverity.info)
+                ToastManager.show("In: Bluetooth message... ", ToastSeverity.info)
                 mDataChangeListeners.forEach { $0.onPeripheralDataChange(centralManager, peripheral, characteristic) }
             }
         }

@@ -15,12 +15,12 @@ struct WCContentView: View {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Welcome to GWatch!")
-            Text("Iphone message: \(viewModel.infoMessage ?? "")")
+            Text("Welcome to GWatch 2.11!")
             
-            Button("Activate Sensors", action: {
-                SensorMgr.startAccelerometers(WDevice.View_Accelerometer_Interval)
-            })
+            if(viewModel.infoMessage != nil) {
+                Text("New msg: \(viewModel.infoMessage!)")
+                    .foregroundColor(.blue)
+            }
         }
         .padding()
     }

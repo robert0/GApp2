@@ -110,31 +110,31 @@ struct TestGesturesView: View {
                 Spacer()
             }
 
-//            HStack {
-//                Spacer()
-//                Button("Send Click Message") {
-//                    Globals.log("Send Watch A .click Message!!!...")
-//                    GApp2App.sendWatchAMessage(".click")
-//
-//                }.buttonStyle(.borderedProminent)
-//                Spacer().frame(width: 10)
-//                
-//                Button("Send 2 Click Message") {
-//                    Globals.log("Send Watch A 2.click Message!!!...")
-//                    GApp2App.sendWatchAMessage(".click2")
-//
-//                }.buttonStyle(.borderedProminent)
-//                Spacer().frame(width: 10)
-//                
+            HStack {
+                Spacer()
+                Button("Send Click Message") {
+                    Globals.log("Send Watch A .click Message!!!...")
+                    GApp2App.sendWatchAMessage(Device.Watch_Phone_Topic_TXT_Key, ".click")
+                    
+                }.buttonStyle(.borderedProminent)
+                Spacer().frame(width: 10)
+                
+                Button("Send 2 Click Message") {
+                    Globals.log("Send Watch A 2.click Message!!!...")
+                    GApp2App.sendWatchAMessage(Device.Watch_Phone_Topic_TXT_Key, ".click2")
+                    
+                }.buttonStyle(.borderedProminent)
+                Spacer().frame(width: 10)
+                
 //                Button("Advertise") {
 //                    Globals.log("Advertise Message clicked...")
 //                    //GApp2App.sendWatchAMessage(".click3")
 //                    GApp2App.advertiseMessage("This is an advertised message!")
-//
+//                    
 //                }.buttonStyle(.borderedProminent)
 //                Spacer().frame(width: 10)
-//
-//                
+            }
+                
             
             //add data view panel
             TestGesturesView.dataRenderer

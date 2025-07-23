@@ -12,7 +12,7 @@ struct EditInGestureView: View {
 
     //special local props
     @ObservedObject var viewModel: EditInGestureViewModel
-    private let initialKey: String
+    private var initialKey: String
 
     //local updatable values
     @State private var igmName: String
@@ -28,21 +28,20 @@ struct EditInGestureView: View {
     }
     
     // constructor
-    init(_ gesturesStore: InGestureStore, _ igmName: String?) {
+    init(_ igesturesStore: InGestureStore, _ igmKey: String?) {
         //Globals.log("--- init ---")
-        self.viewModel = EditInGestureViewModel(gesturesStore)
+        self.viewModel = EditInGestureViewModel(igesturesStore)
         
-        var igName = ""
-        if(igmName == nil){
+        self.initialKey = ""
+        if(igmKey == nil){
             //we are in create mode
-            igName = "" // TODO...
+            self.initialKey = "" // TODO...
         } else {
-            igName = igmName!
+            self.initialKey = igmKey!
         }
         
         //Create & link Gesture Analyser
-        self.initialKey = igName
-        let igmObj = gesturesStore.getGestureMapping(igName)
+        let igmObj = igesturesStore.getGestureMapping(self.initialKey)
         if(igmObj != nil){ // edit page
             Globals.log("init initial cmd:\(igmObj!.getCommand())")
             self.igmName = igmObj!.getName()
@@ -128,7 +127,7 @@ struct EditInGestureView: View {
             Button("Update") {
                 Globals.log("Update clicked....")
                 
-                var gs = viewModel.gesturesStore.getGestureMapping(initialKey)
+                var gs = viewModel.igesturesStore.getGestureMapping(initialKey)
                 if(gs != nil){
                     //set/change all props
                     gs!.setName(igmName)
@@ -138,8 +137,8 @@ struct EditInGestureView: View {
                     
                     //set/change key (&name)
                     //remove old ->  insert new
-                    viewModel.gesturesStore.removeGestureMapping(initialKey)
-                    viewModel.gesturesStore.setGestureMapping(igmName, gs)
+                    viewModel.igesturesStore.removeGestureMapping(initialKey)
+                    viewModel.igesturesStore.setGestureMapping(igkey, gs)
                     
                     
                 } else {
@@ -151,7 +150,7 @@ struct EditInGestureView: View {
                     gs.setGInActionType(selectedActionType)
                     gs.setCommand(selectedCmd.rawValue)
                     //save to store
-                    viewModel.gesturesStore.setGestureMapping(igmName, gs)
+                    viewModel.igesturesStore.setGestureMapping(igkey, gs)
                 }
                 
                 //return to previous view
@@ -169,10 +168,10 @@ struct EditInGestureView: View {
 // Created by Robert Talianu
 //
 final class EditInGestureViewModel: ObservableObject {
-    @Published var gesturesStore: InGestureStore
+    @Published var igesturesStore: InGestureStore
     
     init(_ gesturesStore: InGestureStore) {
-        self.gesturesStore = gesturesStore
+        self.igesturesStore = gesturesStore
     }
 }
 

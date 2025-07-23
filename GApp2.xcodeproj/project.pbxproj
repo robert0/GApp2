@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E83453A42E3155E00020A4E0 /* NMSSH.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E859C76B2DEA114F009A5FD2 /* NMSSH.framework */; };
+		E83453A52E3155E00020A4E0 /* NMSSH.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E859C76B2DEA114F009A5FD2 /* NMSSH.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E84554C92D50CB220067ADF8 /* GApp2Watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = E84554BC2D50CB200067ADF8 /* GApp2Watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		E859C76D2DEA1174009A5FD2 /* NMSSH.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E859C76B2DEA114F009A5FD2 /* NMSSH.framework */; };
-		E859C76E2DEA1174009A5FD2 /* NMSSH.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E859C76B2DEA114F009A5FD2 /* NMSSH.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E887D28C2D10593C00A7EB10 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = E887D28B2D10593C00A7EB10 /* Collections */; };
 		E887D28E2D10593C00A7EB10 /* HashTreeCollections in Frameworks */ = {isa = PBXBuildFile; productRef = E887D28D2D10593C00A7EB10 /* HashTreeCollections */; };
 		E887D2902D10593C00A7EB10 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = E887D28F2D10593C00A7EB10 /* OrderedCollections */; };
@@ -26,6 +26,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		E83453A62E3155E00020A4E0 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E83453A52E3155E00020A4E0 /* NMSSH.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E84554CD2D50CB220067ADF8 /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -35,17 +46,6 @@
 				E84554C92D50CB220067ADF8 /* GApp2Watch Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E859C76F2DEA1174009A5FD2 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				E859C76E2DEA1174009A5FD2 /* NMSSH.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -84,6 +84,11 @@
 			path = "GApp2Watch Watch App";
 			sourceTree = "<group>";
 		};
+		E84A1D692E3163C400F08D31 /* WWApp Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "WWApp Watch App";
+			sourceTree = "<group>";
+		};
 		E887D2042D10550600A7EB10 /* GApp2 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -107,7 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E859C76D2DEA1174009A5FD2 /* NMSSH.framework in Frameworks */,
+				E83453A42E3155E00020A4E0 /* NMSSH.framework in Frameworks */,
 				E887D28E2D10593C00A7EB10 /* HashTreeCollections in Frameworks */,
 				E887D28C2D10593C00A7EB10 /* Collections in Frameworks */,
 				E887D2902D10593C00A7EB10 /* OrderedCollections in Frameworks */,
@@ -130,6 +135,7 @@
 			children = (
 				E887D2042D10550600A7EB10 /* GApp2 */,
 				E84554BD2D50CB200067ADF8 /* GApp2Watch Watch App */,
+				E84A1D692E3163C400F08D31 /* WWApp Watch App */,
 				E859C76A2DEA114F009A5FD2 /* Frameworks */,
 				E887D2032D10550600A7EB10 /* Products */,
 			);
@@ -177,7 +183,7 @@
 				E887D1FF2D10550600A7EB10 /* Frameworks */,
 				E887D2002D10550600A7EB10 /* Resources */,
 				E84554CD2D50CB220067ADF8 /* Embed Watch Content */,
-				E859C76F2DEA1174009A5FD2 /* Embed Frameworks */,
+				E83453A62E3155E00020A4E0 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -204,6 +210,9 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
+				KnownAssetTags = (
+					New,
+				);
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {

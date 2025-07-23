@@ -20,7 +20,7 @@ public class GBuffer {
     /*
      *
      */
-    func extract() -> String {
+    func consume() -> String {
         let result: String = data
         data = ""
         return result

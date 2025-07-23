@@ -43,7 +43,8 @@ struct MainView: View {
         Globals.log("Loaded incomming gestures mapping count: \(igestures.count)")
         if igestures.count > 0 {
             igestures.forEach({
-                self.inGesturesStore.setGestureMapping($0.getName(), $0)
+                //set global key as reference
+                self.inGesturesStore.setGestureMapping($0.getIncommingGKey(), $0)
             })
         }
         
@@ -55,12 +56,16 @@ struct MainView: View {
         }
         
         //start bluetooth & advertising
-        GApp2App.startBTOutbound()
+        //GApp2App.startBTOutbound()
+        
+        //start the watch connectivity
+        GApp2App.activateWatchConnectivity()
         
         var _self = self
         
         //Notify App started OK
-        ToastManager.show("App started...OK", ToastSeverity.success)
+        ToastManager.show("App started...OK", ToastSeverity.info)
+            
     }
     
     var body: some View {

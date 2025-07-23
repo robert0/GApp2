@@ -30,7 +30,7 @@ public class GestureDispatcher : GestureEvaluationListener, BTChangeListener {
     }
        
 
-    
+    // event via GestureEvaluationListener
     public func gestureEvaluationCompleted(_ gw: GestureWindow, _ status: GestureEvaluationStatus) {
         let gkey = status.getGestureKey()
         let gCorr:Double = status.getGestureCorrelationFactor()
@@ -55,13 +55,19 @@ public class GestureDispatcher : GestureEvaluationListener, BTChangeListener {
         }
     }
     
-    //
+    // event via GestureEvaluationListener
     fileprivate func sendViaBluetooth(_ gCorr: Double, _ gesture: Gesture4D) {
         
         Globals.log("GestureDispatcher:Forwarding gesture viw BT...")
         let gCorrFt = String(format: self.correlationFactorFormat, gCorr)
         let cutCorrFt:Double = floor(gCorr * 1000.0)/1000.0
-        let gs:GestureJson = GestureJson(gesture.getName(), cutCorrFt, gesture.getCommand() )
+        sendViaBluetooth(gesture.getName(), cutCorrFt, gesture.getCommand())
+    }
+    
+    
+    // init(_ gestureKey: String, _ gestureCorrelationFactor: Double, _ gestureCommand: String) {
+    fileprivate func sendViaBluetooth(_ gestureKey: String, _ gestureCorrelationFactor: Double, _ gestureCommand: String) {
+        let gs:GestureJson = GestureJson(gestureKey, gestureCorrelationFactor, gestureCommand )
         
         do {
             let encoder = JSONEncoder()
@@ -97,21 +103,48 @@ public class GestureDispatcher : GestureEvaluationListener, BTChangeListener {
         }
     }
         
+    // event via BTChangeListener
     public func onManagerDataChange(_ central: CBCentralManager) {
-        Globals.log("GestureDispatcher:onManagerDataChange called...")
         //not used
     }
     
+    // event via BTChangeListener
     public func onPeripheralChange(_ central: CBCentralManager, _ peripheral: CBPeripheral) {
-        Globals.log("GestureDispatcher:onPeripheralChange called...")
         //not used
     }
     
+    // event via BTChangeListener
+    // incomming data from BLE - Incoming gesture
     public func onPeripheralDataChange(_ central: CBCentralManager, _ peripheral: CBPeripheral, _ characteristic: CBCharacteristic) {
         Globals.log("GestureDispatcher:onPeripheralDataChange called...")
         let value = characteristic.value ?? Data()
         let message = String(data: value, encoding: .utf8)
-        Globals.log("BT Received message: \(message)")
+        
+        let gobj: GestureJson? = BT.decodeDataToObject(data: value)
+        
+        Globals.log("GestureDispatcher: BT Received message: \(message)")
+        let gkey = gobj?.gestureKey ?? "no gkey"
+        let command = gobj?.gestureCommand ?? "no command"
+        
+        let gm:InGestureMapping? = inGesturesStore?.getGestureMapping(gkey) ?? nil
+        if (gm != nil ) {
+            if(gm?.getIGActionType() == GInActionType.ExecuteCommand){
+                Globals.log("GestureDispatcher:Executing InGesture command ...")
+                //CommandExecutor.executeCommand(gesture?.getCommand())
+                
+            } else  if(gm?.getIGActionType() == GInActionType.ExecuteCmdAndSendToWatch){
+                Globals.log("GestureDispatcher:Executing gesture command and fwd to Watch...")
+                //TODO ...execute command
+                //send to bluetooth
+                sendViaBluetooth(gkey, 0.0, command)
+                
+            } else  if(gm?.getIGActionType() == GInActionType.ForwardToWatch){
+                Globals.log("GestureDispatcher:Executing gesture command via SSH...")
+                
+                //send to bluetooth
+                sendViaBluetooth(gkey, 0.0, command)
+            }
+        }
     }
     
     

@@ -24,7 +24,7 @@ public enum ActionType: String, CaseIterable, Identifiable {
 @main
 struct GApp2App: App {
     static var gestureDispatcher: GestureDispatcher = GestureDispatcher()
-    static var watchDelegateConnector: WDConnector?
+    static var wdConnector: WDConnector?
     static var btOutInstance: BTPeripheralObj_OUT?
     static var btInInstance: BTCentralObj_IN?
     static var mpbc: HIDBluetoothController?
@@ -46,11 +46,22 @@ struct GApp2App: App {
             MainView()
         }
     }
-
+    
+    /**
+     * Displays a toast message with the specified severity.
+     */
+    static func showToastMessage(_ message: String, _ severity: ToastSeverity) {
+        ToastManager.show(message, severity)
+    }
+    
+    /**
+     * Connects to the SSH server using the SSHConnector.
+     */
     public static func connectToSSHServer() {
+        Globals.log("APP_Main: Connecting to SSH Server (authenticating) ...")
         SSHConnector.authenticate()
     }
-                
+    
     /// Sets the SSH data bean
     public static func setSshDataBean(_ bean: SshDataBean) {
         GApp2App.sshDataBean = bean
@@ -96,30 +107,11 @@ struct GApp2App: App {
         return GApp2App.lastSshCmd
     }
             
-            
-    /*
-     *
-     */
-    public static func activateWatchConnectivity() {
-        if GApp2App.watchDelegateConnector == nil {
-            GApp2App.watchDelegateConnector = WDConnector()
-        }
-    }
-
-    /*
-     *
-     */
-    public static func sendWatchAMessage(_ msg: String) {
-        if GApp2App.watchDelegateConnector != nil {
-            GApp2App.watchDelegateConnector?.sendDataToWatch(msg)
-        }
-    }
-
     /*
      *
      */
     public static func startBTOutbound() -> BTPeripheralObj_OUT? {
-        Globals.log("APP_Main:startBTOutbound() called..")
+        Globals.log("APP_Main: Starting Bluetooth Outbound...")
         if GApp2App.btOutInstance == nil {
             GApp2App.btOutInstance = BTPeripheralObj_OUT()  //self start scanning
             //mpbc = MPBluetoothController()
@@ -131,7 +123,7 @@ struct GApp2App: App {
      *
      */
     public static func startBTInbound() -> BTCentralObj_IN? {
-        Globals.log("APP_Main:startBT() called..")
+        Globals.log("APP_Main: Starting Bluetooth Inbound...")
         if GApp2App.btInInstance == nil {
             GApp2App.btInInstance = BTCentralObj_IN()  //self start scanning
             GApp2App.btInInstance?.addBTChangeListener(gestureDispatcher)
@@ -155,7 +147,7 @@ struct GApp2App: App {
      *
      */
     public static func startBTScanning() {
-        //Globals.log("APP_Main:startBTScanning() called..")
+        Globals.log("APP_Main: Starting Bluetooth Scanning...")
         if GApp2App.btInInstance != nil {
             GApp2App.btInInstance!.startScan()
 
@@ -168,7 +160,7 @@ struct GApp2App: App {
      *
      */
     public static func stopBTScanning() {
-        //Globals.log("APP_Main:stopBTScanning() called..")
+        Globals.log("APP_Main: Stopping Bluetooth Scanning...")
         if GApp2App.btInInstance != nil {
             GApp2App.btInInstance!.stopScanning()
 
@@ -181,7 +173,7 @@ struct GApp2App: App {
      *
      */
     public static func connectToBTDevice(_ cbp: CBPeripheral) {
-        Globals.log("APP_Main:connectToBTDevice() called..")
+        Globals.log("APP_Main: Connecting to Bluetooth Peripheral...")
 
         //store locally
         GApp2App.btPeripheralDevice = cbp
@@ -195,8 +187,9 @@ struct GApp2App: App {
      *
      */
     public static func advertiseMessage(_ msg: String) {
-        Globals.log("APP_Main:advertiseMessage() called..")
+        Globals.log("APP_Main: Advertising Message via Bluetooth ...")
         if GApp2App.btOutInstance != nil {
+            ToastManager.show("Out: Bluetooth message... ", ToastSeverity.success)
             GApp2App.btOutInstance!.advertiseText(msg)
 
         } else {
@@ -208,28 +201,15 @@ struct GApp2App: App {
      *
      */
     public static func advertiseData(_ data: Data) {
-        Globals.log("APP_Main:advertiseData() called..")
+        Globals.log("APP_Main: Advertising Data via Bluetooth ...")
         if GApp2App.btOutInstance != nil {
+            ToastManager.show("Out: Bluetooth data... ", ToastSeverity.success)
             GApp2App.btOutInstance!.advertiseData(data)
 
         } else {
             Globals.log("APP_Main:advertiseData failed; No btoInstance")
         }
     }
-
-    /*
-     *
-     */
-    //    public static func sendMessageToPairedBTDevice(_ msg:String) {
-    //        Globals.log("APP_Main:sendMessageToPairedBTDevice() called..")
-    //        //TODO .. verify that we are paired to a device
-    //        if( GApp2App.btPeripheralDevice != nil ){
-    //            GApp2App.btoInstance?.sendText(msg)
-    //
-    //        } else {
-    //            Globals.log("APP_Main:sendMessageToPairedBTDevice failed; No paired device")
-    //        }
-    //    }
 
     /*
      *
@@ -244,4 +224,42 @@ struct GApp2App: App {
     public static func disableBluetoothListening() {
         //TODO ...
     }
+    
+    
+    /*
+     *
+     */
+    public static func activateWatchConnectivity() {
+        Globals.log("APP_Main: Activating Watch Connectivity...")
+        if GApp2App.wdConnector == nil {
+            GApp2App.wdConnector = WDConnector()
+        }
+    }
+    
+    /*
+     *
+     */
+    public static func sendWatchAMessage(_ topic: String, _ msg: String) {
+        Globals.log("APP_Main: sendWatchAMessage...")
+        if GApp2App.wdConnector != nil {
+            GApp2App.wdConnector?.sendDataToWatch(topic, msg)
+        }
+    }
+    
+    /*
+     *
+     */
+    public static func deactivateWatchSensors(){
+        Globals.log("APP_Main: Deactivating Watch Sensors ...")
+        sendWatchAMessage(Device.Watch_Phone_Topic_STATE_Key, "deactivateSensors")
+    }
+    
+    /*
+     *
+     */
+    public static func activateWatchSensors() {
+        Globals.log("APP_Main: Activating Watch Sensors ...")
+        sendWatchAMessage(Device.Watch_Phone_Topic_STATE_Key, "activateSensors")
+    }
+
 }

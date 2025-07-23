@@ -32,4 +32,10 @@ public class Device {
     public static let IncommingGesturesDataFileName = "IncommingGesturesData.json"
     public static let LocalSSHDataFileName = "LocalSSHData.json"
 
+    
+    //Topics used by Watch - Phone communiction.
+    //Must be the same on both sides.
+    public static let Watch_Phone_Topic_STATE_Key = "topic/STATE"
+    public static let Watch_Phone_Topic_ACCELEROMETERS_Key = "topic/ACC"
+    public static let Watch_Phone_Topic_TXT_Key = "topic/TEXT"
 }

@@ -20,9 +20,7 @@ struct ChooseSourceView: View {
     // constructor
     init( _ gesturesStore: MultiGestureStore) {
         self.gesturesStore = gesturesStore
-        
-        //activate watch connectivity
-        GApp2App.activateWatchConnectivity()
+     
     }
         
     // The app panel
@@ -105,20 +103,26 @@ struct ChooseSourceView: View {
     
     
     func checkConnectivity() {
-        //GApp2App.activateWatchConnectivity()
         
         // Perform any final initialization of your application.
         if WCSession.isSupported() {
-            print("iPhone: WCSession is supported!")
+            print("ChooseSourceView: Check watch connectivity - WCSession is Supported!")
         } else {
-            print("iPhone: WCSession is not supported!")
+            print("ChooseSourceView: Check watch connectivity - WCSession is not Supported!")
         }
         
         // Perform any final initialization of your application.
         if session.isPaired {
-            print("iPhone: iWatch is paired!")
+            print("ChooseSourceView:  Check watch connectivity - iWatch is Paired!")
         } else {
-            print("iPhone: iWatch is NOT paired!")
+            print("ChooseSourceView: Check watch connectivity - iWatch is NOT Paired!")
+        }
+        
+        // Perform any final initialization of your application.
+        if session.isReachable {
+            print("ChooseSourceView:  Check watch connectivity - iWatch is Reachable!")
+        } else {
+            print("ChooseSourceView: Check watch connectivity - iWatch is NOT Reachable!")
         }
     }
 }

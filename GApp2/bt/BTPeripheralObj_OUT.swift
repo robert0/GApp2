@@ -128,7 +128,7 @@ class BTPeripheralObj_OUT: NSObject, CBPeripheralManagerDelegate, CBPeripheralDe
         //let gobj1: GestureJson? = decodeDataToObject(data: xx.data(using: .utf8)!)
         //Globals.logToScreen("BT JSON test data: \(gobj1!.gestureCorrelationFactor)")
         
-        let gobj: GestureJson? = decodeDataToObject(data: data)
+        let gobj: GestureJson? = BT.decodeDataToObject(data: data)
         Globals.log("BT JSON Data: \(gobj?.gestureCorrelationFactor)")
         
         if(gobj?.gestureCorrelationFactor ?? 0.0 > 0.9){
@@ -138,35 +138,4 @@ class BTPeripheralObj_OUT: NSObject, CBPeripheralManagerDelegate, CBPeripheralDe
         }
     }
     
-    //decode data to json object
-    func decodeDataToObject<T: Codable>(data : Data?)->T?{
-        
-        if let dt = data{
-            do{
-                
-                return try JSONDecoder().decode(T.self, from: dt)
-                
-            }  catch let DecodingError.dataCorrupted(context) {
-                Globals.logToScreen("JSON " + context.debugDescription)
-                
-            } catch let DecodingError.keyNotFound(key, context) {
-                Globals.logToScreen("JSON - Key '\(key)' not found:" + context.debugDescription)
-                Globals.logToScreen("JSON - codingPath:" + context.codingPath.debugDescription)
-                
-            } catch let DecodingError.valueNotFound(value, context) {
-                Globals.logToScreen("JSON - Value '\(value)' not found:" + context.debugDescription)
-                Globals.logToScreen("JSON - codingPath:" + context.codingPath.debugDescription)
-                
-            } catch let DecodingError.typeMismatch(type, context)  {
-                Globals.logToScreen("JSON - Type '\(type)' mismatch:" + context.debugDescription)
-                Globals.logToScreen("JSON - codingPath:" + context.codingPath.debugDescription)
-                
-            } catch {
-                Globals.logToScreen("JSON - error: " + error.localizedDescription)
-            }
-        }
-        
-        return nil
-    }
-
 }

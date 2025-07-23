@@ -60,7 +60,7 @@ public class RawGestureDeviceRouter: ObservableObject {
             let sData: String =  data as! String
             let dData = sData.data(using: .utf8)!
             let samples = try? JSONDecoder().decode([Sample4D].self, from: dData)
-            print("DeviceRouter: routeData() -> samples: \(samples!)")
+            //print("DeviceRouter: routeData() -> samples: \(samples!)")
             
             for sample in samples! {
                 forwardToListeners(sample.getTime(), sample.getX(), sample.getY(), sample.getZ())
@@ -122,7 +122,7 @@ public class RawGestureDeviceRouter: ObservableObject {
             SensorMgr.stopAccelerometers()
             
         } else if RawGestureDeviceRouter.shared.deviceType == .Watch {
-            //TODO ...
+            GApp2App.deactivateWatchSensors()
             
         }
 //        else if RawGestureDeviceRouter.shared.deviceType == .BTPhone {
@@ -138,7 +138,7 @@ public class RawGestureDeviceRouter: ObservableObject {
             SensorMgr.startAccelerometers(Device.View_Accelerometer_Interval)
             
         } else if RawGestureDeviceRouter.shared.deviceType == .Watch {
-            //TODO ...
+            GApp2App.activateWatchSensors()
             
         }
 //        else if RawGestureDeviceRouter.shared.deviceType == .BTPhone {
