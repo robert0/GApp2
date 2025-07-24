@@ -22,10 +22,12 @@ public class MessageRouter {
                 GApp2Watch_Watch_AppApp.deactivateSensorStreaming()
                 
             }
-
             
         } else  if let value = messages[WDevice.Watch_Phone_Topic_TXT_Key] as? String {
             GApp2Watch_Watch_AppApp.showMessage(value)
+            
+        } else if let value = messages[WDevice.Watch_Phone_Topic_HMSG_Key] as? String {
+            GApp2Watch_Watch_AppApp.showHapticMessage(value)
         }
         
     }

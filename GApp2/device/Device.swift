@@ -18,11 +18,12 @@ public class Device {
     public static let Mock_Y_max = 1.0
     public static let Mock_Z_max = 1.0
     
-    
+    //Data aquisition constants
     public static let View_Accelerometer_Interval = 0.01//seconds
     public static let View_X_Scale = 2.0
     public static let View_Y_Scale = 50.0
     
+    //Gestures constants
     public static let Acc_Recording_Buffer_Size = 200//samples
     public static let Acc_Threshold_Level = 0.3
     public static let Acc_Testing_Gesture_Leading_Zeroes_Time_Interval = 0.5//seconds
@@ -34,8 +35,12 @@ public class Device {
 
     
     //Topics used by Watch - Phone communiction.
-    //Must be the same on both sides.
-    public static let Watch_Phone_Topic_STATE_Key = "topic/STATE"
-    public static let Watch_Phone_Topic_ACCELEROMETERS_Key = "topic/ACC"
-    public static let Watch_Phone_Topic_TXT_Key = "topic/TEXT"
+    //**************************************************
+    //******* Must be the same on both sides. **********
+    //**************************************************
+    public static let Watch_Phone_Topic_STATE_Key = "topic/STATE"   // states like activateSensors, deactivateSensors
+    public static let Watch_Phone_Topic_ACCELEROMETERS_Key = "topic/ACC" // accelerometers data from watch to paired phone
+    public static let Watch_Phone_Topic_TXT_Key = "topic/TEXT" // text messages from phone to paired watch
+    public static let Watch_Phone_Topic_HMSG_Key = "topic/HMSG" // haptic and messages from phone to paired watch
+    public static let Watch_Phone_Topic_HMSG_Separator = "|" // separator used for haptic and messages bundle
 }

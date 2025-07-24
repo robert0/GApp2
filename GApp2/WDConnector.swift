@@ -30,7 +30,7 @@ public class WDConnector : NSObject, WCSessionDelegate {
     }
     
     // Called when needs to print state of session
-    fileprivate func printState(_ session: WCSession) {
+    public static func printState(_ session: WCSession) {
         if(session.activationState == .activated) {
             print("WDConnector: WCSession is ACTIVATED")
             
@@ -54,7 +54,7 @@ public class WDConnector : NSObject, WCSessionDelegate {
             return
         }
         
-        printState(session)
+        WDConnector.printState(session)
     }
            
     /** Called on the delegate of the receiver. Will be called on startup if the incoming message caused the receiver to launch. */
@@ -78,7 +78,7 @@ public class WDConnector : NSObject, WCSessionDelegate {
     //    }
     
     public func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        print("WDConnector: WCSession incomming message: \(message.count)\(counter)")
+        //print("WDConnector: WCSession incomming message: \(message.count)\(counter)")
         guard let data: String = message["data"] as? String else { return }
         //print("iPhone: got message from watch: \(data)\(counter)")
         
@@ -111,12 +111,12 @@ public class WDConnector : NSObject, WCSessionDelegate {
     /** Called when any of the Watch state properties change. */
     public func sessionWatchStateDidChange(_ session: WCSession){
         print("WDConnector: WCSession sessionWatchStateDidChange() called")
-        printState(session)
+        WDConnector.printState(session)
     }
 
     /** Called when the reachable state of the counterpart app changes. The receiver should check the reachable property on receiving this delegate callback. */
     public func sessionReachabilityDidChange(_ session: WCSession){
         print("WDConnector: WCSession sessionReachabilityDidChange() called")
-        printState(session)
+        WDConnector.printState(session)
     }
 }

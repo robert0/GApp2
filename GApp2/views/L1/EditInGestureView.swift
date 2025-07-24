@@ -19,12 +19,26 @@ struct EditInGestureView: View {
     @State private var igkey: String
     @State private var selectedCmd: InCommand
     @State private var selectedActionType: GInActionType = GInActionType.ExecuteCommand
+    @State private var iwMessage: String = ""
+    @State private var iwHaptic:HapticType = HapticType.none
     
     enum InCommand: String, CaseIterable, Identifiable {
-        case openWebPage = "open www.google.com"
-        case executeApp = "execute swiftUI"
-        case runScript = "run cmd"
+        case openWebPage = "Open Web Page"
+        case executeApp = "Run App"
+        case runScript = "Run Script"
+        
+        //
         var id: Self { self }
+        
+        //
+        func stringValue() -> String {
+            return rawValue
+        }
+        
+        //
+        static func from(_ string: String) -> HapticType? {
+            return HapticType(rawValue: string)
+        }
     }
     
     // constructor
@@ -48,6 +62,8 @@ struct EditInGestureView: View {
             self.igkey = igmObj!.getIncommingGKey()
             self.selectedCmd = InCommand.allCases.filter{$0.rawValue == igmObj!.getCommand()}.first ?? InCommand.openWebPage
             self.selectedActionType = igmObj!.getIGActionType()
+            self.iwMessage = igmObj!.getIWatchMessage()
+            self.iwHaptic = igmObj!.getIWatchHaptic() ?? HapticType.none
             //Globals.log("init cmd:\( self.selectedCmd)")
             
         } else {// create page
@@ -55,6 +71,8 @@ struct EditInGestureView: View {
             self.igmName = ""
             self.selectedCmd = InCommand.openWebPage
             self.selectedActionType = GInActionType.ExecuteCommand
+            self.iwMessage = ""
+            self.iwHaptic = HapticType.none
         }
         //Globals.log("init cmd:\( self.selectedCmd)")
     }
@@ -95,9 +113,11 @@ struct EditInGestureView: View {
                 Text("Select Action Type:")
                     .font(.title3)
                 Picker("", selection: $selectedActionType) {
-                    Text("Execute Command").tag(GInActionType.ExecuteCommand)
-                    Text("Forward to Watch").tag(GInActionType.ForwardToWatch)
-                    Text("Execute Command and Send to Watch").tag(GInActionType.ExecuteCmdAndSendToWatch)
+                    ForEach(GInActionType.allCases, id: \.self) { action in
+                        let menuText = action.stringValue()
+                        Text("\(menuText)")
+                        .tag(action)
+                      }
                 }
                 .padding(5)
                 .overlay(
@@ -109,16 +129,48 @@ struct EditInGestureView: View {
                 if(selectedActionType == GInActionType.ExecuteCommand || selectedActionType == GInActionType.ExecuteCmdAndSendToWatch){
                     Text("Choose Command to execute:")
                         .font(.title3)
-                    Picker("Execute Command:", selection: $selectedCmd) {
-                        Text("Open Web Page").tag(InCommand.openWebPage)
-                        Text("Execute App").tag(InCommand.executeApp)
-                        Text("Run Script").tag(InCommand.runScript)
+                    Picker("", selection: $selectedCmd) {
+                        ForEach(InCommand.allCases, id: \.self) { action in
+                            let menuText = action.stringValue()
+                            Text("\(menuText)")
+                            .tag(action)
+                          }
                     }
                     .padding(5)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(Color.orange)
                     )
+                }
+                Spacer().frame(height: 20)
+                
+                if(selectedActionType == GInActionType.ExecuteCmdAndSendToWatch || selectedActionType == GInActionType.ForwardToWatch){
+                    Text("Message to be displayed on iWatch:")
+                        .font(.title3)
+                    TextField("Message", text: $iwMessage)
+                        .padding(5)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(Color.orange)
+                        )
+                    
+                    Spacer().frame(height: 20)
+                    
+                    Text("Haptic to be played by iWatch:")
+                        .font(.title3)
+                    Picker("", selection: $iwHaptic) {
+                        ForEach(HapticType.allCases, id: \.self) { action in
+                            let menuText = action.stringValue()
+                            Text("\(menuText)")
+                            .tag(action)
+                          }
+                    }
+                    .padding(5)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.orange)
+                    )
+                    
                 }
                 
             }.padding(20)
@@ -134,6 +186,16 @@ struct EditInGestureView: View {
                     gs!.setIncommingGKey(igkey)
                     gs!.setGInActionType(selectedActionType)
                     gs!.setCommand(selectedCmd.rawValue)
+                    gs!.setIWatchMessage(iwMessage)
+                    gs!.setIWatchHaptic(iwHaptic)
+                    
+                    if(selectedActionType == GInActionType.ForwardToWatch){
+                        gs!.setCommand(InCommand.openWebPage.rawValue) // reset command to default
+                        
+                    } else if(selectedActionType == GInActionType.ExecuteCommand){
+                        gs!.setIWatchMessage("") // reset message
+                        gs!.setIWatchHaptic(HapticType.none) // reset haptic
+                    }
                     
                     //set/change key (&name)
                     //remove old ->  insert new
@@ -149,14 +211,47 @@ struct EditInGestureView: View {
                     gs.setIncommingGKey(igkey)
                     gs.setGInActionType(selectedActionType)
                     gs.setCommand(selectedCmd.rawValue)
+                    gs.setIWatchMessage(iwMessage)
+                    gs.setIWatchHaptic(iwHaptic)
+                    
+                    if(selectedActionType == GInActionType.ForwardToWatch){
+                        gs.setCommand(InCommand.openWebPage.rawValue) // reset command to default
+                        
+                    } else if(selectedActionType == GInActionType.ExecuteCommand){
+                        gs.setIWatchMessage("") // reset message
+                        gs.setIWatchHaptic(HapticType.none) // reset haptic
+                    }
+                    
                     //save to store
                     viewModel.igesturesStore.setGestureMapping(igkey, gs)
+                        
                 }
                 
                 //return to previous view
                 dismiss()
             }
             Spacer().frame(height: 20)
+            
+        }.onAppear(){
+            print("EditInGestureView: onAppear...")
+
+            let igmObj = viewModel.igesturesStore.getGestureMapping(self.igkey)
+            if(igmObj != nil){ // edit page
+                self.igmName = igmObj!.getName()
+                self.selectedCmd = InCommand.allCases.filter{$0.rawValue == igmObj!.getCommand()}.first ?? InCommand.openWebPage
+                self.selectedActionType = igmObj!.getIGActionType()
+                self.iwMessage = igmObj!.getIWatchMessage()
+                self.iwHaptic = igmObj!.getIWatchHaptic() ?? HapticType.none
+                //Globals.log("init cmd:\( self.selectedCmd)")
+                
+            } else {// create page
+                self.igkey = ""
+                self.igmName = ""
+                self.selectedCmd = InCommand.openWebPage
+                self.selectedActionType = GInActionType.ExecuteCommand
+                self.iwMessage = ""
+                self.iwHaptic = HapticType.none
+            }
         }
     }
 }

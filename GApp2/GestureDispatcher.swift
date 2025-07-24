@@ -122,9 +122,9 @@ public class GestureDispatcher : GestureEvaluationListener, BTChangeListener {
         
         let gobj: GestureJson? = BT.decodeDataToObject(data: value)
         
-        Globals.log("GestureDispatcher: BT Received message: \(message)")
-        let gkey = gobj?.gestureKey ?? "no gkey"
-        let command = gobj?.gestureCommand ?? "no command"
+        Globals.log("GestureDispatcher: BT Received message: \(gobj.debugDescription)")
+        let gkey = gobj?.gestureKey ?? ""
+        let command = gobj?.gestureCommand ?? ""
         
         let gm:InGestureMapping? = inGesturesStore?.getGestureMapping(gkey) ?? nil
         if (gm != nil ) {
@@ -136,13 +136,14 @@ public class GestureDispatcher : GestureEvaluationListener, BTChangeListener {
                 Globals.log("GestureDispatcher:Executing gesture command and fwd to Watch...")
                 //TODO ...execute command
                 //send to bluetooth
-                sendViaBluetooth(gkey, 0.0, command)
+                //sendViaBluetooth(gkey, 0.0, command)
                 
             } else  if(gm?.getIGActionType() == GInActionType.ForwardToWatch){
-                Globals.log("GestureDispatcher:Executing gesture command via SSH...")
+                Globals.log("GestureDispatcher:Forwarding gesture to watch...")
                 
-                //send to bluetooth
-                sendViaBluetooth(gkey, 0.0, command)
+                //send to paired watch
+                let msg = gm!.getIWatchHaptic()?.rawValue ?? HapticType.none.rawValue + Device.Watch_Phone_Topic_HMSG_Separator + gm!.getIWatchMessage()
+                GApp2App.sendWatchAMessage(Device.Watch_Phone_Topic_HMSG_Key, msg)
             }
         }
     }

@@ -261,5 +261,6 @@ struct GApp2App: App {
         Globals.log("APP_Main: Activating Watch Sensors ...")
         sendWatchAMessage(Device.Watch_Phone_Topic_STATE_Key, "activateSensors")
     }
+       
 
 }

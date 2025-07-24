@@ -15,7 +15,6 @@ struct ChooseSourceView: View {
     let session = WCSession.default
     
     var gesturesStore:MultiGestureStore
-    @State var counter:Int = 0
     
     // constructor
     init( _ gesturesStore: MultiGestureStore) {
@@ -35,7 +34,7 @@ struct ChooseSourceView: View {
             if (source == nil || source == DeviceType.Phone){
                 //use highlighted button
                 Button("Use this phone", systemImage:"iphone.homebutton.radiowaves.left.and.right", action: {
-                    Globals.log("Use this phone clicked !!!...")
+                    Globals.log("Use this phone clicked")
                     RawGestureDeviceRouter.setSourceToThisPhone()
                     dismiss()
                     
@@ -44,7 +43,7 @@ struct ChooseSourceView: View {
             } else {
                 //use plain button
                 Button("Use this phone", systemImage:"iphone.homebutton.radiowaves.left.and.right", action: {
-                    Globals.log("Use this phone clicked !!!...")
+                    Globals.log("Use this phone clicked")
                     RawGestureDeviceRouter.setSourceToThisPhone()
                     dismiss()
                     
@@ -55,7 +54,7 @@ struct ChooseSourceView: View {
             if (source == DeviceType.Watch){
                 //use highlighted button
                 Button("Use paired iWatch", systemImage:"watch.analog", action: {
-                    Globals.log("Use paired Watch clicked !!!...")
+                    Globals.log("Use paired Watch clicked")
                     RawGestureDeviceRouter.setSourceToPairedWatch()
                     dismiss()
                     
@@ -64,7 +63,7 @@ struct ChooseSourceView: View {
             } else {
                 //use plain button
                 Button("Use paired iWatch", systemImage:"watch.analog", action: {
-                    Globals.log("Use paired Watch clicked !!!...")
+                    Globals.log("Use paired Watch clicked")
                     RawGestureDeviceRouter.setSourceToPairedWatch()
                     dismiss()
                     
@@ -95,35 +94,14 @@ struct ChooseSourceView: View {
             
               
         }.onAppear {
-            //used for UI forced updates
-            counter = counter + 1
             checkConnectivity()
         }
     }
     
     
     func checkConnectivity() {
-        
-        // Perform any final initialization of your application.
-        if WCSession.isSupported() {
-            print("ChooseSourceView: Check watch connectivity - WCSession is Supported!")
-        } else {
-            print("ChooseSourceView: Check watch connectivity - WCSession is not Supported!")
-        }
-        
-        // Perform any final initialization of your application.
-        if session.isPaired {
-            print("ChooseSourceView:  Check watch connectivity - iWatch is Paired!")
-        } else {
-            print("ChooseSourceView: Check watch connectivity - iWatch is NOT Paired!")
-        }
-        
-        // Perform any final initialization of your application.
-        if session.isReachable {
-            print("ChooseSourceView:  Check watch connectivity - iWatch is Reachable!")
-        } else {
-            print("ChooseSourceView: Check watch connectivity - iWatch is NOT Reachable!")
-        }
+        print("ChooseSourceView: checking watch connectivity...")
+        WDConnector.printState(WCSession.default)
     }
 }
 

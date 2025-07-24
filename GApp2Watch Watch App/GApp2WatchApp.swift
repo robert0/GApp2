@@ -90,35 +90,30 @@ struct GApp2Watch_Watch_AppApp: App {
     }
     
     /*
-     *
+     * Shows messages and plays a Haptic
+     */
+    static func showHapticMessage(_ msg:String){
+        
+        let parts = msg.split(separator: WDevice.Watch_Phone_Topic_HMSG_Separator, maxSplits: 1, omittingEmptySubsequences: false)
+        let haptic = parts.first.map(String.init) ?? ""
+        let message = parts.count > 1 ? String(parts[1]) : ""
+        
+        //extract htype from message
+        let htype = HapticType.from(haptic)
+        if(htype != nil) {
+            htype!.play()
+        }
+        
+        //only show a message if available
+        if(!message.isEmpty ){
+            GApp2Watch_Watch_AppApp.view?.showMessage(message)
+        }
+    }
+    
+    /*
+     * Only shows messages on watch screen
      */
     static func showMessage(_ msg:String){
-        if(msg == ".click"){
-            WKInterfaceDevice.current().play( WKHapticType.click)
-            
-        } else if(msg == ".click2"){
-            WKInterfaceDevice.current().play( WKHapticType.click)
-            Thread.sleep(forTimeInterval: 0.1)
-            WKInterfaceDevice.current().play( WKHapticType.click)
-
-            
-        } else if(msg == ".click3"){
-            WKInterfaceDevice.current().play( WKHapticType.click)
-            Thread.sleep(forTimeInterval: 0.1)
-            WKInterfaceDevice.current().play( WKHapticType.click)
-            Thread.sleep(forTimeInterval: 0.1)
-            WKInterfaceDevice.current().play( WKHapticType.click)
-            
-        } else if(msg == ".failure"){
-            WKInterfaceDevice.current().play( WKHapticType.failure)
-            
-        } else if(msg == ".notification"){
-            WKInterfaceDevice.current().play( WKHapticType.notification)
-            
-        } else {
-            WKInterfaceDevice.current().play( WKHapticType.success)
-        }
-       
         GApp2Watch_Watch_AppApp.view?.showMessage(msg)
     }
 }

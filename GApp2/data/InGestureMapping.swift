@@ -9,7 +9,14 @@ public enum GInActionType : String, CaseIterable, Identifiable {
     case ExecuteCommand = "Execute Command"
     case ForwardToWatch = "Send to Watch"
     case ExecuteCmdAndSendToWatch = "Execute Command and Send to Watch"
+    
+    //
     public var id: Self { self }
+    
+    // Convert to string to display in menus and pickers.
+    func stringValue() -> String {
+        return rawValue
+    }
 }
 
 //
@@ -20,12 +27,16 @@ public class InGestureMapping: Codable {
     private var incommingGKey: String = ""
     private var actionType: GInActionType = GInActionType.ExecuteCommand
     private var cmd:String = ""
+    private var iWatchMessage:String = ""
+    private var iWatchHaptic:HapticType?
     
     public enum ConfigKeys: String, CodingKey {
         case name
         case incommingGKey
         case actionType
         case cmd
+        case iWatchMessage
+        case iWatchHaptic
     }
         
     public init(){
@@ -37,11 +48,14 @@ public class InGestureMapping: Codable {
      */
     public required init(from decoder: any Decoder) throws {
         let values = try decoder.container(keyedBy: ConfigKeys.self)
-        self.name = try values.decodeIfPresent(String.self, forKey: ConfigKeys.name)!
+        self.name = try values.decodeIfPresent(String.self, forKey: ConfigKeys.name) ?? ""
         self.incommingGKey = try values.decodeIfPresent(String.self, forKey: ConfigKeys.incommingGKey)!
-        //TODO... encode/decode enum
-        //self.actionType = try values.decodeIfPresent(GInActionType.rawValue, forKey: .actionType)!
-        self.cmd = try values.decodeIfPresent(String.self, forKey: .cmd)!
+        let sActionType = try values.decodeIfPresent(String.self, forKey: ConfigKeys.actionType) ?? ""
+        self.actionType = GInActionType.allCases.first(where: { $0.stringValue() == sActionType }) ?? GInActionType.ExecuteCommand
+        self.cmd = try values.decodeIfPresent(String.self, forKey: .cmd) ?? ""
+        let sHaptic = try values.decodeIfPresent(String.self, forKey: ConfigKeys.iWatchHaptic) ?? ""
+        self.iWatchHaptic = HapticType.allCases.first(where: { $0.stringValue() == sHaptic }) ?? HapticType.click
+        self.iWatchMessage = try values.decodeIfPresent(String.self, forKey: .iWatchMessage) ?? ""
     }
     
     /**
@@ -54,8 +68,9 @@ public class InGestureMapping: Codable {
         try container.encode(name, forKey: ConfigKeys.name)
         try container.encode(incommingGKey, forKey: ConfigKeys.incommingGKey)
         try container.encode(cmd, forKey: ConfigKeys.cmd)
-        //TODO... encode/decode enum
-        //try container.encode(actionType, forKey: ConfigKeys.actionType)
+        try container.encode(actionType.stringValue(), forKey: ConfigKeys.actionType)
+        try container.encode(iWatchMessage, forKey: ConfigKeys.iWatchMessage)
+        try container.encode(iWatchHaptic?.stringValue(), forKey: ConfigKeys.iWatchHaptic)
     }
     
     public func getName() -> String {
@@ -89,4 +104,21 @@ public class InGestureMapping: Codable {
     public func getIGActionType() -> GInActionType {
         return actionType
     }
+    
+    public func getIWatchMessage() -> String {
+        return iWatchMessage
+    }
+    
+    public func setIWatchMessage(_ msg: String) {
+        self.iWatchMessage = msg
+    }
+    
+    public func getIWatchHaptic() -> HapticType? {
+        return iWatchHaptic
+    }
+    
+    public func setIWatchHaptic(_ haptic: HapticType) {
+        self.iWatchHaptic = haptic
+    }
+    
 }

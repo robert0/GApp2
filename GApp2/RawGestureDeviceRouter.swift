@@ -32,7 +32,7 @@ public class RawGestureDeviceRouter: ObservableObject {
      */
     public static func addListener(_ listener: SensorListener) {
         //TODO... only one listener for now; expand it later if needed
-        Globals.log("DeviceRouter.addListener() called ...")
+        //Globals.log("RawGestureDeviceRouter.addListener() called ...")
         shared.listeners.append(listener)
     }
 
@@ -85,7 +85,7 @@ public class RawGestureDeviceRouter: ObservableObject {
      *
      */
     public static func setSourceToPairedWatch() {
-        print("DeviceRouter: setSourceToPairedWatch() called ...")
+        print("RawGestureDeviceRouter: setSourceToPairedWatch() called ...")
         sourceToDevice(.Watch)
     }
 
@@ -93,7 +93,7 @@ public class RawGestureDeviceRouter: ObservableObject {
      *
      */
     public static func setSourceToThisPhone() {
-        print("DeviceRouter: setSourceToThisPhone() called ...")
+        print("RawGestureDeviceRouter: setSourceToThisPhone() called ...")
         sourceToDevice(.Phone)
     }
     
@@ -150,7 +150,7 @@ public class RawGestureDeviceRouter: ObservableObject {
      *
      */
     public static func startStreaming(){
-        print("DeviceRouter: startStreaming() called ...")
+        print("RawGestureDeviceRouter: startStreaming() called ...")
         shared.isStreaming = true
     }
     
@@ -158,7 +158,7 @@ public class RawGestureDeviceRouter: ObservableObject {
      *
      */
     public static func stopStreaming(){
-        print("DeviceRouter: stopStreaming() called ...")
+        print("RawGestureDeviceRouter: stopStreaming() called ...")
         shared.isStreaming = false
     }
     

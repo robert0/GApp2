@@ -14,7 +14,8 @@ struct TestGesturesView: View {
     private var analyser:RealtimeMultiGestureStoreAnalyser
     private static var dataRenderer: TestingViewRenderer?
     private static var eventsHandler: AccelerometerEventStoreHandler?
-
+    @State private var isStreaming: Bool = RawGestureDeviceRouter.shared.isStreaming
+    
     // constructor
     init(_ analyser:RealtimeMultiGestureStoreAnalyser) {
         //the init will be called every time the user goes away from this page.(the parent has a reference to it, so it will be recreated)
@@ -88,23 +89,31 @@ struct TestGesturesView: View {
             HStack {
                 Spacer()
                 Button("Test") {
-                    Globals.log("Testing Clicked !!!...")
+                    Globals.log("'Testing' clicked")
                     if(RawGestureDeviceRouter.shared.deviceType == nil){
                         RawGestureDeviceRouter.setSourceToThisPhone()
                     }
                     
                     RawGestureDeviceRouter.startStreaming()
                     self.analyser.startAnalysing()
-                  
-                }.buttonStyle(.borderedProminent)
+                    isStreaming = true
+                    
+                }
+                //.buttonStyle(isStreaming ? .plain : .borderedProminent)
+                .buttonStyle(.borderedProminent)
+                .disabled(isStreaming)
                 Spacer().frame(width: 10)
                 
                 Button("Stop Testing") {
-                    Globals.log("Stop Testing Clicked !!!...")
+                    Globals.log("'Stop Testing' clicked")
                     self.analyser.stopAnalysing()
                     RawGestureDeviceRouter.stopStreaming()
-
-                }.buttonStyle(.borderedProminent)
+                    isStreaming = false
+                    
+                }
+                //.buttonStyle(!isStreaming ? .bordered : .borderedProminent)
+                .buttonStyle(.borderedProminent)
+                .disabled(!isStreaming)
                 Spacer().frame(width: 10)
                 
                 Spacer()
@@ -140,11 +149,16 @@ struct TestGesturesView: View {
             TestGesturesView.dataRenderer
             Spacer()
             
-        }.onDisappear {
+        }
+        .onAppear {
+            isStreaming = RawGestureDeviceRouter.shared.isStreaming
+        }
+        .onDisappear {
             //force stop streaming
             self.analyser.stopAnalysing()
             RawGestureDeviceRouter.stopStreaming()
             //self.analyser.clear() - to be implemented
+            isStreaming = false
         }
     }
     
