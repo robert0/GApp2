@@ -84,11 +84,6 @@
 			path = "GApp2Watch Watch App";
 			sourceTree = "<group>";
 		};
-		E84A1D692E3163C400F08D31 /* WWApp Watch App */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "WWApp Watch App";
-			sourceTree = "<group>";
-		};
 		E887D2042D10550600A7EB10 /* GApp2 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -135,7 +130,6 @@
 			children = (
 				E887D2042D10550600A7EB10 /* GApp2 */,
 				E84554BD2D50CB200067ADF8 /* GApp2Watch Watch App */,
-				E84A1D692E3163C400F08D31 /* WWApp Watch App */,
 				E859C76A2DEA114F009A5FD2 /* Frameworks */,
 				E887D2032D10550600A7EB10 /* Products */,
 			);
