@@ -274,6 +274,36 @@
             endingLineNumber = "42"
             landmarkName = "sendGesturePOST(deviceId:gs:completion:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "DA292422-4125-42A5-8530-99E8E16CD9D3 - 9c0eba7b5448bba9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static GApp2.GesturesUrlApi.sendGesturePOST(deviceId: Swift.String, gs: GApp2.GestureObj, completion: (Swift.Result&lt;Swift.Bool, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "GApp2.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/roberttalianu/Desktop/GApp2/GApp2/url/GesturesUrlApi.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "42"
+                  endingLineNumber = "42">
+               </Location>
+               <Location
+                  uuid = "DA292422-4125-42A5-8530-99E8E16CD9D3 - c300228d52eed5eb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Sendable (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in static GApp2.GesturesUrlApi.sendGesturePOST(deviceId: Swift.String, gs: GApp2.GestureObj, completion: (Swift.Result&lt;Swift.Bool, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "GApp2.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/roberttalianu/Desktop/GApp2/GApp2/url/GesturesUrlApi.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "43"
+                  endingLineNumber = "43">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
