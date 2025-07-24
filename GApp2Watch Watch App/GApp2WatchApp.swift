@@ -93,10 +93,10 @@ struct GApp2Watch_Watch_AppApp: App {
      * Shows messages and plays a Haptic
      */
     static func showHapticMessage(_ msg:String){
-        
-        let parts = msg.split(separator: WDevice.Watch_Phone_Topic_HMSG_Separator, maxSplits: 1, omittingEmptySubsequences: false)
-        let haptic = parts.first.map(String.init) ?? ""
-        let message = parts.count > 1 ? String(parts[1]) : ""
+        print("GApp2Watch_Watch_AppApp -> showHapticMessage: \(msg)")
+        let parts = msg.components(separatedBy: WDevice.Watch_Phone_Topic_HMSG_Separator)
+        let haptic = parts[0]
+        let message = parts[1]
         
         //extract htype from message
         let htype = HapticType.from(haptic)
@@ -114,6 +114,7 @@ struct GApp2Watch_Watch_AppApp: App {
      * Only shows messages on watch screen
      */
     static func showMessage(_ msg:String){
+        print("GApp2Watch_Watch_AppApp -> showMessage: \(msg)")
         GApp2Watch_Watch_AppApp.view?.showMessage(msg)
     }
 }
