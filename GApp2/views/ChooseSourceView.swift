@@ -58,7 +58,9 @@ struct ChooseSourceView: View {
                     RawGestureDeviceRouter.setSourceToPairedWatch()
                     dismiss()
                     
-                }).buttonStyle(.borderedProminent)
+                })
+                .buttonStyle(.borderedProminent)
+                .disabled(!GApp2App.isWatchConnectivityActive())
                 
             } else {
                 //use plain button
@@ -67,10 +69,19 @@ struct ChooseSourceView: View {
                     RawGestureDeviceRouter.setSourceToPairedWatch()
                     dismiss()
                     
-                }).buttonStyle(.plain)
+                })
+                .buttonStyle(.plain)
+                .disabled(!GApp2App.isWatchConnectivityActive())
             }
-            Spacer().frame(height: 30)
+            Spacer().frame(height: 50)
             
+            
+            if(!GApp2App.isWatchConnectivityActive()){
+                Text("Warning: Watch connection is not active!")
+                    .foregroundColor(.gray)
+                    .italic()
+                    .font(.footnote)
+            }
             
 //            if (source == DeviceType.BTPhone){
 //                //use highlighted button
@@ -101,7 +112,7 @@ struct ChooseSourceView: View {
     
     func checkConnectivity() {
         print("ChooseSourceView: checking watch connectivity...")
-        WDConnector.printState(WCSession.default)
+        WDConnector.printState(WCSession.default)      
     }
 }
 

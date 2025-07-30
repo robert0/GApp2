@@ -57,7 +57,7 @@ struct EditGestureView: View {
             //add buttons
             VStack (alignment: .leading){
                 Spacer().frame(height: 50)
-                Text("Gesture Name:")
+                Text("Gesture Name(Key):")
                 TextField("Name", text: $gkey)
                     .padding(10)
                     .contentMargins(10)

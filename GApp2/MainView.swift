@@ -110,7 +110,7 @@ struct MainView: View {
                     }
                     Spacer()
                    
-                    Text("Gestures App v1.6")
+                    Text("Gestures App v1.7")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: 150, alignment: .trailing)

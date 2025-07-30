@@ -261,6 +261,11 @@ struct GApp2App: App {
         Globals.log("APP_Main: Activating Watch Sensors ...")
         sendWatchAMessage(Device.Watch_Phone_Topic_STATE_Key, "activateSensors")
     }
+    
+    
+    public static func isWatchConnectivityActive() -> Bool {
+        return GApp2App.wdConnector != nil && GApp2App.wdConnector!.session.isReachable
+    }
        
 
 }

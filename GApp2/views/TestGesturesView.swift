@@ -63,8 +63,10 @@ struct TestGesturesView: View {
                     .italic()
                     .foregroundColor(.green)
             } else {
-                Text("Not connected to SSH Server. Go to Settings menu to configure SSH connection or check if the SSH server is reachable.")
-                    .foregroundColor(.red)
+                if(GApp2App.getSshServerName() != nil) {
+                    Text("Not connected to SSH Server. Go to Settings menu to configure SSH connection or check if the SSH server is reachable.")
+                        .foregroundColor(.red)
+                }
             }
             
 //            Text("Test commands via ssh:").italic()
@@ -119,20 +121,34 @@ struct TestGesturesView: View {
                 Spacer()
             }
 
+            Spacer().frame(height: 10)
+            Text("Test watch:").italic()
+            
+            Spacer().frame(height: 10)
+            if(!GApp2App.isWatchConnectivityActive()){
+                Text("Warning: Watch connection is not active!")
+                    .foregroundColor(.gray)
+                    .italic()
+                    .font(.footnote)
+            }
+            Spacer().frame(height: 10)
             HStack {
-                Spacer()
-                Button("Send Click Message") {
+                Button("Send Click") {
                     Globals.log("Send Watch A .click Message!!!...")
                     GApp2App.sendWatchAMessage(Device.Watch_Phone_Topic_TXT_Key, ".click")
                     
-                }.buttonStyle(.borderedProminent)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(!GApp2App.isWatchConnectivityActive())
                 Spacer().frame(width: 10)
                 
-                Button("Send 2 Click Message") {
+                Button("Send 2 Click") {
                     Globals.log("Send Watch A 2.click Message!!!...")
                     GApp2App.sendWatchAMessage(Device.Watch_Phone_Topic_TXT_Key, ".click2")
                     
-                }.buttonStyle(.borderedProminent)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(!GApp2App.isWatchConnectivityActive())
                 Spacer().frame(width: 10)
                 
 //                Button("Advertise") {
