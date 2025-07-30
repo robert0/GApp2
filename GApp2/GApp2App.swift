@@ -235,12 +235,23 @@ struct GApp2App: App {
             GApp2App.wdConnector = WDConnector()
         }
     }
+   
+    /*
+     *
+     */
+    public static func sendWatchAHapticMessage(_ haptic:HapticType, _ msg: String) {
+        Globals.log("APP_Main: sendWatchAHapticMessage >")
+        if GApp2App.wdConnector != nil {
+            let msg = haptic.rawValue + Device.Watch_Phone_Topic_HMSG_Separator + msg
+            GApp2App.sendWatchAMessage(Device.Watch_Phone_Topic_HMSG_Key, msg)
+        }
+    }
     
     /*
      *
      */
     public static func sendWatchAMessage(_ topic: String, _ msg: String) {
-        Globals.log("APP_Main: sendWatchAMessage...")
+        Globals.log("APP_Main: sendWatchAMessage >")
         if GApp2App.wdConnector != nil {
             GApp2App.wdConnector?.sendDataToWatch(topic, msg)
         }

@@ -77,7 +77,7 @@ struct ChooseSourceView: View {
             
             
             if(!GApp2App.isWatchConnectivityActive()){
-                Text("Warning: Watch connection is not active!")
+                Text("Warning: Watch connection is not active! Check bluetooth, network or that app is also running on watch.")
                     .foregroundColor(.gray)
                     .italic()
                     .font(.footnote)
@@ -112,7 +112,7 @@ struct ChooseSourceView: View {
     
     func checkConnectivity() {
         print("ChooseSourceView: checking watch connectivity...")
-        WDConnector.printState(WCSession.default)      
+        WDConnector.printState(WCSession.default)
     }
 }
 

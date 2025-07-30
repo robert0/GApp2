@@ -102,7 +102,6 @@ public class WDConnector : NSObject, WCSessionDelegate {
     public func sendDataToWatch(_ topic: String, _ text: String) {
         print("WDConnector: sendDataToWatch() -> WCSession activeState: \(session.activationState)")
         
-        //let text = "This message is from phone..."
         session.sendMessage([topic: text], replyHandler: nil, errorHandler: { error in
             print("WDConnector: Failed to send message to watch: \(error.localizedDescription)")
         })

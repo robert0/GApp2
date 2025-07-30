@@ -64,8 +64,10 @@ struct TestGesturesView: View {
                     .foregroundColor(.green)
             } else {
                 if(GApp2App.getSshServerName() != nil) {
-                    Text("Not connected to SSH Server. Go to Settings menu to configure SSH connection or check if the SSH server is reachable.")
-                        .foregroundColor(.red)
+                    Text("Warning: Not connected to SSH Server. Go to Settings menu to configure SSH connection or check if the SSH server is reachable.")
+                        .foregroundColor(.gray)
+                        .italic()
+                        .font(.footnote)
                 }
             }
             
@@ -126,26 +128,22 @@ struct TestGesturesView: View {
             
             Spacer().frame(height: 10)
             if(!GApp2App.isWatchConnectivityActive()){
-                Text("Warning: Watch connection is not active!")
+                Text("Warning: Watch connection is not active! Check bluetooth, network or that app is also running on watch.")
                     .foregroundColor(.gray)
                     .italic()
                     .font(.footnote)
             }
             Spacer().frame(height: 10)
             HStack {
-                Button("Send Click") {
-                    Globals.log("Send Watch A .click Message!!!...")
-                    GApp2App.sendWatchAMessage(Device.Watch_Phone_Topic_TXT_Key, ".click")
-                    
+                Button("Send 3 Clicks") {
+                    GApp2App.sendWatchAHapticMessage(HapticType.click3, ".click3")
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(!GApp2App.isWatchConnectivityActive())
                 Spacer().frame(width: 10)
                 
-                Button("Send 2 Click") {
-                    Globals.log("Send Watch A 2.click Message!!!...")
-                    GApp2App.sendWatchAMessage(Device.Watch_Phone_Topic_TXT_Key, ".click2")
-                    
+                Button("Send Notification") {
+                    GApp2App.sendWatchAHapticMessage(HapticType.notification, ".notification")
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(!GApp2App.isWatchConnectivityActive())
