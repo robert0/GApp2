@@ -148,14 +148,25 @@ struct TestGesturesView: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(!GApp2App.isWatchConnectivityActive())
                 Spacer().frame(width: 10)
+            }
+            
+            
+            Spacer().frame(height: 10)
+            Text("Test HID:").italic()
+            
+            Spacer().frame(height: 10)
+            HStack {
+                Button("Send KeyTyped") {
+                    GApp2App.sendKeyTyped(keyCodes: [0x04])
+                }
+                .buttonStyle(.borderedProminent)
+                Spacer().frame(width: 10)
                 
-//                Button("Advertise") {
-//                    Globals.log("Advertise Message clicked...")
-//                    //GApp2App.sendWatchAMessage(".click3")
-//                    GApp2App.advertiseMessage("This is an advertised message!")
-//                    
-//                }.buttonStyle(.borderedProminent)
-//                Spacer().frame(width: 10)
+                Button("Send MouseMove") {
+                    GApp2App.sendMouseMove(dx: 10, dy: 10, buttons: 0)
+                }
+                .buttonStyle(.borderedProminent)
+                Spacer().frame(width: 10)
             }
                 
             

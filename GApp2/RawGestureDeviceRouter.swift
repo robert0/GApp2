@@ -111,7 +111,8 @@ public class RawGestureDeviceRouter: ObservableObject {
     public static func sourceToDevice(_ device: DeviceType) {
         RawGestureDeviceRouter.shared.deactivateCurrentDeviceDataStream()
         RawGestureDeviceRouter.shared.deviceType = device
-        RawGestureDeviceRouter.shared.activateCurrentDeviceDataStream()
+        // this will be made active when startStreaming() is called
+        //RawGestureDeviceRouter.shared.activateCurrentDeviceDataStream()
     }
     
     /*
@@ -152,6 +153,7 @@ public class RawGestureDeviceRouter: ObservableObject {
     public static func startStreaming(){
         print("RawGestureDeviceRouter: startStreaming() called ...")
         shared.isStreaming = true
+        RawGestureDeviceRouter.shared.activateCurrentDeviceDataStream()
     }
     
     /*
@@ -159,6 +161,7 @@ public class RawGestureDeviceRouter: ObservableObject {
      */
     public static func stopStreaming(){
         print("RawGestureDeviceRouter: stopStreaming() called ...")
+        RawGestureDeviceRouter.shared.deactivateCurrentDeviceDataStream()
         shared.isStreaming = false
     }
     

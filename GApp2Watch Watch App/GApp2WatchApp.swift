@@ -11,6 +11,7 @@ import SwiftUI
 struct GApp2Watch_Watch_AppApp: App {
     //create self initialized singleton
     private static var app = GApp2Watch_Watch_AppApp()
+    private static var wkMgr:WorkoutManager = WorkoutManager()
     private var buffer:GBuffer = GBuffer()
     private var sensorStreaming:Bool = false
     private var dataTransferTimer: Timer?
@@ -77,11 +78,13 @@ struct GApp2Watch_Watch_AppApp: App {
     // MARK: - Sensor Streaming ENABLED
     public static func activateSensorStreaming(){
         app.sensorStreaming = true
+        wkMgr.startWorkout()
     }
     
     // MARK: - Sensor Streaming DISABLED
     public static func deactivateSensorStreaming(){
         app.sensorStreaming = false
+        wkMgr.stopWorkout()
     }
     
     // MARK: - Sensor Streaming STATUS

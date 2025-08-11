@@ -27,11 +27,12 @@ struct GApp2App: App {
     static var wdConnector: WDConnector?
     static var btOutInstance: BTPeripheralObj_OUT?
     static var btInInstance: BTCentralObj_IN?
+    static var hidp: BLEHIDPeripheral?
     static var mpbc: HIDBluetoothController?
     static var btPeripheralDevice: CBPeripheral?
     private static var sshDataBean: SshDataBean?
     static var lastSshCmd: String? = nil
-        
+    
     //static var contentView:ContentView? = nil
 
     init() {
@@ -211,6 +212,9 @@ struct GApp2App: App {
         }
     }
 
+
+    
+   
     /*
      *
      */
@@ -278,5 +282,25 @@ struct GApp2App: App {
         return GApp2App.wdConnector != nil && GApp2App.wdConnector!.session.isReachable
     }
        
-
+    // Activates the HID interface for mouse and keyboard peripherals
+    public static func activateHIDInterface() -> BLEHIDPeripheral {
+        Globals.log("APP_Main: Activating HID interface...")
+        if GApp2App.hidp == nil {
+            GApp2App.hidp = BLEHIDPeripheral() //self start scanning
+        }
+        return GApp2App.hidp!
+    }
+        
+    // Sends a mouse move event as HID device
+    public static func sendMouseMove(dx: Int8, dy: Int8, buttons: UInt8 = 0) {
+        Globals.log("APP_Main: Sending Mouse Move to Watch...")
+        hidp?.sendMouseMove(dx: dx, dy: dy, buttons: buttons)
+    }
+   
+    
+    // Sends a key press and release event as HID device
+    public static func sendKeyTyped(modifiers:UInt8 = 0x00, keyCodes: [UInt8] = [0x04]) {
+        Globals.log("APP_Main: Sending Key Typed to Watch...")
+        hidp!.sendKeyboardInput(modifiers:modifiers, keyCodes:keyCodes) // Press "a"
+    }
 }

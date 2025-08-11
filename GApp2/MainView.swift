@@ -56,13 +56,16 @@ struct MainView: View {
         }
         
         //start bluetooth & advertising
-        //GApp2App.startBTOutbound()
+        GApp2App.startBTOutbound()
         
         //start the watch connectivity
         GApp2App.activateWatchConnectivity()
         
         var _self = self
         
+        //start HID interface
+        GApp2App.activateHIDInterface()
+            
         //Notify App started OK
         ToastManager.show("App started...OK", ToastSeverity.info)
             
@@ -73,6 +76,12 @@ struct MainView: View {
             NavigationView {
                 VStack (alignment: .leading) {
                     Spacer()
+                    NavigationLink(destination: HIDSettings()) {
+                        Image(systemName: "radiowaves.left")
+                            .imageScale(.large)
+                        Text("HID Settings")
+                    }
+                    Spacer().frame(height:30)
                     NavigationLink(destination: Settings(gesturesStore)) {
                         Image(systemName: "gearshape.2.fill")
                             .imageScale(.large)
@@ -110,7 +119,7 @@ struct MainView: View {
                     }
                     Spacer()
                    
-                    Text("Gestures App v1.7")
+                    Text("Gestures App v1.8.0")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: 150, alignment: .trailing)

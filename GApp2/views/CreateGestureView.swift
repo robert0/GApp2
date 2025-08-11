@@ -19,8 +19,10 @@ struct CreateGestureView: View, DataChangeListener {
     ///local vars
     @State private var name: String = ""
     @State private var isNameMissing: Bool = true
+    @State private var isRecording: Bool = false
     private var gUUID: String = ""
 
+    
     // constructor
     init(_ gesturesStore:MultiGestureStore) {
         //the init will be called every time the user goes away from this page.(the parent has a reference to it, so it will be recreated)
@@ -71,6 +73,13 @@ struct CreateGestureView: View, DataChangeListener {
             HStack {
                 Button("Start Recording") {
                     Globals.logToScreen("Start Recording Pressed")
+                    
+                    //06.08.2025 moved reset avg gesture here, every time we start recording we reset the gesture mean
+                    CreateGestureView.singleGestureStore!.clearGestureMean()
+                    CreateGestureView.dataRenderer!.onDataChange(1)
+                    // reset avg - end
+                    
+                    //do start operations for recording
                     if(RawGestureDeviceRouter.shared.deviceType == nil){
                         RawGestureDeviceRouter.setSourceToThisPhone()
                     }
@@ -81,17 +90,22 @@ struct CreateGestureView: View, DataChangeListener {
                     }
                     
                     CreateGestureView.dataRenderer?.setToRecodingMode(true)
-                    
+                    //self.isRecording = true //- this is not working for some reason
                     //TODO... update keys iterator
-                }.buttonStyle(.borderedProminent)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(isRecording)
                 Spacer().frame(width: 20)
                 
+                //06.08.2025 Disabled for now - this needs improvement
                 Button("Reset Avg") {
                     Globals.log("Reset Avg Clicked !!!...")
                     CreateGestureView.singleGestureStore!.clearGestureMean()
                     CreateGestureView.dataRenderer!.onDataChange(1)
                     
-                }.buttonStyle(.borderless)
+                }
+                .buttonStyle(.borderless)
+                .disabled(true)
             }
             
             //add data renderer view panel
@@ -132,16 +146,22 @@ struct CreateGestureView: View, DataChangeListener {
             RawGestureDeviceRouter.stopStreaming()
         }
     }
-    
+
     //
     func onDataChange(_ type: Int) {
         if(type == RealtimeSingleGestureStore.DATA_COMPLETE_UPDATE){
+            print(" <> RealtimeSingleGestureStore.DATA_COMPLETE_UPDATE ...");
             CreateGestureView.eventsHandler!.stopRecording()
             RawGestureDeviceRouter.stopStreaming()
             CreateGestureView.singleGestureStore!.recomputeMeanFromRecordingSignal()
             
             //publish data to global sever
             publishGestureOnGlobalServer(data:CreateGestureView.singleGestureStore!.getRecordingData() ?? [])
+            
+            //create a thread to execute code after 1 second    
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.isRecording = false
+            }
         }
     }
     
