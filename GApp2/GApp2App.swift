@@ -12,6 +12,7 @@ public enum ActionType: String, CaseIterable, Identifiable {
     case executeCommand = "Execute Command Locally"
     case executeCmdViaSSH = "Execute Command via SSH"
     case executeCmdViaBluetooth = "Forward Gesture/Command via Bluetooth"
+    case executeAsHID = "Execute as HID command"
 
     public var id: Self { self }
     
@@ -292,14 +293,14 @@ struct GApp2App: App {
     }
         
     // Sends a mouse move event as HID device
-    public static func sendMouseMove(dx: Int8, dy: Int8, buttons: UInt8 = 0) {
+    public static func sendHIDMouseMove(dx: Int8, dy: Int8, buttons: UInt8 = 0) {
         Globals.log("APP_Main: Sending Mouse Move to Watch...")
         hidp?.sendMouseMove(dx: dx, dy: dy, buttons: buttons)
     }
    
     
     // Sends a key press and release event as HID device
-    public static func sendKeyTyped(modifiers:UInt8 = 0x00, keyCodes: [UInt8] = [0x04]) {
+    public static func sendHIDKeyTyped(modifiers:UInt8 = 0x00, keyCodes: [UInt8] = [0x04]) {
         Globals.log("APP_Main: Sending Key Typed to Watch...")
         hidp!.sendKeyboardInput(modifiers:modifiers, keyCodes:keyCodes) // Press "a"
     }

@@ -51,6 +51,11 @@ public class GestureDispatcher : GestureEvaluationListener, BTChangeListener {
                 
                 //execute via SSH
                 executeViaSSH(gCorr, gesture!)
+            } else  if(gesture?.getActionType() == ActionType.executeAsHID){
+                Globals.log("GestureDispatcher:Executing gesture command as HID key event...")
+                
+                //execute via SSH
+                executeAsHID( gesture!)
             }
         }
     }
@@ -93,14 +98,19 @@ public class GestureDispatcher : GestureEvaluationListener, BTChangeListener {
         let gCorrFt = String(format: self.correlationFactorFormat, gCorr)
         let cutCorrFt:Double = floor(gCorr * 1000.0)/1000.0
         let cmd = gesture.getCommand()
-        do {
-            var response: String? = GApp2App.executeCommandViaSSH(cmd)
-            Globals.log("GestureDispatcher: Command executed successfully. Response: \(response ?? "No response")")
-            
-        } catch {
-            Globals.log("GestureDispatcher Error: \(error)")
-            Globals.log("GestureDispatcher: Error executing command for gesture: \(gesture.getName())")
-        }
+        // execute command via SSH
+        var response: String? = GApp2App.executeCommandViaSSH(cmd)
+    }
+    
+    //
+    fileprivate func executeAsHID(_ gesture: Gesture4D) {
+        Globals.log("GestureDispatcher: Executing command via SSH...")
+        let hidParts = gesture.getHIDCommand().split(separator: Device.HID_Modifiers_Keycode_Separator)
+        let keyCode = UInt8(hidParts[1])!
+        let modifiers = UInt8(hidParts[0])!
+        
+        // execute command via Bluetooth as HID key event
+        GApp2App.sendHIDKeyTyped(modifiers: modifiers, keyCodes: [keyCode])
     }
         
     // event via BTChangeListener

@@ -43,4 +43,7 @@ public class Device {
     public static let Watch_Phone_Topic_TXT_Key = "topic/TEXT" // text messages from phone to paired watch
     public static let Watch_Phone_Topic_HMSG_Key = "topic/HMSG" // haptic and messages from phone to paired watch
     public static let Watch_Phone_Topic_HMSG_Separator = "|" // separator used for haptic and messages bundle
+    
+    //HID device
+    public static let HID_Modifiers_Keycode_Separator = "|" // separator used for combining keyboard modifiers and keycodes
 }

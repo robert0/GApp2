@@ -157,13 +157,13 @@ struct TestGesturesView: View {
             Spacer().frame(height: 10)
             HStack {
                 Button("Send KeyTyped") {
-                    GApp2App.sendKeyTyped(keyCodes: [0x04])
+                    GApp2App.sendHIDKeyTyped(keyCodes: [0x04])
                 }
                 .buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)
                 
                 Button("Send MouseMove") {
-                    GApp2App.sendMouseMove(dx: 10, dy: 10, buttons: 0)
+                    GApp2App.sendHIDMouseMove(dx: 10, dy: 10, buttons: 0)
                 }
                 .buttonStyle(.borderedProminent)
                 Spacer().frame(width: 10)

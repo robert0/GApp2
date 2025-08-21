@@ -174,7 +174,7 @@ class BLEHIDPeripheral: NSObject {
         
         let outputReportDescriptor = CBMutableDescriptor(
             type: CBUUID(string: "2908"),
-            value: Data([0x02, 0x02]) // Report ID = 2, Type = Output
+            value: Data([0x02, 0x02]) // Report ID = 2, Type = OutputAAAAAA
         )
         
         outputReportCharacteristic.descriptors = [outputReportDescriptor]
@@ -217,6 +217,24 @@ class BLEHIDPeripheral: NSObject {
                 self.peripheralManager.updateValue(releaseData, for: self.mouseInputReportCharacteristic, onSubscribedCentrals: nil)
             }
         }
+    }
+    
+    public func sendKeyboardInput(unicode: Character) {
+        // Simple ASCII mapping example (expand for full Unicode support)
+        let asciiValue = unicode.asciiValue ?? 0
+        var keyCode: UInt8 = 0
+        var modifier: UInt8 = 0
+
+        // Example: map 'A'-'Z' and 'a'-'z'
+        if asciiValue >= 65 && asciiValue <= 90 { // 'A'-'Z'
+            keyCode = asciiValue - 65 + 0x04
+            modifier = 0x02 // Shift
+        } else if asciiValue >= 97 && asciiValue <= 122 { // 'a'-'z'
+            keyCode = asciiValue - 97 + 0x04
+        }
+        // Add more mappings for digits, symbols, etc.
+
+        sendKeyboardInput(modifiers: modifier, keyCodes: [keyCode])
     }
     
     public func sendKeyboardInput(modifiers: UInt8, keyCodes: [UInt8]) {

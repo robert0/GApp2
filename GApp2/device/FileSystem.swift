@@ -28,6 +28,8 @@ public class FileSystem {
             try encoder
                 .encode(sshData)
                 .write(to: fileURL)
+            ToastManager.show("Data saved successfully", ToastSeverity.success)
+            
         } catch {
             Globals.log("Error saving localSSHDataFile JSON: \(error)")
         }
@@ -76,6 +78,8 @@ public class FileSystem {
             try encoder
                 .encode(gestures)
                 .write(to: fileURL)
+            
+            ToastManager.show("Data saved successfully", ToastSeverity.success)
         } catch {
             Globals.log("Error saving localGesturesDataFile JSON: \(error)")
         }
@@ -121,6 +125,8 @@ public class FileSystem {
             try encoder
                 .encode(gestures)
                 .write(to: fileURL)
+            
+            ToastManager.show("Data saved successfully", ToastSeverity.success)
         } catch {
             Globals.log("Error saving incommingGesturesDataFile JSON: \(error)")
         }

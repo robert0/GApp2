@@ -11,6 +11,7 @@ public class Gesture4D: Codable {
     private var gUUID:String = ""
     private var data:[Sample4D] = []
     private var cmd:String = ""
+    private var hidCmd:String = ""
     private var name:String = ""
     private var actionType:ActionType = ActionType.executeCommand
     // Above this value the action will be triggered
@@ -24,6 +25,7 @@ public class Gesture4D: Codable {
         case name
         case actionType
         case actionThreshold
+        case hidCmd
     }
         
     public init(){
@@ -42,6 +44,7 @@ public class Gesture4D: Codable {
         self.actionThreshold = try values.decodeIfPresent(Double.self, forKey: .actionThreshold) ?? 0.7
         let sActionType = try values.decodeIfPresent(String.self, forKey: .actionType) ?? ""
         self.actionType = ActionType.allCases.first(where: { $0.stringValue() == sActionType }) ?? ActionType.executeCommand
+        self.hidCmd = try values.decodeIfPresent(String.self, forKey: .hidCmd) ?? ""
     }
     
     /**
@@ -56,6 +59,7 @@ public class Gesture4D: Codable {
         try container.encode(data, forKey: .data)
         try container.encode(actionThreshold, forKey: .actionThreshold)
         try container.encode(actionType.stringValue(), forKey: .actionType)
+        try container.encode(hidCmd, forKey: .hidCmd)
     }
     
     
@@ -88,6 +92,10 @@ public class Gesture4D: Codable {
         return actionThreshold
     }
     
+    public func getHIDCommand() -> String {
+        return hidCmd
+    }
+    
     public func setData(_ data: [Sample4D]) {
         self.data = data
     }
@@ -111,6 +119,10 @@ public class Gesture4D: Codable {
     
     public func setActionThreshold(_ t: Double) {
         self.actionThreshold = t
+    }
+    
+    public func setHIDCommand(_ cmd: String) {
+        self.hidCmd = cmd
     }
     
     public func size() -> Int {

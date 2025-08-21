@@ -22,6 +22,12 @@ struct EditGestureView: View {
     @State private var customCmd:String = ""
     @State private var isCmdMissing: Bool = true
     
+    @State private var selectedIndex = 0
+    
+    var selectedKey: KeyboardKey {
+        KeyboardKeysMapping[selectedIndex]
+    }
+    
     
     // constructor
     init(_ gesturesStore: MultiGestureStore, _ gkey: String) {
@@ -47,8 +53,15 @@ struct EditGestureView: View {
             }
 
             self.selectedActionType = gs!.getActionType()
+            if(gs?.getHIDCommand() != nil && gs!.getHIDCommand() != ""){
+                let hidParts = gs!.getHIDCommand().split(separator: Device.HID_Modifiers_Keycode_Separator)
+                let keyCode = Int(hidParts[1])!
+                //let modifiers = hidParts[0]
+                self.selectedIndex = KeyboardKeysMapping.firstIndex(where: { $0.keyCode == keyCode }) ?? 0
+            }
         }
     }
+    
     
     
     // The app panel
@@ -160,7 +173,30 @@ struct EditGestureView: View {
 //                        }.frame(width:250)
 //                    }
                     
+                } else if(selectedActionType == ActionType.executeAsHID){
+                    //VStack(alignment: .trailing) {
+                        Text("Select the Key:")
+                        Picker("Select Key", selection: $selectedIndex) {
+                            ForEach(KeyboardKeysMapping.indices, id: \.self) { idx in
+                                Text(KeyboardKeysMapping[idx].name)
+                            }
+                        }
+                        //.pickerStyle(WheelPickerStyle())
+                        .padding(5)
+                        //.frame(minWidth: 200)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(Color.orange)
+                        )
+                        
+
+                    HStack {
+                        Text("Key Code: \(selectedKey.keyCode)").italic().foregroundColor(.gray)
+                        Text("Modifier: \(selectedKey.modifier)").italic().foregroundColor(.gray)
+                    }
+                    //}
                 }
+                    
                 Spacer().frame(height: 20)
                 
             }.padding(20)
@@ -174,6 +210,7 @@ struct EditGestureView: View {
                     //set/change all props
                     gs!.setActionType(selectedActionType)
                     gs!.setActionThreshold(threshold)
+                    gs!.setHIDCommand("\(selectedKey.modifier)\(Device.HID_Modifiers_Keycode_Separator)\(selectedKey.keyCode)")
                     if(selectedCmd == ScriptCmd.customCmd.rawValue){
                         gs!.setCommand(customCmd)
                     } else {
@@ -213,6 +250,14 @@ struct EditGestureView: View {
                 }
                 self.selectedActionType = gs!.getActionType()
                 self.threshold = gs!.getActionThreshold()
+                
+                if(gs?.getHIDCommand() != nil && gs!.getHIDCommand() != ""){
+                    let hidParts = gs!.getHIDCommand().split(separator: Device.HID_Modifiers_Keycode_Separator)
+                    let keyCode = Int(hidParts[1])!
+                    //let modifiers = hidParts[0]
+                    self.selectedIndex = KeyboardKeysMapping.firstIndex(where: { $0.keyCode == keyCode }) ?? 0
+                }
+                
             } else {
                 self.selectedCmd = ScriptCmd.allCases.first?.rawValue ?? ""
                 self.selectedActionType = ActionType.executeCommand

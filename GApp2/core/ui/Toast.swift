@@ -37,7 +37,7 @@ class ToastManager: ObservableObject {
         let toast = ToastMessage(text: message, severity: severity)
         toasts.append(toast)
         timers[toast.id] = Just(())
-            .delay(for: .seconds(3), scheduler: RunLoop.main)
+            .delay(for: .seconds(1.0), scheduler: RunLoop.main)
             .sink { [weak self] _ in
                 guard let self = self else { return }
                  if let idx = self.toasts.firstIndex(where: { $0.id == toast.id }) {
