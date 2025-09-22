@@ -10,6 +10,7 @@
  */
 public class GestureEvaluationStatus {
     private var gestureKey: String
+    private var gestureEvaluationThreashold: Double = 0.0
     private var gestureCorrelationFactor: Double = 0.0
 
     private var match: Bool = false
@@ -19,9 +20,10 @@ public class GestureEvaluationStatus {
      * @param gestureKey
      * @param gestureCorrelationFactor
      */
-    init(_ gestureKey: String, _ gestureCorrelationFactor: Double) {
+    init(_ gestureKey: String, _ gestureCorrelationFactor: Double, _ gestureEvaluationThreashold: Double) {
         self.gestureKey = gestureKey
         self.gestureCorrelationFactor = gestureCorrelationFactor
+        self.gestureEvaluationThreashold = gestureEvaluationThreashold
     }
 
     /**
@@ -38,6 +40,20 @@ public class GestureEvaluationStatus {
         self.gestureKey = gestureKey
     }
 
+    /**
+     *
+     */
+    public func getEvaluationThreashold() -> Double {
+        return gestureEvaluationThreashold
+    }
+
+    /**
+     *
+     */
+    public func setGestureEvaluationThreashold(_ gestureEvaluationThreashold: Double){
+        self.gestureEvaluationThreashold = gestureEvaluationThreashold
+    }
+    
     /**
      *
      */

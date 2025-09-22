@@ -41,9 +41,12 @@ struct GApp2Watch_Watch_AppApp: App {
          // Start the timer to send data periodically
         if(app.dataTransferTimer == nil) {
              print("GWatchApp_Watch_AppApp: Creating update timer...")
-            
+            var countStart = 0
             app.dataTransferTimer = Timer.scheduledTimer(withTimeInterval: WDevice.Phone_Update_Interval, repeats: true) { _ in
-                 print("GWatchApp_Watch_AppApp Timer: tick... ")
+                if(countStart < 1){
+                    countStart = countStart + 1
+                    print("GWatchApp_Watch_AppApp Timer is Started. First tick... ")
+                }
                  //get buffer and clear it
                  var cdata =  GApp2Watch_Watch_AppApp.consumeBuffer()
                  if( cdata.last == ","){
@@ -52,7 +55,7 @@ struct GApp2Watch_Watch_AppApp: App {
                  
                  //only send data if the sensors are allowed to stream data
                  if(GApp2Watch_Watch_AppApp.isSensorStreaming()) {
-                     print("WKAppConnector: >>>>>>> sending data... \(String(describing: app.delegate))")
+                     //print("WKAppConnector: >>>>>>> sending data... \(String(describing: app.delegate))")
                      // send as an array of Sample4D encoded
                      let dict: [String : Any] = ["data": "[" + cdata + "]"]
                      app.delegate.sendMessage(dict, replyHandler: nil)

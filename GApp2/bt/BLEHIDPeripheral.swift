@@ -11,9 +11,11 @@ class BLEHIDPeripheral: NSObject {
     private var peripheralManager: CBPeripheralManager!
     private var hidService: CBMutableService!
     
+    //public values
+    public var mouseInputReportCharacteristic: CBMutableCharacteristic!
+    public var keyboardInputReportCharacteristic: CBMutableCharacteristic!
+    //
     private var reportMapCharacteristic: CBMutableCharacteristic!
-    private var mouseInputReportCharacteristic: CBMutableCharacteristic!
-    private var keyboardInputReportCharacteristic: CBMutableCharacteristic!
     private var protocolModeCharacteristic: CBMutableCharacteristic!
     private var hidInfoCharacteristic: CBMutableCharacteristic!
     private var hidControlPointCharacteristic: CBMutableCharacteristic!
@@ -135,9 +137,9 @@ class BLEHIDPeripheral: NSObject {
         )
         
         // Input Report
-        let inputReportUUID = CBUUID(string: "2A4D")
+        //let inputReportUUID = CBUUID(string: "2A4D")
         mouseInputReportCharacteristic = CBMutableCharacteristic(
-            type: inputReportUUID,
+            type: BT.hidReportUUID,
             properties: [.read, .notify],
             value: nil,
             permissions: [.readable]
@@ -152,9 +154,9 @@ class BLEHIDPeripheral: NSObject {
         mouseInputReportCharacteristic.descriptors = [reportReferenceDescriptor]
         
         // Keyboard Input Report
-        let keyboardInputReportUUID = CBUUID(string: "2A4D")
+        //let keyboardInputReportUUID = CBUUID(string: "2A4D")
         keyboardInputReportCharacteristic = CBMutableCharacteristic(
-            type: keyboardInputReportUUID,
+            type: BT.hidReportUUID,
             properties: [.read, .notify],
             value: nil,
             permissions: [.readable]
@@ -247,14 +249,14 @@ class BLEHIDPeripheral: NSObject {
         
         let pressData = Data(pressReport)
         peripheralManager.updateValue(pressData, for: keyboardInputReportCharacteristic, onSubscribedCentrals: nil)
-        print("🔵 Sent key press: \(pressData as NSData)")
+        print("BLEHIDPeripheral: 🔵 Sent key press: \(pressData as NSData)")
         
         // 2. Key release report (modifier + keycodes all 0)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
             let releaseReport: [UInt8] = [0x00, 0x00] + Array(repeating: 0x00, count: 6)
             let releaseData = Data(releaseReport)
             self.peripheralManager.updateValue(releaseData, for: self.keyboardInputReportCharacteristic, onSubscribedCentrals: nil)
-            print("⚪️ Sent key release: \(releaseData as NSData)")
+            print("BLEHIDPeripheral: ⚪️ Sent key release: \(releaseData as NSData)")
         }
     }
 }
@@ -262,7 +264,7 @@ class BLEHIDPeripheral: NSObject {
 // MARK: - CBPeripheralManagerDelegate
 extension BLEHIDPeripheral: CBPeripheralManagerDelegate {
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
-        print("Peripheral state changed: \(peripheral.state.rawValue)")
+        print("BLEHIDPeripheral: Peripheral state changed: \(peripheral.state.rawValue)")
         if peripheral.state == .poweredOn {
             setupHIDService()
         }
@@ -270,21 +272,28 @@ extension BLEHIDPeripheral: CBPeripheralManagerDelegate {
 
     func peripheralManager(_ peripheral: CBPeripheralManager, didAdd service: CBService, error: Error?) {
         if let error = error {
-            print("Failed to add service: \(error.localizedDescription)")
+            print("BLEHIDPeripheral: Failed to add service: \(error.localizedDescription)")
         } else {
-            print("Service added, starting advertisement")
+            print("BLEHIDPeripheral: Service added, starting advertisement")
             startAdvertising()
         }
     }
 
     func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didSubscribeTo characteristic: CBCharacteristic) {
-        print("Central subscribed to input report")
+        print("BLEHIDPeripheral: Central subscribed to characteristic p:\(peripheral.description), c:\(central.debugDescription), ch:\(characteristic.uuid.uuidString)")
+        HIDPeripheralSubscriptionManager.shared.central( central, didSubscribeTo:  characteristic)
+    }
+    
+    func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didUnsubscribeFrom characteristic: CBCharacteristic) {
+        print("BLEHIDPeripheral: Central didUnsubscribeFrom from characteristic p:\(peripheral.debugDescription), c:\(central.debugDescription), ch:\(characteristic.uuid.uuidString)")
+        HIDPeripheralSubscriptionManager.shared.central( central, didUnsubscribeFrom:  characteristic)
     }
 
     func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
+        print("BLEHIDPeripheral: didReceiveWrite...")
         for request in requests {
             if request.characteristic.uuid == protocolModeCharacteristic.uuid {
-                print("Protocol mode write: \(request.value?.first ?? 0)")
+                print("BLEHIDPeripheral: Protocol mode write: \(request.value?.first ?? 0)")
                 peripheral.respond(to: request, withResult: .success)
             } else {
                 peripheral.respond(to: request, withResult: .requestNotSupported)
@@ -293,6 +302,7 @@ extension BLEHIDPeripheral: CBPeripheralManagerDelegate {
     }
     
     func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveRead request: CBATTRequest) {
+        print("BLEHIDPeripheral: didReceiveRead...")
         if request.characteristic.uuid == reportMapCharacteristic.uuid {
             if request.offset > reportMap.count {
                 peripheral.respond(to: request, withResult: .invalidOffset)
@@ -312,7 +322,7 @@ extension BLEHIDPeripheral: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         guard let services = peripheral.services else { return }
         for service in services {
-            print("Service: \(service.uuid)")
+            print("BLEHIDPeripheral: Service: \(service.uuid)")
             peripheral.discoverCharacteristics(nil, for: service)
         }
     }
@@ -322,7 +332,7 @@ extension BLEHIDPeripheral: CBPeripheralDelegate {
                     error: Error?) {
         guard let characteristics = service.characteristics else { return }
         for characteristic in characteristics {
-            print("Characteristic: \(characteristic.uuid), Properties: \(characteristic.properties)")
+            print("BLEHIDPeripheral: Characteristic: \(characteristic.uuid), Properties: \(characteristic.properties)")
         }
     }
 }

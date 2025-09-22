@@ -108,7 +108,7 @@ public class WKAppDelegatePhoneConnector : NSObject, WCSessionDelegate, WKApplic
 //    }
     
     public func sendMessage(_ message: [String : Any], replyHandler: (([String : Any]) -> Void)?, errorHandler: ((any Error) -> Void)? = nil){
-        print("WKConnector:  send message... \(session.isReachable) _data_ \(message.count)")
+        //print("WKConnector:  send message... \(session.isReachable) _data_ \(message.count)")
         session.sendMessage(message, replyHandler: replyHandler, errorHandler: errorHandler)
     }
     

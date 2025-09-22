@@ -398,8 +398,8 @@
             filePath = "GApp2Watch Watch App/GApp2WatchApp.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
             landmarkName = "GApp2Watch_Watch_AppApp"
             landmarkType = "14">
          </BreakpointContent>
@@ -407,16 +407,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F993C134-1B71-4BAE-AED9-34122231B2C9"
+            uuid = "B0533259-E888-4CDB-A4F5-3BE9668896A8"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GApp2/bt/BLEHIDPeripheral.swift"
+            filePath = "GApp2/views/HIDSettings.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "272"
-            endingLineNumber = "272"
-            landmarkName = "peripheralManager(_:didAdd:error:)"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
+            landmarkName = "disconnect(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

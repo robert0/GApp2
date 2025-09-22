@@ -294,14 +294,16 @@ struct GApp2App: App {
         
     // Sends a mouse move event as HID device
     public static func sendHIDMouseMove(dx: Int8, dy: Int8, buttons: UInt8 = 0) {
-        Globals.log("APP_Main: Sending Mouse Move to Watch...")
+        Globals.log("APP_Main: Sending Mouse Move to Peripheral...")
         hidp?.sendMouseMove(dx: dx, dy: dy, buttons: buttons)
+        ToastManager.show("HID mouse move:{dx:\(dx), dy:\(dy)}", ToastSeverity.info)
     }
    
     
     // Sends a key press and release event as HID device
     public static func sendHIDKeyTyped(modifiers:UInt8 = 0x00, keyCodes: [UInt8] = [0x04]) {
         Globals.log("APP_Main: Sending Key Typed to Watch...")
-        hidp!.sendKeyboardInput(modifiers:modifiers, keyCodes:keyCodes) // Press "a"
+        hidp!.sendKeyboardInput(modifiers:modifiers, keyCodes:keyCodes)
+        ToastManager.show("HID key command:{Mod:\(modifiers), Key:\(keyCodes)}", ToastSeverity.info)
     }
 }

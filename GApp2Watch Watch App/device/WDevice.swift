@@ -9,7 +9,7 @@ import Foundation
 
 public class WDevice {
     public static let Accelerometers_Update_Interval = 0.01//seconds
-    public static let Phone_Update_Interval = 0.2//seconds
+    public static let Phone_Update_Interval = 0.05//seconds
 
     //Topics used by Watch - Phone communiction.
     //**************************************************

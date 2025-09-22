@@ -12,7 +12,8 @@ class BT {
     
     public static let ServiceUUID = CBUUID(string: "0000FFF0-0000-1000-2000-300040005000")
     public static let CharacteristicUUID = CBUUID(string: "0000FFF0-0000-1000-2000-300040005001")
-    
+    public static let hidReportUUID = CBUUID(string: "2A4D")
+    //public static let mouseInputReportUUID = CBUUID(string: "2A4D") - similar UID to keyboard report, so we will use only one uuid for both
     
     /**
      * Decode Data to Object

@@ -62,6 +62,7 @@
 			membershipExceptions = (
 				hid/HID_demo.swift.txt,
 				hid/KeyCodes.swift.txt,
+				Info.plist,
 			);
 			target = E887D2012D10550600A7EB10 /* GApp2 */;
 		};
@@ -291,11 +292,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "GApp2Watch Watch App/GApp2Watch Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"GApp2Watch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = ZRTZ6CPX7Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "GApp2Watch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = GApp2Watch;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app needs access to read Health data to provide personalized activity tracking.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This app needs access to Health data to provide personalized activity tracking.";
@@ -325,11 +327,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "GApp2Watch Watch App/GApp2Watch Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"GApp2Watch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = ZRTZ6CPX7Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "GApp2Watch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = GApp2Watch;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app needs access to read Health data to provide personalized activity tracking.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This app needs access to Health data to provide personalized activity tracking.";
@@ -478,11 +481,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GApp2/GApp2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"GApp2/Preview Content\"";
 				DEVELOPMENT_TEAM = ZRTZ6CPX7Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GApp2/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App uses Bluetooth to connect to other devices";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "App is using Bluetooth to connect to other devices";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -510,11 +514,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GApp2/GApp2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"GApp2/Preview Content\"";
 				DEVELOPMENT_TEAM = ZRTZ6CPX7Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GApp2/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App uses Bluetooth to connect to other devices";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "App is using Bluetooth to connect to other devices";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

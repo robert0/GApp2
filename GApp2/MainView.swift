@@ -112,14 +112,14 @@ struct MainView: View {
                         Text("Incomming Gestures ( \(inGCount) )")
                     }
                     Spacer().frame(height:30)
-                    NavigationLink(destination: TestGesturesView(gestureAnalyser)) {
+                    NavigationLink(destination: TestView(gestureAnalyser)) {
                         Image(systemName: "play")
                             .imageScale(.large)
                         Text("Test")
                     }
                     Spacer()
                    
-                    Text("Gestures App v1.8.0")
+                    Text("Gestures App v1.8.3")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: 150, alignment: .trailing)

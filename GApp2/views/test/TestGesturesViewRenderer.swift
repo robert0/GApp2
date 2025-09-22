@@ -9,7 +9,7 @@ import os
 import OrderedCollections
 
 
-struct TestingViewRenderer: View, DataChangeListener, GestureEvaluationListener {
+struct TestGesturesViewRenderer: View, DataChangeListener, GestureEvaluationListener {
     @ObservedObject var viewModel = TestingViewModel()
     private static let x_scale: Double = Device.View_X_Scale
     private static let y_scale: Double = Device.View_Y_Scale
@@ -94,9 +94,19 @@ struct TestingViewRenderer: View, DataChangeListener, GestureEvaluationListener 
             }
             VStack (alignment: .leading) {
                 Text("Gesture Detection Status:")
-                ForEach(viewModel.gestureEvaluationStatusMap.elements, id: \.key) { element in
-                    Text("\(element.key): \(element.value.getGestureCorrelationFactor())").offset(x: 20).italic().foregroundColor(.blue)
+                var sortedElm = viewModel.gestureEvaluationStatusMap.elements.sorted(by: { $0.value.getGestureCorrelationFactor() > $1.value.getGestureCorrelationFactor() });
+                ForEach(sortedElm, id: \.key) { element in
+                    let color = element.value.getGestureCorrelationFactor() > element.value.getEvaluationThreashold() ? Color.green : Color.red
+                    Text("\(element.key): \(element.value.getGestureCorrelationFactor())")
+                        .offset(x: 20)
+                        .italic()
+                        .foregroundColor(color)
                 }
+                
+//                ForEach(viewModel.gestureEvaluationStatusMap.elements, id: \.key) { element in
+//                    let color = element.value.getGestureCorrelationFactor() > element.value.getEvaluationThreashold() ? Color.green : Color.red
+//                    Text("\(element.key): \(element.value.getGestureCorrelationFactor())").offset(x: 20).italic().foregroundColor(color)
+//                }
                 Text("Last Command:")
                 Text(GApp2App.getLastSshCommand() ?? "").offset(x: 20).italic().foregroundColor(.blue)
             }

@@ -7,12 +7,14 @@ import CoreMotion
 //
 import SwiftUI
 
-struct TestGesturesView: View {
+struct TestGesturesViewOld: View {
     @Environment(\.dismiss) var dismiss
+    
+    @StateObject private var subscriptionManager = HIDPeripheralSubscriptionManager.shared
     
     //next vars will be created only once
     private var analyser:RealtimeMultiGestureStoreAnalyser
-    private static var dataRenderer: TestingViewRenderer?
+    private static var dataRenderer: TestGesturesViewRenderer?
     private static var eventsHandler: AccelerometerEventStoreHandler?
     @State private var isStreaming: Bool = RawGestureDeviceRouter.shared.isStreaming
     
@@ -23,7 +25,7 @@ struct TestGesturesView: View {
         //Create & link Gesture Analyser
         self.analyser = analyser
         
-        if(TestGesturesView.dataRenderer == nil){
+        if(TestGesturesViewOld.dataRenderer == nil){
             initializeStatics();
         } else {
             cleanUp() //otherview do cleanup of static data
@@ -33,11 +35,11 @@ struct TestGesturesView: View {
     //
     func initializeStatics(){
         //Create the view  and wire it
-        TestGesturesView.dataRenderer = TestingViewRenderer()
-        TestGesturesView.dataRenderer!.setDataProvider(analyser)
+        TestGesturesViewOld.dataRenderer = TestGesturesViewRenderer()
+        TestGesturesViewOld.dataRenderer!.setDataProvider(analyser)
         
-        self.analyser.setChangeListener(TestGesturesView.dataRenderer)
-        self.analyser.addEvaluationListener(TestGesturesView.dataRenderer)
+        self.analyser.setChangeListener(TestGesturesViewOld.dataRenderer)
+        self.analyser.addEvaluationListener(TestGesturesViewOld.dataRenderer)
         
         //connect to the data supplier
         Globals.logToScreen("Initializing Sensor Manager...")
@@ -70,23 +72,7 @@ struct TestGesturesView: View {
                         .font(.footnote)
                 }
             }
-            
-//            Text("Test commands via ssh:").italic()
-//            HStack {
-//                Button("Open") {
-//                    openKeynotePressed()
-//                }.padding(10)
-//                
-//                Button("< Previous") {
-//                    previousPressed()
-//                }.padding(10)
-//                
-//                Button("Next >") {
-//                    nextPressed()
-//                }.padding(10)
-//                
-//            }.padding(0)
-            
+           
             Spacer().frame(height: 30)
             Text("Test gestures:").italic()
             //add buttons
@@ -154,6 +140,10 @@ struct TestGesturesView: View {
             Spacer().frame(height: 10)
             Text("Test HID:").italic()
             
+            // Example usage in your view:
+            List(subscriptionManager.hidSubscribers, id: \.identifier) { central in
+                Text("Keyboard Subscriber: \(central.identifier.uuidString)")
+            }
             Spacer().frame(height: 10)
             HStack {
                 Button("Send KeyTyped") {
@@ -171,7 +161,7 @@ struct TestGesturesView: View {
                 
             
             //add data view panel
-            TestGesturesView.dataRenderer
+            TestGesturesViewOld.dataRenderer
             Spacer()
             
         }

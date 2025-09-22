@@ -15,7 +15,7 @@ struct WCContentView: View {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Welcome to GWatch 1.8.0!")
+            Text("Welcome to GWatch 1.8.3!")
             
             if(viewModel.infoMessage != nil) {
                 Text("New msg: \(viewModel.infoMessage!)")

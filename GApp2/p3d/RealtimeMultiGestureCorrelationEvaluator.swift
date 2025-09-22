@@ -142,7 +142,8 @@ public class RealtimeMultiGestureCorrelationEvaluator: RealtimeGestureScanner, G
         //List<Sample3D> r_norm = ArrayMath3D.normalizeToNew(getRecordingData().getData(), 1.0f);
         //List<Sample3D> t_norm = ArrayMath3D.normalizeToNew(getTestingData().getData(), 1.0f);
         let corelationFactor = ArrayMath4D.correlation(gbase.getBase(), gw.getSamples())
-        return GestureEvaluationStatus(gbase.getKey(), corelationFactor)
+        let gestureCorrelationThreshold = referenceData!.getGesture(gbase.getKey())?.getActionThreshold()
+        return GestureEvaluationStatus(gbase.getKey(), corelationFactor, gestureCorrelationThreshold ?? 1.0)
     }
 
 }
