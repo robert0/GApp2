@@ -10,15 +10,24 @@
  */
 public class RealtimeMultiGestureStoreAnalyser : SensorListener {
     private var mDataChangeListener: DataChangeListener?
+    private var dataStore: MultiGestureStore
     private var recordingData: MultiGesture4DData
     private var realtimeGestureEvaluator: RealtimeMultiGestureCorrelationEvaluator
     private var isAnalysing:Bool = false
     
     init(_ dataStore: MultiGestureStore) {
+        self.dataStore = dataStore
         recordingData = dataStore.getRecordingData()
         realtimeGestureEvaluator = RealtimeMultiGestureCorrelationEvaluator(dataStore.getRecordingData(), Device.Acc_Threshold_Level)
     }
 
+    /**
+     * @param
+     */
+    public func getGestureStore() -> MultiGestureStore {
+      return dataStore
+    }
+    
     /**
      * @param
      */

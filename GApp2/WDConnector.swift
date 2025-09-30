@@ -9,9 +9,13 @@ import Foundation
 import WatchConnectivity
 import SwiftUICore
 
-public class WDConnector : NSObject, WCSessionDelegate {
+public class WDConnector : NSObject, WCSessionDelegate, ObservableObject {
+    static let shared = WDConnector()
+    @Published var watchSessionValid: Bool = false
+    
     var session = WCSession.default
     var counter = 1
+
     
     public override init(){
         super.init()
@@ -31,6 +35,7 @@ public class WDConnector : NSObject, WCSessionDelegate {
     
     // Called when needs to print state of session
     public static func printState(_ session: WCSession) {
+        var isWConnectionAvailable = true
         if(session.activationState == .activated) {
             print("WDConnector: WCSession is ACTIVATED")
             
@@ -117,5 +122,20 @@ public class WDConnector : NSObject, WCSessionDelegate {
     public func sessionReachabilityDidChange(_ session: WCSession){
         print("WDConnector: WCSession sessionReachabilityDidChange() called")
         WDConnector.printState(session)
+        
+        let isValid = WDConnector.isWatchSessionValid(session)
+        DispatchQueue.main.async {
+            WDConnector.shared.watchSessionValid = isValid
+            if isValid {
+                ToastManager.show("Watch session is Active", ToastSeverity.success)
+            } else {
+                ToastManager.show("Watch session is NOT Active", ToastSeverity.warning)
+            }
+        }
+    }
+    
+    
+    public static func isWatchSessionValid(_ session: WCSession) -> Bool {
+        return (session.activationState == .activated && session.isPaired && session.isWatchAppInstalled && session.isReachable)
     }
 }

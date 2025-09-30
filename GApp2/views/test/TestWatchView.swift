@@ -14,7 +14,7 @@ struct TestWatchView: View {
         VStack {
             Text("Test watch:").italic()
             if !GApp2App.isWatchConnectivityActive() {
-                Text("Warning: Watch connection is not active! Check bluetooth, network or that app is also running on watch.")
+                Text("Warning: Watch connection is not active! Check bluetooth, network or verify the watch is also running the app.")
                     .foregroundColor(.gray)
                     .italic()
                     .font(.footnote)

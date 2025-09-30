@@ -24,6 +24,9 @@ public enum ActionType: String, CaseIterable, Identifiable {
 
 @main
 struct GApp2App: App {
+    //constant used for ViewMode (can be extracted outside the app if needed)
+    public static let isMinimalViewActive: Bool = true
+    //
     static var gestureDispatcher: GestureDispatcher = GestureDispatcher()
     static var wdConnector: WDConnector?
     static var btOutInstance: BTPeripheralObj_OUT?
@@ -33,6 +36,7 @@ struct GApp2App: App {
     static var btPeripheralDevice: CBPeripheral?
     private static var sshDataBean: SshDataBean?
     static var lastSshCmd: String? = nil
+
     
     //static var contentView:ContentView? = nil
 
@@ -45,7 +49,11 @@ struct GApp2App: App {
 
     var body: some Scene {
         WindowGroup {
-            MainView()
+            if(GApp2App.isMinimalViewActive){
+                MinimalView()
+            } else {
+                MainView()
+            }
         }
     }
     
@@ -304,6 +312,6 @@ struct GApp2App: App {
     public static func sendHIDKeyTyped(modifiers:UInt8 = 0x00, keyCodes: [UInt8] = [0x04]) {
         Globals.log("APP_Main: Sending Key Typed to Watch...")
         hidp!.sendKeyboardInput(modifiers:modifiers, keyCodes:keyCodes)
-        ToastManager.show("HID key command:{Mod:\(modifiers), Key:\(keyCodes)}", ToastSeverity.info)
+        ToastManager.show("HID command send:{M:\(modifiers), K:\(keyCodes)}", ToastSeverity.info)
     }
 }

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CreateGestureView: View, DataChangeListener {
     @Environment(\.dismiss) var dismiss
+    @ObservedObject private var wdConnector = WDConnector.shared
+    @ObservedObject private var gRouter = RawGestureDeviceRouter.shared
     
     //next vars will be created only once
     private var allGesturesStore:MultiGestureStore
@@ -70,6 +72,35 @@ struct CreateGestureView: View, DataChangeListener {
             //add buttons
            
             Spacer()
+            HStack {
+                Text("Watch Connection: ").italic().foregroundColor(.black)
+                if( wdConnector.watchSessionValid ) {
+                    Text("YES")
+                        .italic()
+                        .foregroundColor(.green)
+                } else {
+                    Text("NO")
+                        .italic()
+                        .foregroundColor(.red)
+                }
+            }
+            HStack {
+                Text("Data Source: ").italic().foregroundColor(.black)
+                if(gRouter.deviceType == DeviceType.Phone) {
+                    Text("iPhone")
+                        .italic()
+                        .foregroundColor(.blue)
+                }  else if(gRouter.deviceType == DeviceType.Watch) {
+                 
+                    Text("iWatch")
+                        .italic()
+                        .foregroundColor(.blue)
+                } else {
+                    Text("Not Set")
+                        .italic()
+                        .foregroundColor(.gray)
+                }
+            }
             HStack {
                 Button("Start Recording") {
                     Globals.logToScreen("Start Recording Pressed")
@@ -134,6 +165,8 @@ struct CreateGestureView: View, DataChangeListener {
                                
                 //return to previous view
                 dismiss()
+                
+                ToastManager.show("Gesture created!", .success)
                 
             }.buttonStyle(.borderedProminent)
              .disabled(name.isEmpty)

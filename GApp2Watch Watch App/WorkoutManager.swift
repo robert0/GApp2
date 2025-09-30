@@ -1,7 +1,7 @@
 //
 //  WorkoutManager.swift
 //  GApp2
-//
+//  
 //  Created by Robert Talianu
 //
 

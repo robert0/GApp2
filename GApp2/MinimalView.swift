@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MainView: View {
+struct MinimalView: View {
     //logger view wg
     private var logView: LogView
     var gesturesStore:MultiGestureStore
@@ -74,52 +74,11 @@ struct MainView: View {
     var body: some View {
         ZStack {
             NavigationView {
-                VStack (alignment: .leading) {
-                    Spacer()
-                    NavigationLink(destination: HIDSettings()) {
-                        Image(systemName: "radiowaves.left")
-                            .imageScale(.large)
-                        Text("HID Settings")
-                    }
-                    Spacer().frame(height:30)
-                    NavigationLink(destination: Settings(gesturesStore)) {
-                        Image(systemName: "gearshape.2.fill")
-                            .imageScale(.large)
-                        Text("SSH Settings")
-                    }
-                    Spacer().frame(height:30)
-                    NavigationLink(destination: ChooseSourceView()) {
-                        Image(systemName: "applewatch.radiowaves.left.and.right")
-                            .imageScale(.large)
-                        Text("Choose Source")
-                    }
-                    Spacer().frame(height:30)
-                    NavigationLink(destination: CreateGestureView(gesturesStore)) {
-                        Image(systemName: "plus.circle")
-                            .imageScale(.large)
-                        Text("Create Gesture")
-                    }
-                    Spacer().frame(height:30)
-                    NavigationLink(destination: ManageGesturesView(gesturesStore)) {
-                        Image(systemName: "pencil")
-                            .imageScale(.large)
-                        Text("Manage Gestures ( \(gCount) )")
-                    }
-                    Spacer().frame(height:30)
-                    NavigationLink(destination: IncommingGesturesView(inGesturesStore)) {
-                        Image(systemName: "iphone.and.arrow.right.inward")
-                            .imageScale(.large)
-                        Text("Incomming Gestures ( \(inGCount) )")
-                    }
-                    Spacer().frame(height:30)
-                    NavigationLink(destination: TestView(gestureAnalyser)) {
-                        Image(systemName: "play")
-                            .imageScale(.large)
-                        Text("Test")
-                    }
+                VStack (alignment: .center) {
+                    TestView(gestureAnalyser)
                     Spacer()
                    
-                    Text("Gestures App v1.8.5")
+                    Text("Gestures App v1.8.4")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: 150, alignment: .trailing)
@@ -139,5 +98,5 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView()
+    MinimalView()
 }
